@@ -13,7 +13,8 @@ module.exports = {
       'custom-green': '#003E1F',
       'custom-dark': '#01110A',
     },
-    extend: {},
+    extend: {
+    },
   },
   plugins: [],
 }

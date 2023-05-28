@@ -8,9 +8,11 @@ const Routine: React.FC<Props> = ({ date }) => {
   const dateNow: string = date.toDateString()
   return (
     <>
-      <View className="w-full h-2/3 py-1 my-1">
-	<View className="w-full h-full border p-2 rounded-xl border-slate-700">
-	  <Text className="text-white text-xs">{dateNow}</Text>
+      <View className="h-2/3 py-1 my-1">
+	<View className="w-full h-full border overflow-hidden rounded-xl border-custom-light-green">
+	  <View className="bg-custom-light-green w-full p-2 h-[10%]">
+	    <Text className="text-custom-dark text-xs">{dateNow}</Text>
+	  </View>
 	  <ScrollView>
 	    
 	  </ScrollView>

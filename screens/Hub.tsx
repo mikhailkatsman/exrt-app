@@ -11,7 +11,7 @@ const Hub: React.FC = () => {
       <SafeAreaView className="h-24 p-2 bg-custom-dark">
         <Text className="text-custom-white text-2xl">Hub</Text> 
       </SafeAreaView>
-      <View className="bg-custom-dark h-full w-full p-2 flex">
+      <View className="bg-custom-dark h-full w-full px-2">
         <Calendar date={dateNow} /> 
         <Routine date={dateNow} />
       </View>
