@@ -5,7 +5,7 @@ const SelectedDay: React.FC = () => {
     <View 
       className="
         absolute 
-        bg-custom-light-green
+        bg-custom-white
         inset-x-1 top-7 -bottom-5
         border 
         rounded-t-xl

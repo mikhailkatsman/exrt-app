@@ -34,7 +34,7 @@ class DB {
     }
   }
 
-  private sql(
+  public sql(
     query: string, 
     params?: (null | string | number)[], 
     successCallback?: SQLite.SQLStatementCallback, 
@@ -55,17 +55,6 @@ class DB {
         )
       })
     }
-  }
-
-  public getWeeklyData(): any[] {
-    var queryResult: any[] = []
-
-    this.sql(
-      'SELECT * FROM exercises', [],
-      (_, result) =>  { queryResult = result.rows._array } 
-    )
-
-    return queryResult 
   }
 }
 
