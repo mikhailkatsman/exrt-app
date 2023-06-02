@@ -1,19 +1,30 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import SelectedDay from "./SelectedDay"
 import Hatch from "../../assets/Hatch"
 import DaySessionIndicator from "./DaySessionIndicator"
 
 type Props = {
-  week: string[]
+  dataArray: any[]
   dayNow: number
-  selectedDay: string
-  setSelectedDay: (day: string) => void
-  activeWeekDays: any[]
+  selectedDay: number 
+  setSelectedDay: (dayIndex: number ) => void
 }
 
-const Calendar: React.FC<Props> = ({ week, dayNow, selectedDay, setSelectedDay, activeWeekDays }) => {
-  const handleDayPress = (day: string) => setSelectedDay(day)
+const Calendar: React.FC<Props> = ({
+  dataArray,
+  dayNow,
+  selectedDay,
+  setSelectedDay
+}) => {
+  const week: string[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  const [activeWeekDays, setActiveWeekDays] = useState<any[]>([])
+
+  const handleDayPress = (dayIndex: number) => setSelectedDay(dayIndex)
+
+  useEffect(() => {
+    setActiveWeekDays(dataArray.map(item => item.day_id))
+  }, [dataArray])
 
   return (
     <View className="flex-row w-full h-[10%] justify-between py-1 my-1">
@@ -22,7 +33,7 @@ const Calendar: React.FC<Props> = ({ week, dayNow, selectedDay, setSelectedDay, 
 	  className="h-full flex-col flex-1 items-stretch" 
 	  key={index}
 	  activeOpacity={1}
-	  onPress={() => handleDayPress(day)}
+	  onPress={() => handleDayPress(index)}
 	>
 	  <Text className="h-1/3 text-center text-custom-white text-xs">{day[0]}</Text>
 	  <View
@@ -39,7 +50,7 @@ const Calendar: React.FC<Props> = ({ week, dayNow, selectedDay, setSelectedDay, 
 	  >
 	    {index === dayNow && <Hatch />}
 	  </View>
-	  {selectedDay === day && <SelectedDay />}
+	  {selectedDay === index && <SelectedDay />}
 	  {activeWeekDays && activeWeekDays.some(item => item === index + 1) && 
 	    <DaySessionIndicator />
 	  } 

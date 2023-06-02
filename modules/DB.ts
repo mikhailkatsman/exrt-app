@@ -2,8 +2,6 @@ import * as SQLite from 'expo-sqlite'
 import * as FileSystem from 'expo-file-system'
 import { Asset } from 'expo-asset'
 
-const InternalDbName: string = 'exrtdata.db'
-
 class DB {
   private db: SQLite.WebSQLDatabase | null
   private initialized: boolean
@@ -16,8 +14,13 @@ class DB {
   async initDatabase(): Promise<void> {
     if (this.initialized) return
 
+    const internalDbName: string = 'exrtdata.db'
     const sqlDir: string = FileSystem.documentDirectory + 'SQLite/'
-    const dbPath: string = sqlDir + InternalDbName
+    const dbPath: string = sqlDir + internalDbName
+    
+    //const temp = SQLite.openDatabase(internalDbName)
+    //temp.closeAsync()
+    //temp.deleteAsync()
 
     try {
       const { exists } = await FileSystem.getInfoAsync(dbPath)
@@ -27,7 +30,7 @@ class DB {
         await FileSystem.downloadAsync(asset.uri, dbPath)
       }
 
-      this.db = SQLite.openDatabase(InternalDbName)
+      this.db = SQLite.openDatabase(internalDbName)
       this.initialized = true
     } catch (error) {1
       console.error('Error initializing database:', error)

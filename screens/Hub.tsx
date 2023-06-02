@@ -5,10 +5,9 @@ import Routine from "../components/routine/Routine";
 import db from '../modules/DB'
 
 const Hub: React.FC = () => {
-  const week: string[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
   const dayNow: number = (new Date().getDay() + 6) % 7 
-  const [selectedDay, setSelectedDay] = useState(week[dayNow])
-  const [activeWeekDays, setActiveWeekDays] = useState<any[]>([])
+  const [dataArray, setDataArray] = useState<any[]>([])
+  const [selectedDay, setSelectedDay] = useState<number>(dayNow)
 
   useEffect(() => {
     db.sql(`
@@ -20,9 +19,7 @@ const Hub: React.FC = () => {
       GROUP BY weekly_session_instances.id, weekly_session_instances.day_id;
       `, [],
       (_, result) => {
-        console.log(result.rows._array)
-        const daysArray = result.rows._array.map(item => item.day_id)
-        setActiveWeekDays(daysArray)
+        setDataArray(result.rows._array)
       }
     ) 
   }, [])
@@ -34,14 +31,13 @@ const Hub: React.FC = () => {
       </SafeAreaView>
       <View className="bg-custom-dark h-full w-full px-2">
         <Calendar 
-          week={week}
+          dataArray={dataArray}
           dayNow={dayNow}
           selectedDay={selectedDay}
           setSelectedDay={setSelectedDay}
-          activeWeekDays={activeWeekDays}
         /> 
         <Routine 
-          dayNow={dayNow}
+          dataArray={dataArray}
           selectedDay={selectedDay}
         />
       </View>
