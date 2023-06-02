@@ -9,7 +9,7 @@ const Routine: React.FC = () => {
 	    <Text className="text-custom-dark text-xs">20/09/2023</Text>
 	  </View>
 	  <ScrollView>
-	    
+
 	  </ScrollView>
 	</View>
       </View>

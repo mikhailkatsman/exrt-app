@@ -1,24 +1,19 @@
-import { useEffect, useState } from "react"
+import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import SelectedDay from "./SelectedDay"
 import Hatch from "../../assets/Hatch"
 import DaySessionIndicator from "./DaySessionIndicator"
-import db from '../../modules/DB'
 
-const Calendar: React.FC = () => {
-  const week: string[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-  const dayNow: number = (new Date().getDay() + 6) % 7 
+type Props = {
+  week: string[]
+  dayNow: number
+  selectedDay: string
+  setSelectedDay: (day: string) => void
+  activeWeekDays: any[]
+}
 
-  const [selectedDay, setSelectedDay] = useState(week[dayNow])
-  const [activeWeekDays, setActiveWeekDays] = useState<any[]>([])
+const Calendar: React.FC<Props> = ({ week, dayNow, selectedDay, setSelectedDay, activeWeekDays }) => {
   const handleDayPress = (day: string) => setSelectedDay(day)
-
-  useEffect(() => {
-    db.sql(
-      'SELECT day_id FROM weekly_session_instances', [],
-      (_, result) => setActiveWeekDays(result.rows._array)
-    ) 
-  }, [])
 
   return (
     <View className="flex-row w-full h-[10%] justify-between py-1 my-1">
@@ -45,7 +40,7 @@ const Calendar: React.FC = () => {
 	    {index === dayNow && <Hatch />}
 	  </View>
 	  {selectedDay === day && <SelectedDay />}
-	  {activeWeekDays && activeWeekDays.some(item => item.day_id === index + 1) && 
+	  {activeWeekDays && activeWeekDays.some(item => item === index + 1) && 
 	    <DaySessionIndicator />
 	  } 
 	</TouchableOpacity>
