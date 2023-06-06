@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { SafeAreaView, View, Text } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Calendar from "../components/calendar/Calendar";
 import Routine from "../components/routine/Routine";
 import db from '../modules/DB'
@@ -29,7 +30,7 @@ const Hub: React.FC = () => {
       <SafeAreaView className="h-24 p-2 bg-custom-dark">
         <Text className="text-custom-white text-2xl">Hub</Text> 
       </SafeAreaView>
-      <View className="bg-custom-dark h-full w-full px-2">
+      <GestureHandlerRootView className="bg-custom-dark h-full w-full px-2">
         <Calendar 
           dataArray={dataArray}
           dayNow={dayNow}
@@ -40,7 +41,7 @@ const Hub: React.FC = () => {
           dataArray={dataArray}
           selectedDay={selectedDay}
         />
-      </View>
+      </GestureHandlerRootView>
     </>
   )
 }

@@ -6,6 +6,7 @@ const DaySessionIndicator: React.FC = () => {
       className="
         absolute 
         inset-x-3 top-10 bottom-4
+        bg-custom-dark
         border-2
         border-custom-blue
         rounded-md

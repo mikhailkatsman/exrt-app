@@ -12,7 +12,7 @@ module.exports = {
       'custom-green': '#74AC5D',
       'custom-dark': '#080B06',
       'custom-grey': '#4D594A',
-      'custom-blue': '#4A6BBF',
+      'custom-blue': '#2EB9DC',
     },
     extend: {
       spacing: {
