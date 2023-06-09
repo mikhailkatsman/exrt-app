@@ -44,6 +44,7 @@ const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay, timeSignatureAr
 
   }, [dataArray, selectedDay])
 
+  // MOVE TO SEPARATE MODULE
   const timeSlotRenderer = ({item, drag, isActive}: RenderItemParams<TimeSlot>) => {
     return item.sessionId ? (
 	<TouchableOpacity	    
