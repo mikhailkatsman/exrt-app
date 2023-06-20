@@ -17,7 +17,7 @@ export default class Hatch extends PureComponent {
   static defaultProps = {
     pattern: () => { },
     space: 5,
-    lineColor: "#D5F2E3",
+    lineColor: "#F5F6F3",
     lineWidth: 2,
     rotation: 45
   }
