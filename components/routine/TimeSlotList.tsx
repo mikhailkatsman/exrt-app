@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { View, Text, TouchableOpacity } from "react-native"
+import { View, Text, ImageBackground } from "react-native"
+import TimeSlot from "./TimeSlot"
 
 type Props = {
   dataArray: any[],
@@ -25,13 +26,23 @@ const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
 
   }, [dataArray, selectedDay])
 
-  return routinesArray.length === 0 ? (
-      <Text className="text-custom-white">REST DAY</Text>
-    ) : (
-      routinesArray.map(routine => (
-        <Text className="text-custom-white">{routine.time} - {routine.id}</Text>
-      ))
-    )
+  return (
+    <View className="w-full h-full p-3"> 
+      {routinesArray.length === 0 ? (
+	<ImageBackground
+	  source={require('../../assets/images/bg/comet.png')}
+	  className="flex-1 justify-center items-center"
+	  resizeMode="stretch"
+	>
+	  <Text className="text-custom-white text-2xl">Rest</Text>
+	</ImageBackground>
+      ) : (
+	routinesArray.map((routine, index) => (
+	  <TimeSlot key={`timeslot-${index}`} routine={routine} />
+	))
+      )}
+    </View>
+  )
 }
 
 export default TimeSlotList
