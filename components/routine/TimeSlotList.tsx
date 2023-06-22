@@ -27,7 +27,7 @@ const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
   }, [dataArray, selectedDay])
 
   return (
-    <View className="w-full h-full p-3"> 
+    <View className="w-full h-[90%] rounded-xl bg-custom-dark p-2"> 
       {routinesArray.length === 0 ? (
 	<ImageBackground
 	  source={require('../../assets/images/bg/comet.png')}

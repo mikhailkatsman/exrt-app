@@ -9,16 +9,21 @@ type Props = {
 
 const Routine: React.FC<Props> = ({ dataArray, selectedDay }) => {
   return (
-    <View className="h-2/3 py-1 my-1">
-      <View className="w-full h-full border overflow-hidden rounded-xl border-custom-white">
-	<View className="bg-custom-white w-full p-2 h-[10%]">
-	  <Text className="text-custom-dark text-xs">20/09/2023</Text>
-	</View>
-          <TimeSlotList 
-            dataArray={dataArray} 
-            selectedDay={selectedDay} 
-          />
+    <View className="
+      h-2/3 my-2
+      flex-col
+      bg-custom-white
+      overflow-hidden
+      border rounded-xl border-custom-white
+    ">
+      <View className="h-[10%] p-2">
+        <Text className="text-custom-dark text-xs">Routines for the day:</Text>
+        <Text className="text-custom-dark text-xs">20/09/2023</Text>
       </View>
+      <TimeSlotList 
+        dataArray={dataArray} 
+        selectedDay={selectedDay} 
+      />
     </View>
   )
 }
