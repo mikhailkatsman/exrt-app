@@ -9,6 +9,7 @@ type Props = {
 
 const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
   const [routinesArray, setRoutinesArray] = useState<any[]>([])
+
   useEffect(() => {
     const filteredData: any[] = dataArray
       .filter(data => data.day_id === selectedDay + 1)
@@ -16,7 +17,7 @@ const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
 	const sessions = item.session_ids.split(',')
 	const times = item.session_times.split(',')
 	return sessions.map((sessionId: string, index: number) => ({
-	  id: sessionId,
+	  id: parseInt(sessionId),
 	  time: times[index]
 	}))
       })
@@ -27,7 +28,7 @@ const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
   }, [dataArray, selectedDay])
 
   return (
-    <View className="w-full h-[90%] rounded-xl bg-custom-dark p-2"> 
+    <View className="w-full h-[90%] rounded-xl bg-custom-dark px-2 pt-2"> 
       {routinesArray.length === 0 ? (
 	<ImageBackground
 	  source={require('../../assets/images/bg/comet.png')}
