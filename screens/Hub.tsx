@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { SafeAreaView, View, Text } from "react-native";
+import { SafeAreaView, View, Text, TouchableOpacity } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Calendar from "../components/calendar/Calendar";
 import Routine from "../components/routine/Routine";
+import Icon from 'react-native-vector-icons/FontAwesome'
 import db from '../modules/DB'
 
 const Hub: React.FC = () => {
@@ -27,8 +28,11 @@ const Hub: React.FC = () => {
 
   return (
     <>
-      <SafeAreaView className="h-24 p-2 bg-custom-dark">
+      <SafeAreaView className="h-[10%] px-2 py-3 items-end justify-between bg-custom-dark flex-row">
         <Text className="text-custom-white text-2xl">Hub</Text> 
+        <TouchableOpacity>
+          <Icon name="settings" size={30} color="#900" />
+        </TouchableOpacity>
       </SafeAreaView>
       <GestureHandlerRootView className="bg-custom-dark h-full w-full px-2">
         <Calendar 

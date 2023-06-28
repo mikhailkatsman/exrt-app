@@ -10,7 +10,7 @@ type Props = {
 const Routine: React.FC<Props> = ({ dataArray, selectedDay }) => {
   return (
     <View className="
-      h-2/3 my-2
+      h-[65%] my-2
       flex-col
       bg-custom-white
       overflow-hidden

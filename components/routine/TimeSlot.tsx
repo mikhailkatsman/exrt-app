@@ -58,12 +58,10 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
       >
         <View className="w-[80%] flex-col">
           <Text className="m-2 text-custom-white text-lg">Upcoming Session</Text>
-          <RNFadedScrollView 
+          <View className="mx-2 border-b border-custom-grey" />
+          <ScrollView 
             className="p-2 rounded-xl bg-custom-dark"
-            allowStartFade={true}
             horizontal={false}
-            fadeSize={30}
-            fadeColors={['rgba(0,0,0,0.0)', 'rgba(0,0,0,1)']}
           >
             {exercises.map((instance, index) => (
               <InstanceCard 
@@ -77,7 +75,7 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
                 weight={instance.weight}
               />
             ))}
-          </RNFadedScrollView>
+          </ScrollView>
         </View>
         <View className="w-[20%] flex-col">
           <TouchableOpacity className="mt-1 mr-1 mb-0.5 flex-1 bg-custom-green rounded-tr-lg">
