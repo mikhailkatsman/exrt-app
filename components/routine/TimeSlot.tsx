@@ -4,6 +4,7 @@ import db from '../../modules/DB'
 import InstanceCard from "../common/InstanceCard"
 import RNFadedScrollView from "rn-faded-scrollview"
 import { LinearGradient } from "expo-linear-gradient"
+import { Icon } from "@react-native-material/core"
 
 type Props = {
   routine: { time: string, id: number },
@@ -46,7 +47,7 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
   return (
     <View className="flex-row flex-shrink flex-1 mb-2">
       <View className="w-[14%] pr-1 justify-center">
-        <Text className="text-custom-blue">{routine.time}</Text>
+        <Text className="text-custom-blue font-extrabold">{routine.time}</Text>
       </View>
       <View className="w-[8%] h-1/2 border-b border-custom-grey"/>
       <View
@@ -78,11 +79,21 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
           </ScrollView>
         </View>
         <View className="w-[20%] flex-col">
-          <TouchableOpacity className="mt-1 mr-1 mb-0.5 flex-1 bg-custom-green rounded-tr-lg">
-
+          <TouchableOpacity className="
+            mt-1 mr-1 mb-0.5 
+            flex-1 items-center justify-center
+            border-2 border-custom-grey 
+            rounded-lg"
+          >
+            <Icon name="pencil" size={24} color="#4D594A" />
           </TouchableOpacity>
-          <TouchableOpacity className="mt-0.5 mr-1 mb-1 flex-1 bg-custom-blue rounded-br-lg">
-
+          <TouchableOpacity className="
+            mt-0.5 mr-1 mb-1 
+            flex-1 items-center justify-center
+            border-2 border-custom-blue 
+            rounded-lg"
+          >
+            <Icon name="play" size={36} color="#2EB9DC" />
           </TouchableOpacity>
         </View>
       </View>

@@ -35,7 +35,13 @@ const Calendar: React.FC<Props> = ({
 	  activeOpacity={1}
 	  onPress={() => handleDayPress(index)}
 	>
-	  <Text className="h-1/3 text-center text-custom-white text-xs">{day[0]}</Text>
+	  <Text className={`
+            h-1/3 text-center text-custom-white
+            ${index === dayNow ? 'font-extrabold' : 'text-xs'} 
+	    `}
+	  >
+	    {day[0]}
+	  </Text>
 	  <View
 	    className={`
               overflow-hidden

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Text } from 'react-native'
 import Hub from './screens/Hub'
 import db from './modules/DB'
+import { IconComponentProvider } from '@react-native-material/core'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 
 const App: React.FC = () => {
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
@@ -11,7 +13,13 @@ const App: React.FC = () => {
     
   }, [])
 
-  return isInitialized ? <Hub /> : <Text>Loading...</Text>
+  return isInitialized ? (
+    <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+      <Hub />
+    </IconComponentProvider>
+  ) : (
+    <Text>Loading...</Text>
+  )
 }
 
 export default App

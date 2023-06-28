@@ -3,8 +3,8 @@ import { SafeAreaView, View, Text, TouchableOpacity } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Calendar from "../components/calendar/Calendar";
 import Routine from "../components/routine/Routine";
-import Icon from 'react-native-vector-icons/FontAwesome'
 import db from '../modules/DB'
+import { Icon, IconButton } from "@react-native-material/core";
 
 const Hub: React.FC = () => {
   const dayNow: number = (new Date().getDay() + 6) % 7 
@@ -28,10 +28,10 @@ const Hub: React.FC = () => {
 
   return (
     <>
-      <SafeAreaView className="h-[10%] px-2 py-3 items-end justify-between bg-custom-dark flex-row">
-        <Text className="text-custom-white text-2xl">Hub</Text> 
+      <SafeAreaView className="h-[10%] px-4 py-3 items-end justify-between bg-custom-dark flex-row">
+        <Text className="text-custom-white text-2xl font-bold">Hub</Text> 
         <TouchableOpacity>
-          <Icon name="settings" size={30} color="#900" />
+          <Icon name="dots-horizontal" color="#F5F6F3" size={30} />
         </TouchableOpacity>
       </SafeAreaView>
       <GestureHandlerRootView className="bg-custom-dark h-full w-full px-2">
