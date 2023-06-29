@@ -10,7 +10,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     db.initDatabase().then(() => setIsInitialized(true))
-    
   }, [])
 
   return isInitialized ? (

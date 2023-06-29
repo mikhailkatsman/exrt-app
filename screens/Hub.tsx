@@ -5,6 +5,7 @@ import Calendar from "../components/calendar/Calendar";
 import Routine from "../components/routine/Routine";
 import db from '../modules/DB'
 import { Icon, IconButton } from "@react-native-material/core";
+import Actions from "../components/actions/Actions";
 
 const Hub: React.FC = () => {
   const dayNow: number = (new Date().getDay() + 6) % 7 
@@ -43,6 +44,9 @@ const Hub: React.FC = () => {
         /> 
         <Routine 
           dataArray={dataArray}
+          selectedDay={selectedDay}
+        />
+        <Actions
           selectedDay={selectedDay}
         />
       </GestureHandlerRootView>

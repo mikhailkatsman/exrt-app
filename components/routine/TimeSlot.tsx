@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react"
 import { TouchableOpacity, Text, View, ScrollView } from "react-native"
 import db from '../../modules/DB'
 import InstanceCard from "../common/InstanceCard"
-import RNFadedScrollView from "rn-faded-scrollview"
-import { LinearGradient } from "expo-linear-gradient"
 import { Icon } from "@react-native-material/core"
 
 type Props = {
