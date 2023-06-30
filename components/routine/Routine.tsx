@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react"
 import { View, Text } from "react-native"
-import { Timestamp } from "react-native-reanimated/lib/types/lib/reanimated2/commonTypes"
 import TimeSlotList from "./TimeSlotList"
 
 type Props = {
@@ -13,12 +11,12 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay }) => {
 
   return (
     <View className="
-      h-[67%] my-2
+      h-[76%] my-2
       flex-col
       bg-custom-white
       overflow-hidden
-      border rounded-xl border-custom-white
-    ">
+      border rounded-xl border-custom-white"
+    >
       <View className="h-[8%] px-2 flex justify-center">
         <Text className="text-custom-dark text-md font-bold">{week[selectedDay]} Routine</Text>
       </View>

@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { Text } from 'react-native'
-import Hub from './screens/Hub'
+import HubScreen from './screens/HubScreen'
+import HomeScreen from './screens/HomeScreen'
 import db from './modules/DB'
 import { IconComponentProvider } from '@react-native-material/core'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+
+export type RootStackParamList = {
+  Home: undefined,
+  Hub: undefined,
+  Settings: undefined,
+  NewSession: undefined,
+  NewProgram: undefined,
+}
 
 const App: React.FC = () => {
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
 
-  const Stack = createNativeStackNavigator()
+  const Stack = createNativeStackNavigator<RootStackParamList>()
 
 
   useEffect(() => {
@@ -20,27 +29,28 @@ const App: React.FC = () => {
   return isInitialized ? (
     <NavigationContainer>
       <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-        <Stack.Navigator>
+        <Stack.Navigator 
+          initialRouteName='Home'
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#080B06',
+            },
+            headerTitleStyle: {
+              color: '#F5F6F3',
+              fontWeight: 'bold',
+              fontSize: 20,
+            },
+            headerTintColor: '#F5F6F3'
+          }}
+        >
           <Stack.Screen
             name='Home'
-            component={Home}
+            component={HomeScreen}
           />
           <Stack.Screen
             name='Hub'
-            component={Hub}
+            component={HubScreen}
             options={{title: 'Hub'}}
-          />
-          <Stack.Screen
-            name='Settings'
-            component={Settings}
-          />
-          <Stack.Screen
-            name='NewSession'
-            component={NewSession}
-          />
-          <Stack.Screen
-            name='NewProgram'
-            component={NewProgram}
           />
         </Stack.Navigator>
       </IconComponentProvider>
