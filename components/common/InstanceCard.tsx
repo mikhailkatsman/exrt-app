@@ -28,12 +28,12 @@ const InstanceCard: React.FC<Props> = ({
         resizeMode="contain" 
         source={thumbnailImages[thumbnail]} 
       />
-      <View className="w-[75%] pl-2">
-        <Text className="text-custom-white">{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
+      <View className="w-[75%] pl-2 flex-col justify-center">
+        <Text className="text-custom-white text-xs font-bold">{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
         {duration ? (
-          <Text className="text-custom-white">{sets} x {duration}"</Text>
+          <Text className="text-custom-white text-sm">{sets} x {duration}"</Text>
         ) : (
-          <Text className="text-custom-white">{sets} x {reps}</Text>
+          <Text className="text-custom-white text-sm">{sets} x {reps}</Text>
         )}
       </View>
     </View>

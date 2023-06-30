@@ -17,7 +17,7 @@ const Calendar: React.FC<Props> = ({
   selectedDay,
   setSelectedDay
 }) => {
-  const week: string[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  const week: string[] = ["M", "T", "W", "T", "F", "S", "S"]
   const [activeWeekDays, setActiveWeekDays] = useState<any[]>([])
 
   const handleDayPress = (dayIndex: number) => setSelectedDay(dayIndex)
@@ -40,7 +40,7 @@ const Calendar: React.FC<Props> = ({
             ${index === dayNow ? 'font-extrabold' : 'text-xs'} 
 	    `}
 	  >
-	    {day[0]}
+	    {day}
 	  </Text>
 	  <View
 	    className={`

@@ -1,18 +1,22 @@
 import { useState, useEffect } from "react";
 import { SafeAreaView, View, Text, TouchableOpacity } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Icon } from "@react-native-material/core";
 import Calendar from "../components/calendar/Calendar";
 import Routine from "../components/routine/Routine";
 import db from '../modules/DB'
-import { Icon, IconButton } from "@react-native-material/core";
 import Actions from "../components/actions/Actions";
 
 const Hub: React.FC = () => {
-  const dayNow: number = (new Date().getDay() + 6) % 7 
+  const [dayNow, setDayNow] = useState<number>(0)
   const [dataArray, setDataArray] = useState<any[]>([])
   const [selectedDay, setSelectedDay] = useState<number>(dayNow)
 
   useEffect(() => {
+    const dateData: Date = new Date()
+    const dayNowData: number = (dateData.getDay() + 6) % 7 
+    setDayNow(dayNowData)
+
     db.sql(`
       SELECT weekly_session_instances.day_id AS day_id,
              GROUP_CONCAT(sessions.id, ',') AS session_ids,
@@ -27,11 +31,17 @@ const Hub: React.FC = () => {
     ) 
   }, [])
 
+
   return (
     <>
-      <SafeAreaView className="h-[10%] px-4 py-3 items-end justify-between bg-custom-dark flex-row">
-        <Text className="text-custom-white text-2xl font-bold">Hub</Text> 
-        <TouchableOpacity>
+      <SafeAreaView className="h-[10%] py-3 items-end justify-between bg-custom-dark flex-row">
+        <View className="flex-row">
+          <TouchableOpacity className="px-4">
+            <Icon name="chevron-left" color="#F5F5F3" size={32} />
+          </TouchableOpacity>
+          <Text className="text-custom-white text-2xl font-bold">Hub</Text> 
+        </View>
+        <TouchableOpacity className="px-4">
           <Icon name="dots-horizontal" color="#F5F6F3" size={30} />
         </TouchableOpacity>
       </SafeAreaView>

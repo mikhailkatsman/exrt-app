@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react"
 import { View, Text } from "react-native"
+import { Timestamp } from "react-native-reanimated/lib/types/lib/reanimated2/commonTypes"
 import TimeSlotList from "./TimeSlotList"
 
 type Props = {
-  dataArray: any[]
-  selectedDay: number 
+  dataArray: any[],
+  selectedDay: number, 
 }
 
 const Routine: React.FC<Props> = ({ dataArray, selectedDay }) => {
+  const week: string[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
   return (
     <View className="
       h-[67%] my-2
@@ -16,9 +19,8 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay }) => {
       overflow-hidden
       border rounded-xl border-custom-white
     ">
-      <View className="h-[10%] p-2">
-        <Text className="text-custom-dark text-xs">Routines for the day:</Text>
-        <Text className="text-custom-dark text-xs">20/09/2023</Text>
+      <View className="h-[8%] px-2 flex justify-center">
+        <Text className="text-custom-dark text-md font-bold">{week[selectedDay]} Routine</Text>
       </View>
       <TimeSlotList 
         dataArray={dataArray} 
