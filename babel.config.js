@@ -8,6 +8,9 @@ module.exports = function(api) {
       ['module-resolver', { 
         alias: {
           '@thumbnails': './assets/images/exercises/thumbnails',
+          '@components': './components',
+          '@modules': './modules',
+          '@screens': './screens',
         },
       }],
     ],

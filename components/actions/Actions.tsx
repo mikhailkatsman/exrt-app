@@ -3,10 +3,10 @@ import React from "react"
 import { View, Text, TouchableOpacity } from "react-native"
 
 type Props = {
-  selectedDay: number,
+  onPress: () => {},
 }
 
-const Actions: React.FC<Props> = ({ selectedDay }) => {
+const Actions: React.FC<Props> = ({ onPress }) => {
   return (
     <View className="h-[8%] w-full mt-2 flex-row justify-between">
       <TouchableOpacity className="
@@ -21,6 +21,7 @@ const Actions: React.FC<Props> = ({ selectedDay }) => {
 	h-full mx-1
 	flex-1 items-center justify-center 
 	rounded-xl bg-custom-white"
+	onPress={onPress}
       >
 	<Text className="text-xs font-bold mb-1">New session</Text>
 	<Icon name="dumbbell" color="#080B06" size={22} /> 

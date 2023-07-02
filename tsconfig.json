@@ -6,5 +6,8 @@
   "baseUrl": "./",
   "paths": {
     "@thumbnails/*": ["./assets/images/exercises/thumbnails/*"],
+    "@components/*": ["./components/*"],
+    "@modules/*": ["./modules/*"],
+    "@screens/*": ["./screens/*"],
   },
 }

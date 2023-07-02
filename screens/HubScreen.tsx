@@ -1,18 +1,16 @@
-import { useState, useEffect } from "react";
-import { SafeAreaView, View, Text, TouchableOpacity } from "react-native";
+import { useState, useEffect, ComponentType } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Icon } from "@react-native-material/core";
-import Calendar from "../components/calendar/Calendar";
-import Routine from "../components/routine/Routine";
-import Actions from "../components/actions/Actions";
-import db from '../modules/DB'
+import Calendar from "@components/calendar/Calendar";
+import Routine from "@components/routine/Routine";
+import Actions from "@components/actions/Actions";
+import db from '@modules/DB'
 
 import type { RootStackParamList } from "../App";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
-const HubScreen: React.FC<Props> = ({ navigation }) => {
+const HubScreen: ComponentType<Props> = ({ navigation }) => {
   const [dayNow, setDayNow] = useState<number>(0)
   const [dataArray, setDataArray] = useState<any[]>([])
   const [selectedDay, setSelectedDay] = useState<number>(dayNow)
@@ -36,6 +34,12 @@ const HubScreen: React.FC<Props> = ({ navigation }) => {
     ) 
   }, [])
 
+  const handleOnPress = () => {
+    navigation.navigate('NewSession', {
+      routineId: selectedDay + 1,
+    })
+  }
+
 
   return (
     <GestureHandlerRootView className="bg-custom-dark h-full w-full px-2">
@@ -50,7 +54,7 @@ const HubScreen: React.FC<Props> = ({ navigation }) => {
         selectedDay={selectedDay}
       />
       <Actions
-        selectedDay={selectedDay}
+        onPress={handleOnPress}
       />
     </GestureHandlerRootView>
   )
