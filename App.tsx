@@ -3,6 +3,7 @@ import { Text } from 'react-native'
 import HubScreen from '@screens/HubScreen'
 import HomeScreen from '@screens/HomeScreen'
 import NewSessionScreen from '@screens/NewSessionScreen'
+import NewInstanceScreen from '@screens/NewInstanceScreen'
 import db from '@modules/DB'
 import { IconComponentProvider } from '@react-native-material/core'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
@@ -14,6 +15,7 @@ export type RootStackParamList = {
   Hub: undefined,
   Settings: undefined,
   NewSession: { routineId: number } | undefined,
+  NewInstance: undefined,
   NewProgram: undefined,
 }
 
@@ -57,6 +59,11 @@ const App: React.FC = () => {
             name='NewSession'
             component={NewSessionScreen}
             options={{title: 'Create New Session'}}
+          />
+          <Stack.Screen
+            name='NewInstance'
+            component={NewInstanceScreen}
+            options={{title: 'Add New Exercise Instance'}}
           />
         </Stack.Navigator>
       </IconComponentProvider>

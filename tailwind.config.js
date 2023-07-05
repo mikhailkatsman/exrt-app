@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  mode: 'jit',
   content: [
     './App.{js,jsx,ts,tsx}',
     './screens/**/*.{js,jsx,ts,tsx}',
@@ -17,6 +18,7 @@ module.exports = {
     extend: {
       spacing: {
         10.5: '2.625rem',
+        30: '7.5rem',
       },
     },
   },

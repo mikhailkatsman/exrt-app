@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Calendar from "@components/calendar/Calendar";
 import Routine from "@components/routine/Routine";
 import Actions from "@components/actions/Actions";
-import db from '@modules/DB'
+import DB from '@modules/DB'
 
 import type { RootStackParamList } from "../App";
 
@@ -20,7 +20,7 @@ const HubScreen: ComponentType<Props> = ({ navigation }) => {
     const dayNowData: number = (dateData.getDay() + 6) % 7 
     setDayNow(dayNowData)
 
-    db.sql(`
+    DB.sql(`
       SELECT weekly_session_instances.day_id AS day_id,
              GROUP_CONCAT(sessions.id, ',') AS session_ids,
              GROUP_CONCAT(sessions.time, ',') AS session_times
@@ -34,7 +34,7 @@ const HubScreen: ComponentType<Props> = ({ navigation }) => {
     ) 
   }, [])
 
-  const handleOnPress = () => {
+  const navigate = () => {
     navigation.navigate('NewSession', {
       routineId: selectedDay + 1,
     })
@@ -54,7 +54,7 @@ const HubScreen: ComponentType<Props> = ({ navigation }) => {
         selectedDay={selectedDay}
       />
       <Actions
-        onPress={handleOnPress}
+        handleNavigate={navigate}
       />
     </GestureHandlerRootView>
   )
