@@ -1,6 +1,6 @@
 import { Text, View, Image } from "react-native"
 
-import { thumbnailImages } from "../../modules/AssetPaths"
+import { thumbnailImages } from "@modules/AssetPaths"
 
 type Props = {
   id: number,

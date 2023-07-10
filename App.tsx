@@ -15,7 +15,7 @@ export type RootStackParamList = {
   Hub: undefined,
   Settings: undefined,
   NewSession: { routineId: number } | undefined,
-  NewInstance: undefined,
+  NewInstance: { pickerValues: {}[] } | undefined,
   NewProgram: undefined,
 }
 
@@ -32,40 +32,42 @@ const App: React.FC = () => {
   return isInitialized ? (
     <NavigationContainer>
       <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-        <Stack.Navigator 
-          initialRouteName='Home'
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: '#080B06',
-            },
-            headerTitleStyle: {
-              color: '#F5F6F3',
-              fontWeight: 'bold',
-              fontSize: 20,
-            },
-            headerTintColor: '#F5F6F3'
-          }}
-        >
-          <Stack.Screen
-            name='Home'
-            component={HomeScreen}
-          />
-          <Stack.Screen
-            name='Hub'
-            component={HubScreen}
-            options={{title: 'Hub'}}
-          />
-          <Stack.Screen
-            name='NewSession'
-            component={NewSessionScreen}
-            options={{title: 'Create New Session'}}
-          />
-          <Stack.Screen
-            name='NewInstance'
-            component={NewInstanceScreen}
-            options={{title: 'Add New Exercise Instance'}}
-          />
-        </Stack.Navigator>
+          <Stack.Navigator 
+            initialRouteName='Home'
+            screenOptions={{
+              statusBarHidden: false,
+              statusBarColor: '#080B06',
+              headerStyle: {
+                backgroundColor: '#080B06',
+              },
+              headerTitleStyle: {
+                color: '#F5F6F3',
+                fontWeight: 'bold',
+                fontSize: 20,
+              },
+              headerTintColor: '#F5F6F3'
+            }}
+          >
+            <Stack.Screen
+              name='Home'
+              component={HomeScreen}
+            />
+            <Stack.Screen
+              name='Hub'
+              component={HubScreen}
+              options={{title: 'Hub'}}
+            />
+            <Stack.Screen
+              name='NewSession'
+              component={NewSessionScreen}
+              options={{title: 'Create New Session'}}
+            />
+            <Stack.Screen
+              name='NewInstance'
+              component={NewInstanceScreen}
+              options={{title: 'Add New Exercise Instance'}}
+            />
+          </Stack.Navigator>
       </IconComponentProvider>
     </NavigationContainer>
   ) : (
