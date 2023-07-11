@@ -25,6 +25,7 @@ const App: React.FC = () => {
   const Stack = createNativeStackNavigator<RootStackParamList>()
 
 
+
   useEffect(() => {
     db.initDatabase().then(() => setIsInitialized(true))
   }, [])

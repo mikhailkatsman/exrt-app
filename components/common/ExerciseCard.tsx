@@ -15,7 +15,7 @@ const InstanceCard: React.FC<Props> = ({ id, selectedId, setSelectedId, name, th
   return (
     <Pressable className={`
       w-full h-16 mb-2 p-1 flex-row border-2 rounded-xl
-      ${selectedId === id ? 'border-custom-blue' : ''}
+      ${selectedId === id ? 'border-custom-blue' : ' border-custom-dark'}
       `}
       onPress={() => setSelectedId(id)}
     >

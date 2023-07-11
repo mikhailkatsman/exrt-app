@@ -1,7 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { ScrollView, Text, View, Animated } from 'react-native';
 
-type Props = { dataArray: number[] | string[], width: number }
+type Props = { 
+  dataArray: number[] | string[], 
+  width: number 
+}
 
 const ScrollPicker: React.FC<Props> = ({ dataArray, width }) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
@@ -22,7 +25,7 @@ const ScrollPicker: React.FC<Props> = ({ dataArray, width }) => {
   };
 
   return (
-    <View className={`h-[96px] w-${width} overflow-hidden`}>
+    <View className="h-[96px] overflow-hidden" style={{ width: width }}>
       <ScrollView
         ref={scrollViewRef}
         onMomentumScrollEnd={handleScroll}
