@@ -27,7 +27,7 @@ const ScrollPickerGrid: ComponentType = () => {
       <View className="h-[50%] w-full flex-row mb-3">
 	<View className="flex-1 flex-row items-center justify-start">
 	  <Text className="w-12 text-custom-white text-xl">Sets</Text>
-	  <ScrollPicker dataArray={setValues} width={48} />
+	  <ScrollPicker dataArray={setValues} width={50} />
 	</View>
 	  {weighted ? (
 	    <View className="flex-1 flex-row items-center justify-end">
@@ -46,14 +46,14 @@ const ScrollPickerGrid: ComponentType = () => {
       <View className="h-[50%] w-full flex-row mb-2">
 	<View className="flex-1 flex-row items-center justify-start">
 	  <Text className="w-12 text-custom-white text-xl">Reps</Text>
-	  <ScrollPicker dataArray={repValues} width={48} />
+	  <ScrollPicker dataArray={repValues} width={50} />
 	</View>
 	{timed ? (
 	  <View className="flex-1 flex-row items-center justify-end">
 	    <Text className="text-custom-white text-xl mr-1">Duration</Text>
-	    <ScrollPicker dataArray={timeValues} width={36} />
+	    <ScrollPicker dataArray={timeValues} width={40} />
 	    <Text className="text-custom-white text-lg">m</Text>
-	    <ScrollPicker dataArray={timeValues} width={36} />
+	    <ScrollPicker dataArray={timeValues} width={40} />
 	    <Text className="text-custom-white text-lg">s</Text>
 	  </View>
 	) : (

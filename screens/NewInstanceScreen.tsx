@@ -33,11 +33,7 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
       ORDER BY name
       LIMIT 20;
       `, [],
-      (_, result) => {
-        console.log("querying")
-        setExerciseList(result.rows._array)
-
-      }
+      (_, result) => setExerciseList(result.rows._array)
     ) 
   }, [])
 

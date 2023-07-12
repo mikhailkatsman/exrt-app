@@ -8,10 +8,6 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
 
 const HomeScreen: ComponentType<Props> = ({ navigation }) => {
-  //TEMP
-  const scrollData: number[] = []
-  for (let i = 1; i <= 100; i++) scrollData.push(i);
-
   return (
     <View className="h-full w-full bg-custom-dark flex items-center justify-center">
       <Text className="text-custom-white mb-4">Home Screen</Text>
@@ -19,7 +15,14 @@ const HomeScreen: ComponentType<Props> = ({ navigation }) => {
       <View className="h-2" />
       <DropDown 
         placeholder="Testing" 
-        listItems={[]}
+        listItems={[
+          {label: 'First', value: 'first'},
+          {label: 'Second', value: 'second'},
+          {label: 'Third', value: 'third'},
+          {label: 'Fourth', value: 'fourth'},
+          {label: 'Fifth', value: 'fifth'},
+          {label: 'Sixth', value: 'sixth'},
+        ]}
       />
     </View>
   )
