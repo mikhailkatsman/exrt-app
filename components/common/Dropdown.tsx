@@ -11,13 +11,13 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems }) => {
   const [displayedText, setDisplayedText] = useState<string>(placeholder)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const dropDownRef = useRef<null | TouchableOpacity>(null)
-  const [dropDownPosition, setDropDownPosition] = useState<{x: number, y: number} | null>(null)
+  const [dropDownPosition, setDropDownPosition] = useState<{x: number, y: number}>({x: 0, y: 0})
 
   const handleLayout = () => {
-    dropDownRef.current.measure((x, y, width, height, pageX, pageY) => {
+    dropDownRef.current?.measure((x, y, width, height, pageX, pageY) => {
       setDropDownPosition({
         x: pageX,
-        y: pageY + height
+        y: pageY + height,
       })
 
       console.log(dropDownPosition)
@@ -45,7 +45,8 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems }) => {
           transparent={true}
         >
           <ScrollView 
-            className="h-36 w-32 border-2 border-custom-white rounded-b-lg"
+            className="h-36 w-32 border-x-2 border-b-2 border-custom-white rounded-b-lg"
+            style={{ position: "absolute", top: dropDownPosition.y, left: dropDownPosition.x }}
             showsVerticalScrollIndicator={false}
           >
             {listItems.map((item, index) => (

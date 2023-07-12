@@ -61,6 +61,7 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
           <ScrollView 
             className="p-2 rounded-xl bg-custom-dark"
             horizontal={false}
+            fadingEdgeLength={100}
           >
             {exercises.map((instance, index) => (
               <InstanceCard 

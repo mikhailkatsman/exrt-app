@@ -101,8 +101,8 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
           <ScrollView 
             className="h-[85%] p-2 bg-custom-dark"
             horizontal={false}
+            fadingEdgeLength={200}
           >
-            <View className="h-6" />
             {exerciseList.map((exercise, index) => (
               <ExerciseCard 
                 key={index}
@@ -113,10 +113,7 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
                 thumbnail={exercise.thumbnail}
               />
             ))}
-            <View className="h-6" />
           </ScrollView>
-          <LinearGradient colors={['#080B06', '#080B0600']} className="absolute top-16 left-0 right-0 h-10" />
-          <LinearGradient colors={['#080B0600', '#080B06']} className="absolute bottom-0 left-0 right-0 h-10" />
         </View>
       </View>
       <TouchableOpacity 
