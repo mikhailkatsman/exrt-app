@@ -1,5 +1,6 @@
-import { Pressable, ScrollView, Text, TouchableOpacity, Modal } from "react-native"
+import { Pressable, ScrollView, Text, TouchableOpacity, Modal, View } from "react-native"
 import { useState, useRef } from "react"
+import { Icon } from "@react-native-material/core"
 
 type Props = {
   placeholder: string,
@@ -13,14 +14,16 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems }) => {
   const dropDownRef = useRef<null | TouchableOpacity>(null)
   const [dropDownPosition, setDropDownPosition] = useState<{x: number, y: number}>({x: 0, y: 0})
 
+  const handleDropdownState = () => {
+    setIsOpen(!isOpen)
+  }
+
   const handleLayout = () => {
     dropDownRef.current?.measure((x, y, width, height, pageX, pageY) => {
       setDropDownPosition({
         x: pageX,
-        y: pageY + height,
+        y: pageY,
       })
-
-      console.log(dropDownPosition)
     })
   }
 
@@ -32,41 +35,52 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems }) => {
         className={`
           h-10 w-32 border-2 border-custom-white 
           ${isOpen ? 'rounded-t-lg' : 'rounded-lg'} 
-          justify-center items-center
+          flex-row items-center
         `} 
         activeOpacity={1}
-        onPress={() => setIsOpen(!isOpen)}
+        onPress={handleDropdownState}
       >
-        <Text className="text-custom-white text-lg font-bold">{displayedText}</Text>
+        <Text className="w-[80%] pl-2 text-custom-white">{displayedText}</Text>
+        <View className="w-[20%]">
+          <Icon name="arrow-down-right" size={20} color="#F5F6F3" />
+        </View>
       </TouchableOpacity>
       {isOpen && (
         <Modal
-          onDismiss={() => setIsOpen(!isOpen)}
+          onDismiss={handleDropdownState}
+          onRequestClose={handleDropdownState}
           transparent={true}
         >
-          <ScrollView 
-            className="h-36 w-32 border-x-2 border-b-2 border-custom-white rounded-b-lg"
+          <Pressable className="w-full h-full bg-custom-dark/60" onPress={handleDropdownState} />
+          <View className="w-32 border-2 border-custom-white rounded-lg"
             style={{ position: "absolute", top: dropDownPosition.y, left: dropDownPosition.x }}
-            showsVerticalScrollIndicator={false}
           >
-            {listItems.map((item, index) => (
-              <TouchableOpacity 
-                key={`item-${index}`}
-                activeOpacity={1}
-                className={`
-                  h-10 justify-center items-center 
-                  ${index === listItems.length - 1 ? '' : 'border-b border-custom-white'}
-                `}
-                onPress={() => {
-                  setSelectedIndex(index)
-                  setDisplayedText(item.label)
-                  setIsOpen(!isOpen)
-                }}
-              >
-                <Text className="text-custom-white">{item.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+            <View className="h-9" />
+            <ScrollView 
+              className="h-40"
+              showsVerticalScrollIndicator={false}
+              overScrollMode="never"
+              fadingEdgeLength={100}
+            >
+              {listItems.map((item, index) => (
+                <TouchableOpacity 
+                  key={`item-${index}`}
+                  activeOpacity={1}
+                  className={`
+                    h-10 justify-center items-center 
+                    ${index === listItems.length - 1 ? '' : 'border-b border-custom-white'}
+                  `}
+                  onPress={() => {
+                    setSelectedIndex(index)
+                    setDisplayedText(item.label)
+                    handleDropdownState()
+                  }}
+                >
+                  <Text className="text-custom-white">{item.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
         </Modal>
       )}
     </>
