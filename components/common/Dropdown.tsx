@@ -57,7 +57,10 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems }) => {
           >
             <View className="h-9" />
             <ScrollView 
-              className="h-40"
+              className={`
+                ${listItems.length < 4 ? 'h-30' : 'h-48'} 
+                bg-custom-dark rounded-b-lg
+              `}
               showsVerticalScrollIndicator={false}
               overScrollMode="never"
               fadingEdgeLength={100}

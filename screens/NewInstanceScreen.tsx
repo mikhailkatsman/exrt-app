@@ -1,12 +1,11 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native"
-import { ComponentType, useEffect, useState, useContext } from "react"
-import SelectDropdown from 'react-native-select-dropdown'
+import { ComponentType, useEffect, useState } from "react"
 import ScrollPickerGrid from "@components/actions/ScrollPickerGrid"
 import ExerciseCard from "@components/common/ExerciseCard"
+import DropDown from "@components/common/Dropdown"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from '../App'
 import DB from "@modules/DB"
-import { LinearGradient } from "expo-linear-gradient"
 import { Icon } from "@react-native-material/core"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewInstance'>
@@ -17,11 +16,24 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
     name: string, 
     thumbnail: string 
   }[]>([])
-  const muscleGroupList: string[] = [
-    'chest', 'biceps', 'triceps', 'abs', 'traps', 'forearms',
-    'lats', 'delts', 'glutes', 'quads', 'calves'
+  const muscleGroupList: {item: string, label: string}[] = [
+    {item: 'chest', label: 'Chest'},
+    {item: 'biceps', label: 'Biceps'},
+    {item: 'triceps', label: 'Triceps'},
+    {item: 'abs', label: 'Abs'},
+    {item: 'traps', label: 'Traps'},
+    {item: 'forearms', label: 'Forearms'},
+    {item: 'lats', label: 'Lats'},
+    {item: 'delts', label: 'Delts'},
+    {item: 'glutes', label: 'Glutes'},
+    {item: 'quads', label: 'Quads'},
+    {item: 'calves', label: 'Calves'}
   ]
-  const exerciseTypeList: string[] = ['bodyweight', 'equipment', 'free weight']
+  const exerciseTypeList: {item: string, label: string}[] = [
+    {item: 'bodyweight', label: 'Body Weight'},
+    {item: 'equipment', label: 'Equipment'},
+    {item: 'freeweight', label: 'Free Weight'}
+  ]
   const [groupSortValue, setGroupSortValue] = useState<string>('')
   const [typeSortValue, setTypeSortValue] = useState<string>('')
   const [selectedId, setSelectedId] = useState<number | null>(null)
@@ -49,54 +61,14 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
         <View className="w-full flex-col">
           <View className="h-[15%] p-2 flex-row items-center justify-between">
             <Text className="text-custom-white mb-1 font-bold">Sort by</Text>
-            <View className="border border-custom-white rounded-lg mr-1">
-              <SelectDropdown 
-                data={muscleGroupList.map(item => item[0].toUpperCase() + item.slice(1))}
-                defaultButtonText="Muscle Group"
-                onSelect={selectedItem => setGroupSortValue(selectedItem)}
-                buttonStyle={{ width: 130, height: 35, backgroundColor: 'transparent', }}
-                buttonTextStyle={{ color: '#F5F6F3', fontSize: 12 }}
-                renderDropdownIcon={() => (
-                  <Icon name="arrow-down-right" size={20} color="#F5F6F3" />
-                )}
-                dropdownStyle={{
-                  maxHeight: 250,
-                  borderTopLeftRadius: 0,
-                  borderTopRightRadius: 0,
-                  borderRadius: 10, 
-                  borderStyle: 'solid', 
-                  borderWidth: 1, 
-                  borderColor: '#F5F6F3', 
-                  backgroundColor: '#080B06' 
-                }}
-                rowStyle={{ height: 45 }}
-                rowTextStyle={{ color: '#F5F6F3', fontSize: 14 }}
+              <DropDown 
+                placeholder='Muscle Group'
+                listItems={muscleGroupList}
               />
-            </View>
-            <View className="border border-custom-white rounded-lg">
-              <SelectDropdown 
-                data={exerciseTypeList.map(item => item[0].toUpperCase() + item.slice(1))}
-                defaultButtonText="Type"
-                onSelect={selectedItem => setTypeSortValue(selectedItem)}
-                buttonStyle={{ width: 130, height: 35, backgroundColor: 'transparent' }}
-                buttonTextStyle={{ color: '#F5F6F3', fontSize: 12 }}
-                renderDropdownIcon={() => (
-                  <Icon name="arrow-down-right" size={20} color="#F5F6F3" />
-                )}
-                dropdownStyle={{
-                  maxHeight: 270,
-                  borderTopLeftRadius: 0,
-                  borderTopRightRadius: 0,
-                  borderRadius: 10, 
-                  borderStyle: 'solid', 
-                  borderWidth: 1, 
-                  borderColor: '#F5F6F3', 
-                  backgroundColor: '#080B06' 
-                }}
-                rowStyle={{ height: 45 }}
-                rowTextStyle={{ color: '#F5F6F3', fontSize: 14 }}
+              <DropDown 
+                placeholder='Type' 
+                listItems={exerciseTypeList} 
               />
-            </View>
           </View>
           <ScrollView 
             className="h-[85%] p-2 bg-custom-dark"
