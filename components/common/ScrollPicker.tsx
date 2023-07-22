@@ -3,25 +3,27 @@ import { ScrollView, Text, View, Animated } from 'react-native';
 
 type Props = { 
   dataArray: number[] | string[], 
-  width: number 
+  width: number,
+  onIndexChange: (index: number) => void
 }
 
-const ScrollPicker: React.FC<Props> = ({ dataArray, width }) => {
+const ScrollPicker: React.FC<Props> = ({ dataArray, width, onIndexChange }) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
   const itemHeight: number = 32
-  const scrollViewRef = useRef<ScrollView>(null);
-  const scrollOffsetY = useRef(new Animated.Value(0)).current;
+  const scrollViewRef = useRef<ScrollView>(null)
+  const scrollOffsetY = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
     if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({y: 0, animated: true});
+      scrollViewRef.current.scrollTo({y: 0, animated: true})
     }
-  }, []);
+  }, [])
 
   const handleScroll = (event: any) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    scrollOffsetY.setValue(offsetY);
-    setSelectedIndex(Math.round(offsetY / itemHeight));
+    const offsetY = event.nativeEvent.contentOffset.y
+    scrollOffsetY.setValue(offsetY)
+    setSelectedIndex(Math.round(offsetY / itemHeight))
+    onIndexChange(selectedIndex)
   };
 
   return (

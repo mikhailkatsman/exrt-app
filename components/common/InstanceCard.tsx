@@ -30,11 +30,9 @@ const InstanceCard: React.FC<Props> = ({
       />
       <View className="w-[75%] pl-2 flex-col justify-center">
         <Text className="text-custom-white text-xs font-bold">{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
-        {duration ? (
-          <Text className="text-custom-white text-sm">{sets} x {duration}"</Text>
-        ) : (
-          <Text className="text-custom-white text-sm">{sets} x {reps}</Text>
-        )}
+        <Text className="text-custom-white text-sm">
+          {sets}{reps && ` x ${reps}`}{weight && ` of ${weight}kg`}{duration && ` for ${duration}"`}
+        </Text>
       </View>
     </View>
   )

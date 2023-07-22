@@ -20,17 +20,17 @@ const InstanceCard: React.FC<Props> = ({ id, selectedId, setSelectedId, name, th
       onPress={() => setSelectedId(id)}
     >
       <Image
-        className="w-1/6 h-full rounded-lg"
+        className={`w-1/6 h-full rounded-lg ${selectedId === id || !selectedId ? '' : 'opacity-50'}`}
         resizeMode="contain" 
         source={thumbnailImages[thumbnail]} 
       />
       <View className="w-2/3 pl-3 flex-col justify-center">
-        <Text className="text-custom-white text-lg">
+        <Text className={`${selectedId === id || !selectedId ? 'text-custom-white' : 'text-custom-grey'} text-lg`}>
           {name.charAt(0).toUpperCase() + name.slice(1)}
         </Text>
       </View>
       <TouchableOpacity className="w-1/6 flex justify-center items-center">
-        <Icon name="information-outline" size={24} color="#F5F6F3" />
+        <Icon name="information-outline" size={24} color={selectedId === id || !selectedId ? '#F5F6F3' : '#4D594A'} />
       </TouchableOpacity>
     </Pressable>
   )

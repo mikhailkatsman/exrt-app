@@ -94,7 +94,7 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
                 key={index}
                 id={exercise.id}
                 selectedId={selectedExerciseId}
-                setSelectedId={setSelectedExerciseId}
+                setSelectedId={(id: number) => setSelectedExerciseId(selectedExerciseId === id ? null : id)}
                 name={exercise.name}
                 thumbnail={exercise.thumbnail}
               />
