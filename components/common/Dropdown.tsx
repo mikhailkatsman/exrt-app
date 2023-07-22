@@ -4,15 +4,17 @@ import { Icon } from "@react-native-material/core"
 
 type Props = {
   placeholder: string,
-  listItems: { label: string, value: string | number }[]
+  listItems: { label: string, value: string }[],
+  onIndexChange: (index: number) => void,
+  reset: () => void
 }
 
-const DropDown: React.FC<Props> = ({ placeholder, listItems }) => {
+const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, reset }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [displayedText, setDisplayedText] = useState<string>(placeholder)
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
-  const dropDownRef = useRef<null | TouchableOpacity>(null)
   const [dropDownPosition, setDropDownPosition] = useState<{x: number, y: number}>({x: 0, y: 0})
+
+  const dropDownRef = useRef<null | TouchableOpacity>(null)
 
   const handleDropdownState = () => {
     setIsOpen(!isOpen)
@@ -55,7 +57,19 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems }) => {
           <View className="w-32 border-2 border-custom-white rounded-lg"
             style={{ position: "absolute", top: dropDownPosition.y, left: dropDownPosition.x }}
           >
-            <View className="h-9" />
+            <TouchableOpacity 
+              className="h-9 bg-custom-dark rounded-t-lg flex-row items-center"
+              onPress={() => {
+                setDisplayedText(placeholder)
+                handleDropdownState()
+                reset()
+              }}
+            >
+              <Text className="w-[80%] pl-2 text-custom-white font-bold">{displayedText}</Text>
+              <View className="w-[20%]">
+                <Icon name="close" size={20} color="#F5F6F3" />
+              </View>
+            </TouchableOpacity>
             <ScrollView 
               className={`
                 ${listItems.length < 4 ? 'h-30' : 'h-48'} 
@@ -74,9 +88,9 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems }) => {
                     ${index === listItems.length - 1 ? '' : 'border-b border-custom-white'}
                   `}
                   onPress={() => {
-                    setSelectedIndex(index)
                     setDisplayedText(item.label)
                     handleDropdownState()
+                    onIndexChange(index)
                   }}
                 >
                   <Text className="text-custom-white">{item.label}</Text>
