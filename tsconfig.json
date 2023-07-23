@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "strict": true,
+    "strict": true
   },
   "extends": "expo/tsconfig.base",
   "baseUrl": "./",
   "paths": {
-    "@thumbnails/*": ["./assets/images/exercises/thumbnails/*"],
-    "@components/*": ["./components/*"],
-    "@modules/*": ["./modules/*"],
-    "@screens/*": ["./screens/*"],
-  },
+    "@thumbnails/*": ["assets/images/exercises/thumbnails/*"],
+    "@components/*": ["components/*"],
+    "@modules/*": ["modules/*"],
+    "@screens/*": ["screens/*"]
+  }
 }

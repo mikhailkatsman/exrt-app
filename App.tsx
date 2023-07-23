@@ -9,14 +9,24 @@ import { IconComponentProvider } from '@react-native-material/core'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import changeNavigationBarColor from 'react-native-navigation-bar-color'
+
+type InstanceData = {
+  exerciseId: number | null,
+  sets: number,
+  reps: number,
+  weight: number,
+  duration: string
+}
 
 export type RootStackParamList = {
   Home: undefined,
   Hub: undefined,
   Settings: undefined,
-  NewSession: { routineId: number } | undefined,
-  NewInstance: { pickerValues: {}[] } | undefined,
+  NewSession: { 
+    routineId: number | null,
+    instanceData: InstanceData | undefined,
+  },
+  NewInstance: undefined,
   NewProgram: undefined,
 }
 

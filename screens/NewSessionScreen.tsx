@@ -1,12 +1,20 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native"
+import { ComponentType, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from '../App'
-import { ComponentType } from "react"
 import { Icon } from "@react-native-material/core"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewSession'>
 
 const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
+  const newInstanceData = route.params?.instanceData
+  const routineId = route.params?.routineId
+
+  const [instancesList, setInstancesList] = useState<{}[]>([])
+
+  console.log(JSON.stringify(newInstanceData))
+  console.log(routineId)
+
   return (
     <View className="h-full w-full p-2 bg-custom-dark">
       <View

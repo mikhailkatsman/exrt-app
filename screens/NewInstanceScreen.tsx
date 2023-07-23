@@ -6,17 +6,20 @@ import DropDown from "@components/common/Dropdown"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from '../App'
 import DB from "@modules/DB"
+import InstanceCard from "@components/common/ExerciseCard"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewInstance'>
 
+type InstanceData = {
+  exerciseId: number | null,
+  sets: number,
+  reps: number,
+  weight: number,
+  duration: string
+}
+
 const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
-  const [instanceData, setInstanceData] = useState<{
-    exerciseId: number | null,
-    sets: number,
-    reps: number,
-    weight: number,
-    duration: string
-  }>({
+  const [instanceData, setInstanceData] = useState<InstanceData>({
     exerciseId: null,
     sets: 1,
     reps: 1,
@@ -125,8 +128,7 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
       <TouchableOpacity 
         className="w-full h-[8%] bg-custom-blue rounded-xl flex justify-center items-center"
         onPress={() => {
-          console.log(instanceData)
-          navigation.pop()
+          navigation.navigate('NewSession', { instanceData: instanceData })
         }}
       >
       <Text className="text-custom-white font-bold text-lg">Add Exercise to Session</Text>
