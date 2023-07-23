@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { ScrollView, Text, View, Animated } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react'
+import { ScrollView, Text, View, Animated } from 'react-native'
 
 type Props = { 
   dataArray: number[] | string[], 
@@ -14,16 +14,13 @@ const ScrollPicker: React.FC<Props> = ({ dataArray, width, onIndexChange }) => {
   const scrollOffsetY = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({y: 0, animated: true})
-    }
-  }, [])
+    onIndexChange(selectedIndex)
+  }, [selectedIndex])
 
   const handleScroll = (event: any) => {
     const offsetY = event.nativeEvent.contentOffset.y
     scrollOffsetY.setValue(offsetY)
     setSelectedIndex(Math.round(offsetY / itemHeight))
-    onIndexChange(selectedIndex)
   };
 
   return (

@@ -10,7 +10,19 @@ import DB from "@modules/DB"
 type Props = NativeStackScreenProps<RootStackParamList, 'NewInstance'>
 
 const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
-  const [selectedExerciseId, setSelectedExerciseId] = useState<number | null>(null)
+  const [instanceData, setInstanceData] = useState<{
+    exerciseId: number | null,
+    sets: number,
+    reps: number,
+    weight: number,
+    duration: string
+  }>({
+    exerciseId: null,
+    sets: 1,
+    reps: 1,
+    weight: 0,
+    duration: '0000'
+  })
   const [exerciseList, setExerciseList] = useState<{
     id: number, 
     name: string, 
@@ -64,7 +76,13 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
 
   return (
     <View className="h-full w-full px-2 bg-custom-dark">
-      <ScrollPickerGrid />
+      <ScrollPickerGrid 
+        setInstanceSets={(value: number) => setInstanceData({...instanceData, sets: value})}
+        setInstanceReps={(value: number) => setInstanceData({...instanceData, reps: value})}
+        setInstanceWeight={(value: number) => setInstanceData({...instanceData, weight: value})}
+        setInstanceDuration={(value: string) => setInstanceData({...instanceData, duration: value})}
+        instanceDuration={instanceData.duration}
+      />
       <View
        className="w-full h-[63%] mb-4 flex-row overflow-hidden justify-between"
       >
@@ -93,8 +111,10 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
               <ExerciseCard 
                 key={index}
                 id={exercise.id}
-                selectedId={selectedExerciseId}
-                setSelectedId={(id: number) => setSelectedExerciseId(selectedExerciseId === id ? null : id)}
+                selectedId={instanceData?.exerciseId}
+                setSelectedId={(id: number) => setInstanceData(
+                  {...instanceData, exerciseId: instanceData.exerciseId === id ? null : id}
+                )}
                 name={exercise.name}
                 thumbnail={exercise.thumbnail}
               />
@@ -104,9 +124,12 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
       </View>
       <TouchableOpacity 
         className="w-full h-[8%] bg-custom-blue rounded-xl flex justify-center items-center"
-        onPress={() => navigation.pop()}
+        onPress={() => {
+          console.log(instanceData)
+          navigation.pop()
+        }}
       >
-      <Text className="text-custom-white font-bold text-lg">Add Instance</Text>
+      <Text className="text-custom-white font-bold text-lg">Add Exercise to Session</Text>
       </TouchableOpacity>
     </View>
   )

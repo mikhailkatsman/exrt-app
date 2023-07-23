@@ -1,34 +1,34 @@
-import { ComponentType, useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { View, Text, Pressable } from "react-native";
 import ScrollPicker from "../common/ScrollPicker";
 
-const ScrollPickerGrid: ComponentType = () => {
-  const [instanceSRWD, setInstanceSRWD] = useState<{
-    sets: number,
-    reps: number,
-    weight: number,
-    duration: string
-  }>({
-    sets: 1,
-    reps: 1,
-    weight: 0,
-    duration: '0000'
-  })
+type Props = {
+  setInstanceSets: (value: number) => void,
+  setInstanceReps: (value: number) => void,
+  setInstanceWeight: (value: number) => void,
+  setInstanceDuration: (value: string) => void,
+  instanceDuration: string,
+}
 
+const ScrollPickerGrid: React.FC<Props> = ({
+  setInstanceReps,
+  setInstanceSets,
+  setInstanceWeight,
+  setInstanceDuration,
+  instanceDuration
+}) => {
   const [weighted, setWeighted] = useState<boolean>(false)
   const [timed, setTimed] = useState<boolean>(false)
 
   const setValues: number[] = useMemo(() => {
     const values = [];
     for (let i = 1; i <= 10; i++) values.push(i);
-    console.log('set values generated')
     return values;
   }, []);
 
   const repValues: number[] = useMemo(() => {
     const values = [];
     for (let i = 1; i <= 50; i++) values.push(i);
-    console.log('rep values generated')
     return values;
   }, []);
 
@@ -41,20 +41,14 @@ const ScrollPickerGrid: ComponentType = () => {
       else if (i < 30) i++;
       else i += 10;
     }
-    console.log('weight values generated')
     return values;
   }, []);
 
   const timeValues: string[] = useMemo(() => {
     const values = [];
     for (let i = 0; i <= 59; i++) values.push(i.toString().padStart(2, '0'));
-    console.log('time values generated')
     return values;
   }, []);
-
-  useEffect(() => {
-    console.log(instanceSRWD);
-  }, [instanceSRWD]);
 
   return (
     <View className="h-[25%] w-full mb-3 px-2">
@@ -64,9 +58,7 @@ const ScrollPickerGrid: ComponentType = () => {
 	  <ScrollPicker 
 	    dataArray={setValues} 
 	    width={50} 
-	    onIndexChange={(index: number) => {
-	      setInstanceSRWD(prevState => ({...prevState, sets: setValues[index]}))
-	    }}
+	    onIndexChange={(index: number) => setInstanceSets(setValues[index])}
 	  />
 	</View>
 	  {weighted ? (
@@ -75,9 +67,7 @@ const ScrollPickerGrid: ComponentType = () => {
 	      <ScrollPicker 
 		dataArray={kgValues} 
 		width={60}
-		onIndexChange={(index: number) => {
-		  setInstanceSRWD(prevState => ({...prevState, weight: kgValues[index]}))
-		}}
+		onIndexChange={(index: number) => setInstanceWeight(kgValues[index])}
 	      />
 	      <Text className="text-custom-white text-lg">kg</Text>
 	    </View>
@@ -95,9 +85,7 @@ const ScrollPickerGrid: ComponentType = () => {
 	  <ScrollPicker 
 	    dataArray={repValues} 
 	    width={50} 
-	    onIndexChange={(index: number) => {
-	      setInstanceSRWD(prevState => ({...prevState, reps: repValues[index]}))
-	    }}
+	    onIndexChange={(index: number) => setInstanceReps(repValues[index])}
 	  />
 	</View>
 	{timed ? (
@@ -106,19 +94,13 @@ const ScrollPickerGrid: ComponentType = () => {
 	    <ScrollPicker 
 	      dataArray={timeValues} 
 	      width={40} 
-	      onIndexChange={(index: number) => {
-		setInstanceSRWD(prevState => 
-		  ({...prevState, duration: timeValues[index] + prevState.duration.slice(2)}))
-	      }}
+	      onIndexChange={(index: number) => setInstanceDuration(timeValues[index] + instanceDuration.slice(2))}
 	    />
 	    <Text className="text-custom-white text-lg">m</Text>
 	    <ScrollPicker 
 	      dataArray={timeValues} 
 	      width={40} 
-	      onIndexChange={(index: number) => {
-		setInstanceSRWD(prevState => 
-		  ({...prevState, duration: prevState.duration.slice(0, 2) + timeValues[index]}))
-	      }}
+	      onIndexChange={(index: number) => setInstanceDuration(instanceDuration.slice(0, 2) + timeValues[index])}
 	    />
 	    <Text className="text-custom-white text-lg">s</Text>
 	  </View>
