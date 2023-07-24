@@ -4,7 +4,7 @@ import HubScreen from '@screens/HubScreen'
 import HomeScreen from '@screens/HomeScreen'
 import NewSessionScreen from '@screens/NewSessionScreen'
 import NewInstanceScreen from '@screens/NewInstanceScreen'
-import db from '@modules/DB'
+import DB from '@modules/DB'
 import { IconComponentProvider } from '@react-native-material/core'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { NavigationContainer } from '@react-navigation/native'
@@ -23,11 +23,11 @@ export type RootStackParamList = {
   Hub: undefined,
   Settings: undefined,
   NewSession: { 
-    routineId: number | null,
-    sessionId: number | null,
-    instanceData: InstanceData | undefined,
+    routineId: number | undefined,
+    sessionId: number | undefined,
+    sessionTime: string | undefined,
   },
-  NewInstance: undefined,
+  NewInstance: { sessionId: number | undefined },
   NewProgram: undefined,
 }
 
@@ -36,7 +36,7 @@ const App: React.FC = () => {
 
   const Stack = createNativeStackNavigator<RootStackParamList>()
 
-  useEffect(() => { db.initDatabase().then(() => setIsInitialized(true)) }, [])
+  useEffect(() => { DB.initDatabase().then(() => setIsInitialized(true)) }, [])
 
   return isInitialized ? (
     <NavigationContainer>

@@ -3,26 +3,15 @@ import { ComponentType, useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from '../App'
 import { Icon } from "@react-native-material/core"
-import InstanceCard from "@components/common/ExerciseCard"
+import InstanceCard from "@components/common/InstanceCard"
 import DB from "@modules/DB"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewSession'>
 
-type Instance = {
-  id: number,
-  name: string,
-  thumbnail: string,
-  sets: number,
-  reps: number,
-  duration: string,
-  weight: number,
-}
-
 const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
-  const newInstanceData = route.params?.instanceData
   const routineId = route.params?.routineId
-  const instanceId = route.params?.sessionId
-
+  const sessionTime = route.params?.sessionTime
+  const sessionId = route.params?.sessionId
   const [instances, setInstances] = useState<any[]>([])
   
   useEffect(() => {
@@ -40,24 +29,29 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       JOIN exercises
       ON exercise_instances.exercise_id = exercises.id
       WHERE session_exercise_instances.session_id = ?;
-    `, [routineId],
+    `, [sessionId],
     (_, result) => {
       const instanceData = result.rows._array.map(row => ({
         id: row.id,
         name: row.name,
         thumbnail: row.thumbnail,
         sets: row.sets,
-        reps: row.reps || null,
-        duration: row.duration || null,
-        weight: row.weight || null
+        reps: row.reps,
+        duration: row.duration,
+        weight: row.weight
       }))
 
       setInstances(instanceData)
     })
-  }, [instances])
+  }, [])
 
-  console.log(JSON.stringify(newInstanceData))
-  console.log(routineId)
+  console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+  console.log(sessionId ? `Selected session: ${sessionId}` : 'Setting up new session')
+  sessionTime && console.log('Session time: ' + sessionTime)
+
+  const createSession = () => {
+    DB.sql()
+  }
 
   return (
     <View className="h-full w-full p-2 bg-custom-dark">
@@ -91,7 +85,7 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
               w-full h-12 mb-2 
               border border-custom-white rounded-lg 
               flex justify-center items-center"
-              onPress={() => navigation.navigate("NewInstance")}
+              onPress={() => navigation.navigate("NewInstance", { sessionId: sessionId })}
             >
               <Icon name="plus" size={30} color="#F5F6F3" />
             </TouchableOpacity>
@@ -100,6 +94,10 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       </View>
       <TouchableOpacity 
         className="w-full h-[8%] bg-custom-blue rounded-xl flex justify-center items-center"
+        onPress={() => {
+          createSession
+          navigation.pop()
+        }}
       >
         <Text className="text-custom-white font-bold text-lg">Add Session to Routine</Text>
       </TouchableOpacity>

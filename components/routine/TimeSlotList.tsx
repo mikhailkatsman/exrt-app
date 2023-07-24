@@ -8,7 +8,7 @@ type Props = {
 }
 
 const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
-  const [routinesArray, setRoutinesArray] = useState<any[]>([])
+  const [sessionsArray, setSessionsArray] = useState<any[]>([])
 
   useEffect(() => {
     const filteredData: any[] = dataArray
@@ -23,13 +23,13 @@ const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
       })
       .flat()
 
-    setRoutinesArray(filteredData)
+    setSessionsArray(filteredData)
 
   }, [dataArray, selectedDay])
 
   return (
     <View className="w-full h-[92%] rounded-xl bg-custom-dark px-2 pt-2"> 
-      {routinesArray.length === 0 ? (
+      {sessionsArray.length === 0 ? (
 	<ImageBackground
 	  source={require('../../assets/images/bg/comet.png')}
 	  className="flex-1 justify-center items-center"
@@ -38,8 +38,8 @@ const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
 	  <Text className="text-custom-white text-2xl">Rest</Text>
 	</ImageBackground>
       ) : (
-	routinesArray.map((routine, index) => (
-	  <TimeSlot key={`timeslot-${index}`} routine={routine} />
+	sessionsArray.map((session, index) => (
+	  <TimeSlot key={`timeslot-${index}`} session={session} />
 	))
       )}
     </View>

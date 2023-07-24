@@ -10,7 +10,7 @@ import type { RootStackParamList } from "../App";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
-const HubScreen: ComponentType<Props> = ({ navigation }) => {
+const HubScreen: ComponentType<Props> = () => {
   const [dayNow, setDayNow] = useState<number>(0)
   const [dataArray, setDataArray] = useState<any[]>([])
   const [selectedDay, setSelectedDay] = useState<number>(dayNow)
@@ -34,13 +34,6 @@ const HubScreen: ComponentType<Props> = ({ navigation }) => {
     ) 
   }, [])
 
-  const navigate = () => {
-    navigation.navigate('NewSession', {
-      routineId: selectedDay + 1,
-    })
-  }
-
-
   return (
     <GestureHandlerRootView className="bg-custom-dark h-full w-full px-2">
       <Calendar 
@@ -54,7 +47,7 @@ const HubScreen: ComponentType<Props> = ({ navigation }) => {
         selectedDay={selectedDay}
       />
       <Actions
-        handleNavigate={navigate}
+        selectedDay={selectedDay + 1}
       />
     </GestureHandlerRootView>
   )

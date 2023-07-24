@@ -6,7 +6,6 @@ import DropDown from "@components/common/Dropdown"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from '../App'
 import DB from "@modules/DB"
-import InstanceCard from "@components/common/ExerciseCard"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewInstance'>
 
@@ -18,7 +17,9 @@ type InstanceData = {
   duration: string
 }
 
-const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
+const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
+  const sessionId = route.params?.sessionId
+
   const [instanceData, setInstanceData] = useState<InstanceData>({
     exerciseId: null,
     sets: 1,
@@ -77,6 +78,17 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
     ) 
   }, [muscleSort, typeSort])
 
+  const createInstance = () => {
+    DB.sql(`
+      INSERT INTO exercise_instances (exercise_id, sets, reps, duration, weight)
+      VALUES (?, ?, ?, ?, ?)
+    `, [instanceData.exerciseId, instanceData.sets, instanceData.reps, instanceData.duration, instanceData.weight],
+      (_, result) => {
+        console.log('Instance created')
+      }
+    )
+  }
+
   return (
     <View className="h-full w-full px-2 bg-custom-dark">
       <ScrollPickerGrid 
@@ -128,7 +140,12 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation }) => {
       <TouchableOpacity 
         className="w-full h-[8%] bg-custom-blue rounded-xl flex justify-center items-center"
         onPress={() => {
-          navigation.navigate('NewSession', { instanceData: instanceData })
+          console.log('Adding new instance:')
+          console.log(instanceData)
+          console.log(sessionId ? `to session ${sessionId}` : 'to a new yet uncreated session')
+          console.log('----------------------------------------')
+          createInstance()
+          navigation.pop()
         }}
       >
       <Text className="text-custom-white font-bold text-lg">Add Exercise to Session</Text>

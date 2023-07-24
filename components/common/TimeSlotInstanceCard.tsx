@@ -11,7 +11,7 @@ type Props = {
   weight: number|null,
 }
 
-const InstanceCard: React.FC<Props> = ({ 
+const TimeSlotInstanceCard: React.FC<Props> = ({ 
   id, 
   name, 
   thumbnail, 
@@ -37,4 +37,4 @@ const InstanceCard: React.FC<Props> = ({
   )
 }
 
-export default InstanceCard
+export default TimeSlotInstanceCard

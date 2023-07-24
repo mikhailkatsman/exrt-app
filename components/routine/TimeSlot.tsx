@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react"
 import { TouchableOpacity, Text, View, ScrollView } from "react-native"
-import DB from '../../modules/DB'
-import InstanceCard from "../common/InstanceCard"
+import DB from '@modules/DB'
+import TimeSlotInstanceCard from "@components/common/TimeSlotInstanceCard"
 import { Icon } from "@react-native-material/core"
+import { useNavigation } from "@react-navigation/native"
 
 type Props = {
-  routine: { time: string, id: number },
+  session: { time: string, id: number },
 }
 
-const TimeSlot: React.FC<Props> = ({ routine }) => {
+const TimeSlot: React.FC<Props> = ({ session }) => {
   const [instances, setInstances] = useState<any[]>([])
+
+  const navigation = useNavigation()
 
   useEffect(() => {
     DB.sql(`
@@ -26,7 +29,7 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
       JOIN exercises
       ON exercise_instances.exercise_id = exercises.id
       WHERE session_exercise_instances.session_id = ?;
-    `, [routine.id],
+    `, [session.id],
     (_, result) => {
       const instanceData = result.rows._array.map(row => ({
         id: row.id,
@@ -40,12 +43,12 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
 
       setInstances(instanceData)
     })
-  }, [routine])
+  }, [session])
 
   return (
     <View className="flex-row flex-shrink flex-1 mb-2">
       <View className="w-[14%] pr-1 justify-center">
-        <Text className="text-custom-blue font-extrabold">{routine.time}</Text>
+        <Text className="text-custom-blue font-extrabold">{session.time}</Text>
       </View>
       <View className="w-[8%] h-1/2 border-b border-custom-grey"/>
       <View
@@ -63,7 +66,7 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
             fadingEdgeLength={100}
           >
             {instances.map((instance, index) => (
-              <InstanceCard 
+              <TimeSlotInstanceCard 
                 key={`instance-${index}`}
                 id={instance.id}
                 name={instance.name}
@@ -77,11 +80,14 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
           </ScrollView>
         </View>
         <View className="w-[20%] flex-col">
-          <TouchableOpacity className="
-            mt-1 mr-1 mb-0.5 
-            flex-1 items-center justify-center
-            border-2 border-custom-grey 
-            rounded-lg"
+          <TouchableOpacity 
+            className="
+              mt-1 mr-1 mb-0.5 
+              flex-1 items-center justify-center
+              border-2 border-custom-grey 
+              rounded-lg
+            "
+            onPress={() => navigation.navigate("NewSession", { sessionId: session.id, sessionTime: session.time })}
           >
             <Icon name="pencil" size={24} color="#4D594A" />
           </TouchableOpacity>
