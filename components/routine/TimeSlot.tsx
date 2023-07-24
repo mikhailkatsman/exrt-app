@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { TouchableOpacity, Text, View, ScrollView } from "react-native"
-import db from '../../modules/DB'
+import DB from '../../modules/DB'
 import InstanceCard from "../common/InstanceCard"
 import { Icon } from "@react-native-material/core"
 
@@ -9,10 +9,10 @@ type Props = {
 }
 
 const TimeSlot: React.FC<Props> = ({ routine }) => {
-  const [exercises, setExercises] = useState<any[]>([])
+  const [instances, setInstances] = useState<any[]>([])
 
   useEffect(() => {
-    db.sql(`
+    DB.sql(`
       SELECT exercise_instances.id AS id, 
              exercise_instances.sets AS sets, 
              exercise_instances.reps AS reps, 
@@ -28,7 +28,7 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
       WHERE session_exercise_instances.session_id = ?;
     `, [routine.id],
     (_, result) => {
-      const exerciseData = result.rows._array.map(row => ({
+      const instanceData = result.rows._array.map(row => ({
         id: row.id,
         name: row.name,
         thumbnail: row.thumbnail,
@@ -38,7 +38,7 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
         weight: row.weight || null
       }))
 
-      setExercises(exerciseData)
+      setInstances(instanceData)
     })
   }, [routine])
 
@@ -62,7 +62,7 @@ const TimeSlot: React.FC<Props> = ({ routine }) => {
             className="p-2 rounded-xl bg-custom-dark"
             fadingEdgeLength={100}
           >
-            {exercises.map((instance, index) => (
+            {instances.map((instance, index) => (
               <InstanceCard 
                 key={`instance-${index}`}
                 id={instance.id}

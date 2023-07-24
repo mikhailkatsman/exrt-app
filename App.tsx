@@ -24,21 +24,19 @@ export type RootStackParamList = {
   Settings: undefined,
   NewSession: { 
     routineId: number | null,
+    sessionId: number | null,
     instanceData: InstanceData | undefined,
   },
   NewInstance: undefined,
   NewProgram: undefined,
 }
 
-
 const App: React.FC = () => {
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
 
   const Stack = createNativeStackNavigator<RootStackParamList>()
 
-  useEffect(() => {
-    db.initDatabase().then(() => setIsInitialized(true))
-  }, [])
+  useEffect(() => { db.initDatabase().then(() => setIsInitialized(true)) }, [])
 
   return isInitialized ? (
     <NavigationContainer>
