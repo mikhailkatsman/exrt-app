@@ -18,7 +18,7 @@ type InstanceData = {
 }
 
 const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
-  const sessionId = route.params?.sessionId
+  const sessionId = route.params.sessionId
 
   const [instanceData, setInstanceData] = useState<InstanceData>({
     exerciseId: null,
@@ -67,7 +67,7 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
     if (muscleSort) sqlQuery += ' WHERE muscle_groups.name = ?'
     sqlQuery += ')'
     if (typeSort) sqlQuery += ' AND type = ?'
-    sqlQuery += ' ORDER BY name'
+    sqlQuery += ' ORDER BY name;'
 
     let parameters = [muscleSort, typeSort].filter(param => param)
     
@@ -81,10 +81,18 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
   const createInstance = () => {
     DB.sql(`
       INSERT INTO exercise_instances (exercise_id, sets, reps, duration, weight)
-      VALUES (?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?);
     `, [instanceData.exerciseId, instanceData.sets, instanceData.reps, instanceData.duration, instanceData.weight],
-      (_, result) => {
-        console.log('Instance created')
+      (_: any, result: any) => {
+        DB.sql(`
+          INSERT INTO session_exercise_instances (session_id, exercise_instance_id)
+          VALUES (?, ?);
+        `, [sessionId, result.insertId],
+          (_: any, result: any) => {
+            console.log(`Instance id: ${result.insertId} registered to session id: ${sessionId}`)
+            navigation.pop()
+          }
+        )
       }
     )
   }
@@ -145,7 +153,6 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
           console.log(sessionId ? `to session ${sessionId}` : 'to a new yet uncreated session')
           console.log('----------------------------------------')
           createInstance()
-          navigation.pop()
         }}
       >
       <Text className="text-custom-white font-bold text-lg">Add Exercise to Session</Text>

@@ -16,9 +16,7 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, rese
 
   const dropDownRef = useRef<null | TouchableOpacity>(null)
 
-  const handleDropdownState = () => {
-    setIsOpen(!isOpen)
-  }
+  const handleDropdownState = () => setIsOpen(!isOpen)
 
   const handleLayout = () => {
     dropDownRef.current?.measure((x, y, width, height, pageX, pageY) => {

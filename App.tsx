@@ -24,10 +24,13 @@ export type RootStackParamList = {
   Settings: undefined,
   NewSession: { 
     routineId: number | undefined,
-    sessionId: number | undefined,
-    sessionTime: string | undefined,
+    sessionExists: boolean,
+    sessionId: number,
+    sessionTime: string,
   },
-  NewInstance: { sessionId: number | undefined },
+  NewInstance: { 
+    sessionId: number,
+  },
   NewProgram: undefined,
 }
 

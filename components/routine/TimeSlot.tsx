@@ -6,10 +6,11 @@ import { Icon } from "@react-native-material/core"
 import { useNavigation } from "@react-navigation/native"
 
 type Props = {
+  routineId: number,
   session: { time: string, id: number },
 }
 
-const TimeSlot: React.FC<Props> = ({ session }) => {
+const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
   const [instances, setInstances] = useState<any[]>([])
 
   const navigation = useNavigation()
@@ -30,8 +31,8 @@ const TimeSlot: React.FC<Props> = ({ session }) => {
       ON exercise_instances.exercise_id = exercises.id
       WHERE session_exercise_instances.session_id = ?;
     `, [session.id],
-    (_, result) => {
-      const instanceData = result.rows._array.map(row => ({
+    (_: any, result: any) => {
+      const instanceData = result.rows._array.map((row: any) => ({
         id: row.id,
         name: row.name,
         thumbnail: row.thumbnail,
@@ -87,7 +88,12 @@ const TimeSlot: React.FC<Props> = ({ session }) => {
               border-2 border-custom-grey 
               rounded-lg
             "
-            onPress={() => navigation.navigate("NewSession", { sessionId: session.id, sessionTime: session.time })}
+            onPress={() => navigation.navigate("NewSession", { 
+              routineId: routineId,
+              sessionExists: true,
+              sessionId: session.id, 
+              sessionTime: session.time 
+            })}
           >
             <Icon name="pencil" size={24} color="#4D594A" />
           </TouchableOpacity>

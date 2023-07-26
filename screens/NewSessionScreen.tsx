@@ -10,11 +10,12 @@ type Props = NativeStackScreenProps<RootStackParamList, 'NewSession'>
 
 const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
   const routineId = route.params?.routineId
-  const sessionTime = route.params?.sessionTime
-  const sessionId = route.params?.sessionId
+  const sessionExists = route.params.sessionExists
+  const sessionTime = route.params.sessionTime
+  const sessionId = route.params.sessionId
   const [instances, setInstances] = useState<any[]>([])
-  
-  useEffect(() => {
+
+  const fetchInstances = () => {
     DB.sql(`
       SELECT exercise_instances.id AS id, 
              exercise_instances.sets AS sets, 
@@ -30,8 +31,9 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       ON exercise_instances.exercise_id = exercises.id
       WHERE session_exercise_instances.session_id = ?;
     `, [sessionId],
-    (_, result) => {
-      const instanceData = result.rows._array.map(row => ({
+    (_:any, result: any) => {
+      console.log(`Instances for session id: ${sessionId} Fetched`)
+      const instanceData = result.rows._array.map((row: any) => ({
         id: row.id,
         name: row.name,
         thumbnail: row.thumbnail,
@@ -43,15 +45,37 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
 
       setInstances(instanceData)
     })
-  }, [])
-
-  console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-  console.log(sessionId ? `Selected session: ${sessionId}` : 'Setting up new session')
-  sessionTime && console.log('Session time: ' + sessionTime)
-
-  const createSession = () => {
-    DB.sql()
   }
+
+  const registerSession = () => {
+    if (sessionExists) {
+      navigation.pop()
+    } else {
+      if (instances.length !== 0) {
+        DB.sql(`
+          INSERT INTO weekly_session_instances (day_id, session_id)
+          VALUES (?, ?);
+        `, [routineId, sessionId],
+        (_: any, result: any) => {
+          console.log(`New Session id:${sessionId} created on day: ${routineId} with row id: ${result.insertId}`)
+          navigation.pop()
+        })
+      } else {
+        console.log('No Instances Added. Please Add instances before finalizing session creation')
+      }
+    }
+
+  }
+
+  useEffect(() => {
+    const unsubscribeFocus = navigation.addListener('focus', fetchInstances)
+    
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    console.log(`Selected session: ${sessionId}`)
+    sessionTime && console.log('Session time: ' + sessionTime)
+
+    return () => { unsubscribeFocus() }
+  }, [])
 
   return (
     <View className="h-full w-full p-2 bg-custom-dark">
@@ -94,12 +118,10 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       </View>
       <TouchableOpacity 
         className="w-full h-[8%] bg-custom-blue rounded-xl flex justify-center items-center"
-        onPress={() => {
-          createSession
-          navigation.pop()
-        }}
+        onPress={registerSession}
+        activeOpacity={1}
       >
-        <Text className="text-custom-white font-bold text-lg">Add Session to Routine</Text>
+        <Text className="text-custom-white font-bold text-lg">Confirm</Text>
       </TouchableOpacity>
     </View>
   )

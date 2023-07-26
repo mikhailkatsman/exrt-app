@@ -39,7 +39,7 @@ const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
 	</ImageBackground>
       ) : (
 	sessionsArray.map((session, index) => (
-	  <TimeSlot key={`timeslot-${index}`} session={session} />
+	  <TimeSlot key={`timeslot-${index}`} session={session} routineId={selectedDay + 1} />
 	))
       )}
     </View>
