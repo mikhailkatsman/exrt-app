@@ -4,7 +4,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from '../App'
 import { Icon } from "@react-native-material/core"
 import InstanceCard from "@components/common/InstanceCard"
-import DB from "@modules/DB"
+import DB from "../modules/DB"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewSession'>
 
@@ -48,7 +48,7 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
   }
 
   const registerSession = () => {
-    if (sessionExists) {
+    if (sessionExists && instances.length !== 0) {
       navigation.pop()
     } else {
       if (instances.length !== 0) {
@@ -64,7 +64,37 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
         console.log('No Instances Added. Please Add instances before finalizing session creation')
       }
     }
+  }
 
+  const deleteSession = () => {
+    DB.transaction(tx => {
+      tx.executeSql(`
+        DELETE FROM weekly_session_instances
+        WHERE session_id = ?;
+      `, [sessionId], (_, result) => console.log('weekly session instances entry deleted'))
+
+      tx.executeSql(`
+        DELETE FROM sessions
+        WHERE id = ?;
+      `, [sessionId], (_, result) => console.log('sessions entry deleted'))
+
+      tx.executeSql(`
+        DELETE FROM session_exercise_instances
+        WHERE session_id = ?;
+      `, [sessionId], (_, result) => console.log('session exercise instances entry deleted'))
+
+      tx.executeSql(`
+        DELETE FROM exercise_instances
+        WHERE id IN (
+          SELECT exercise_instance_id
+          FROM session_exercise_instances
+          WHERE session_id = ?
+        );
+      `, [sessionId], (_, result) => console.log('exercise instances entry deleted'))
+    },
+      error => console.log('Error deleting session from DB: ' + error),
+      () => navigation.pop()
+    )
   }
 
   useEffect(() => {
@@ -90,12 +120,13 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           <Text className="m-2 text-custom-white text-lg">Upcoming Session</Text>
           <View className="mx-2 border-b border-custom-white" />
           <ScrollView 
-            className="p-2 rounded-xl bg-custom-dark"
+            className="p-3 rounded-xl bg-custom-dark"
             horizontal={false}
           >
             {instances.map((instance, index) => (
               <InstanceCard 
                 key={`instance-${index}`}
+                updateInstances={fetchInstances}
                 id={instance.id}
                 name={instance.name}
                 thumbnail={instance.thumbnail}
@@ -116,13 +147,25 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           </ScrollView>
         </View>
       </View>
-      <TouchableOpacity 
-        className="w-full h-[8%] bg-custom-blue rounded-xl flex justify-center items-center"
-        onPress={registerSession}
-        activeOpacity={1}
-      >
-        <Text className="text-custom-white font-bold text-lg">Confirm</Text>
-      </TouchableOpacity>
+      <View className="h-[8%] w-full flex-row items-center justify-between">
+        <TouchableOpacity 
+          className="w-[30%] h-full bg-custom-red rounded-xl flex-row justify-center items-center"
+          onPress={deleteSession}
+          activeOpacity={1}
+        >
+          <Text className="mr-2 text-custom-white font-bold">Delete</Text>
+          <Icon name="delete-outline" size={22} color="#F5F6F3" />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          className="w-[67%] h-full bg-custom-blue rounded-xl flex-row justify-center items-center"
+          onPress={registerSession}
+          activeOpacity={1}
+        >
+          <Text className="mr-2 text-custom-white font-bold">Confirm Session</Text>
+          <Icon name="check" size={22} color="#F5F6F3" />
+        </TouchableOpacity>
+
+      </View>
     </View>
   )
 }

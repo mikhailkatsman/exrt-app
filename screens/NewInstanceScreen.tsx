@@ -3,6 +3,7 @@ import { ComponentType, useEffect, useState } from "react"
 import ScrollPickerGrid from "@components/actions/ScrollPickerGrid"
 import ExerciseCard from "@components/common/ExerciseCard"
 import DropDown from "@components/common/Dropdown"
+import { Icon } from "@react-native-material/core"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from '../App'
 import DB from "@modules/DB"
@@ -146,7 +147,7 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
         </View>
       </View>
       <TouchableOpacity 
-        className="w-full h-[8%] bg-custom-blue rounded-xl flex justify-center items-center"
+        className="w-full h-[8%] bg-custom-blue rounded-xl flex-row justify-center items-center"
         onPress={() => {
           console.log('Adding new instance:')
           console.log(instanceData)
@@ -155,7 +156,8 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
           createInstance()
         }}
       >
-      <Text className="text-custom-white font-bold text-lg">Add Exercise to Session</Text>
+        <Text className="mr-2 text-custom-white font-bold">Add Exercise to Session</Text>
+        <Icon name="check" size={22} color="#F5F6F3" />
       </TouchableOpacity>
     </View>
   )

@@ -59,6 +59,21 @@ class DB {
       })
     }
   }
+
+  public transaction(
+    transactionCallback: (tx: SQLite.SQLTransaction) => void,
+    errorCallback?: SQLite.SQLTransactionErrorCallback,
+    successCallback?: () => void,
+  ): void {
+    if (!this.initialized) {
+      console.error('Database not initialized')
+      return
+    }
+
+    if (this.db) {
+      this.db.transaction(transactionCallback, errorCallback, successCallback)
+    }
+  }
 }
 
 export default new DB()
