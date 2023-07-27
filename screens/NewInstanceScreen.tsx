@@ -5,7 +5,7 @@ import ExerciseCard from "@components/common/ExerciseCard"
 import DropDown from "@components/common/Dropdown"
 import { Icon } from "@react-native-material/core"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
-import type { RootStackParamList } from '../App'
+import type { RootStackParamList } from 'App'
 import DB from "@modules/DB"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewInstance'>

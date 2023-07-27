@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text } from 'react-native'
+import { Text, View } from 'react-native'
 import HubScreen from '@screens/HubScreen'
 import HomeScreen from '@screens/HomeScreen'
 import NewSessionScreen from '@screens/NewSessionScreen'
@@ -9,14 +9,8 @@ import { IconComponentProvider } from '@react-native-material/core'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-
-type InstanceData = {
-  exerciseId: number | null,
-  sets: number,
-  reps: number,
-  weight: number,
-  duration: string
-}
+import * as Font from 'expo-font'
+import { customFonts } from '@modules/AssetPaths'
 
 export type RootStackParamList = {
   Home: undefined,
@@ -39,9 +33,36 @@ const App: React.FC = () => {
 
   const Stack = createNativeStackNavigator<RootStackParamList>()
 
-  useEffect(() => { DB.initDatabase().then(() => setIsInitialized(true)) }, [])
+  useEffect(() => {
+    const initializeDatabase = async () => {
+      return await DB.initDatabase() 
+    }
+
+    const loadFonts = async () => {
+      return await Font.loadAsync(customFonts) 
+    }
+
+    const loadAllAppAssets = async () => {
+      try {
+        await Promise.all([
+          initializeDatabase(),
+          loadFonts(),
+        ])
+
+        console.log('App Initialized!')
+        setIsInitialized(true)
+      } catch (error) {
+        console.log('Error Initializing: ' + error)
+      }
+    }
+
+    loadAllAppAssets()
+  }, [])
 
   return isInitialized ? (
+    <View>
+
+    </View>
     <NavigationContainer>
       <IconComponentProvider IconComponent={MaterialCommunityIcons}>
         <Stack.Navigator 

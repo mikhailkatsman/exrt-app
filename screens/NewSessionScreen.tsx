@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native"
 import { ComponentType, useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
-import type { RootStackParamList } from '../App'
+import type { RootStackParamList } from 'App'
 import { Icon } from "@react-native-material/core"
 import InstanceCard from "@components/common/InstanceCard"
 import DB from "@modules/DB"
@@ -31,7 +31,7 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       ON exercise_instances.exercise_id = exercises.id
       WHERE session_exercise_instances.session_id = ?;
     `, [sessionId],
-    (_:any, result: any) => {
+    (_, result) => {
       console.log(`Instances for session id: ${sessionId} Fetched`)
       const instanceData = result.rows._array.map((row: any) => ({
         id: row.id,
@@ -90,7 +90,7 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           FROM session_exercise_instances
           WHERE session_id = ?
         );
-      `, [sessionId], (_, result) => console.log('exercise instances entry deleted'))
+      `, [sessionId], () => console.log('exercise instances entry deleted'))
     },
       error => console.log('Error deleting session from DB: ' + error),
       () => navigation.pop()

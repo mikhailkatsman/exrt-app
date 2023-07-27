@@ -1,7 +1,7 @@
 import { useMemo, useState, useRef } from "react"
 import { Icon } from "@react-native-material/core"
 import { TouchableOpacity, Text, View, Modal, Pressable } from "react-native"
-import ScrollPicker from "../common/ScrollPicker"
+import ScrollPicker from "@components/common/ScrollPicker"
 import { useNavigation } from "@react-navigation/native"
 import DB from "@modules/DB"
 
