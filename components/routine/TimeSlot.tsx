@@ -63,7 +63,7 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
           <Text className="m-2 text-custom-white text-lg">Upcoming Session</Text>
           <View className="mx-2 border-b border-custom-grey" />
           <ScrollView 
-            className="p-2 rounded-xl bg-custom-dark"
+            className="m-2 rounded-xl bg-custom-dark"
             fadingEdgeLength={100}
           >
             {instances.map((instance, index) => (

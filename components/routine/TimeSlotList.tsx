@@ -22,6 +22,7 @@ const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
 	}))
       })
       .flat()
+      .sort((a, b) => a.time.localeCompare(b.time))
 
     setSessionsArray(filteredData)
 

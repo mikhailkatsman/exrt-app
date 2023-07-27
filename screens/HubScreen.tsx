@@ -1,4 +1,4 @@
-import { useState, useEffect, ComponentType, useMemo } from "react";
+import { useState, useEffect, useMemo, ComponentType } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Calendar from "@components/calendar/Calendar";
@@ -13,27 +13,30 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 const HubScreen: ComponentType<Props> = ({ navigation }) => {
   const [dayNow, setDayNow] = useState<number>(0)
   const [dataArray, setDataArray] = useState<any[]>([])
-  const [selectedDay, setSelectedDay] = useState<number>(dayNow)
+  const [selectedDay, setSelectedDay] = useState<number>(0)
 
   const fetchRoutineData = () => {
-    DB.sql(`
-      SELECT weekly_session_instances.day_id AS day_id,
-             GROUP_CONCAT(sessions.id, ',') AS session_ids,
-             GROUP_CONCAT(sessions.time, ',') AS session_times
-      FROM weekly_session_instances
-      JOIN sessions ON weekly_session_instances.session_id = sessions.id
-      GROUP BY weekly_session_instances.id, weekly_session_instances.day_id;
-      `, [],
-      (_: any, result: any) => {
-        setDataArray(result.rows._array)
-      }
-    ) 
+    DB.transaction(tx => {
+      tx.executeSql(`
+        SELECT weekly_session_instances.day_id AS day_id,
+               GROUP_CONCAT(sessions.id, ',') AS session_ids,
+               GROUP_CONCAT(sessions.time, ',') AS session_times
+        FROM weekly_session_instances
+        JOIN sessions ON weekly_session_instances.session_id = sessions.id
+        GROUP BY weekly_session_instances.id, weekly_session_instances.day_id;
+      `, [], (_, result) => setDataArray(result.rows._array)) 
+    })
   }
 
   useMemo(() => {
     const dateData: Date = new Date()
     const dayNowData: number = (dateData.getDay() + 6) % 7 
     setDayNow(dayNowData)
+  }, [])
+
+  useEffect(() => {
+    setSelectedDay(dayNow)
+    console.log('day set')
   }, [])
 
   useEffect(() => {

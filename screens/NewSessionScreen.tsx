@@ -4,7 +4,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from '../App'
 import { Icon } from "@react-native-material/core"
 import InstanceCard from "@components/common/InstanceCard"
-import DB from "../modules/DB"
+import DB from "@modules/DB"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewSession'>
 
@@ -71,17 +71,17 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       tx.executeSql(`
         DELETE FROM weekly_session_instances
         WHERE session_id = ?;
-      `, [sessionId], (_, result) => console.log('weekly session instances entry deleted'))
+      `, [sessionId], () => console.log('weekly session instances entry deleted'))
 
       tx.executeSql(`
         DELETE FROM sessions
         WHERE id = ?;
-      `, [sessionId], (_, result) => console.log('sessions entry deleted'))
+      `, [sessionId], () => console.log('sessions entry deleted'))
 
       tx.executeSql(`
         DELETE FROM session_exercise_instances
         WHERE session_id = ?;
-      `, [sessionId], (_, result) => console.log('session exercise instances entry deleted'))
+      `, [sessionId], () => console.log('session exercise instances entry deleted'))
 
       tx.executeSql(`
         DELETE FROM exercise_instances

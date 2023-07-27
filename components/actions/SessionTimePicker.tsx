@@ -3,7 +3,7 @@ import { Icon } from "@react-native-material/core"
 import { TouchableOpacity, Text, View, Modal, Pressable } from "react-native"
 import ScrollPicker from "../common/ScrollPicker"
 import { useNavigation } from "@react-navigation/native"
-import DB from "../../modules/DB"
+import DB from "@modules/DB"
 
 type Props = { selectedDay: number }
 
