@@ -25,7 +25,7 @@ const InstanceCard: React.FC<Props> = ({ id, selectedId, setSelectedId, name, th
         source={thumbnailImages[thumbnail]} 
       />
       <View className="w-2/3 pl-3 flex-col justify-center">
-        <Text className={`${selectedId === id || !selectedId ? 'text-custom-white' : 'text-custom-grey'} text-lg`}>
+        <Text className={`${selectedId === id || !selectedId ? 'text-custom-white' : 'text-custom-grey'} font-BaiJamjuree-Regular text-lg`}>
           {name.charAt(0).toUpperCase() + name.slice(1)}
         </Text>
       </View>

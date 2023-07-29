@@ -1,6 +1,4 @@
 import { Icon } from "@react-native-material/core"
-import { useNavigation } from "@react-navigation/native"
-import React, { useState } from "react"
 import { View, Text, TouchableOpacity } from "react-native"
 import SessionTimePicker from "@components/actions/SessionTimePicker"
 
@@ -16,7 +14,7 @@ const Actions: React.FC<Props> = ({ selectedDay }) => {
 	flex-1 items-center justify-center 
 	rounded-xl bg-custom-white"
       >
-	<Text className="text-xs font-bold mb-1">Move Routine</Text>
+	<Text className="text-xs mb-1 font-BaiJamjuree-Bold">Move Routine</Text>
 	<Icon name="swap-horizontal" color="#080B06" size={24} /> 
       </TouchableOpacity>
       <SessionTimePicker selectedDay={selectedDay} />

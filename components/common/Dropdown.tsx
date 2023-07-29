@@ -40,7 +40,7 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, rese
         activeOpacity={1}
         onPress={handleDropdownState}
       >
-        <Text className="w-[80%] pl-2 text-custom-white">{displayedText}</Text>
+        <Text className="w-[80%] pl-2 text-custom-white text-xs font-BaiJamjuree-Bold">{displayedText}</Text>
         <View className="w-[20%]">
           <Icon name="arrow-down-right" size={20} color="#F5F6F3" />
         </View>
@@ -63,9 +63,9 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, rese
                 reset()
               }}
             >
-              <Text className="w-[80%] pl-2 text-custom-white font-bold">{displayedText}</Text>
+              <Text className="w-[80%] pl-2 text-custom-white text-xs font-BaiJamjuree-Bold">{displayedText}</Text>
               <View className="w-[20%]">
-                <Icon name="close" size={20} color="#F5F6F3" />
+                <Icon name="close" size={18} color="#F5F6F3" />
               </View>
             </TouchableOpacity>
             <ScrollView 
@@ -91,7 +91,7 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, rese
                     onIndexChange(index)
                   }}
                 >
-                  <Text className="text-custom-white">{item.label}</Text>
+                  <Text className="text-custom-white font-BaiJamjuree-Regular">{item.label}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>

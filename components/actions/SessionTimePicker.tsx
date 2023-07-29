@@ -67,7 +67,7 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay }) => {
 	onPress={handlePress}
 	activeOpacity={0.5}
       >
-	<Text className="text-xs font-bold mb-1">Create New Session</Text>
+	<Text className="text-xs font-BaiJamjuree-Bold mb-1">Create New Session</Text>
 	<Icon name="dumbbell" color="#080B06" size={22} /> 
       </TouchableOpacity>
       {isActive && (
@@ -89,20 +89,20 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay }) => {
 	      bg-custom-dark flex-col
 	    "
 	  >
-	    <View className="w-full mt-4 flex-col justify-center items-center">
-	      <Text className="text-custom-white mb-2">Choose Time:</Text>
+	    <View className="w-full mt-3 flex-col justify-center items-center">
+	      <Text className="text-custom-white mb-2 font-BaiJamjuree-Regular">Choose Time:</Text>
 	      <View className="flex-row items-center">
 		<ScrollPicker 
 		  dataArray={hourValues} 
-		  width={32} 
+		  width={36} 
 		  onIndexChange={(index: number) => 
 		    setSelectedTime(hourValues[index] + selectedTime.slice(2))
 		  } 
 		/>
-		<Text className="text-custom-white mx-1 font-bold text-xl">:</Text>
+		<Text className="text-custom-white mx-1 font-BaiJamjuree-Bold text-xl">:</Text>
 		<ScrollPicker 
 		  dataArray={minuteValues} 
-		  width={32} 
+		  width={36} 
 		  onIndexChange={(index: number) => 
 		    setSelectedTime(selectedTime.slice(0, 3) + minuteValues[index])
 		  } 
@@ -121,7 +121,7 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay }) => {
 	    activeOpacity={1}
 	    onPress={navigateToNewSessionScreen}
 	  >
-	    <Text className="text-xs font-bold mr-2">Confirm</Text>
+	    <Text className="text-xs font-BaiJamjuree-Bold mr-2">Confirm</Text>
 	    <Icon name="check" color="#080B06" size={22} /> 
 	  </TouchableOpacity>
 	</Modal>

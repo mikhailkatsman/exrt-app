@@ -56,7 +56,7 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           INSERT INTO weekly_session_instances (day_id, session_id)
           VALUES (?, ?);
         `, [routineId, sessionId],
-        (_: any, result: any) => {
+        (_, result) => {
           console.log(`New Session id:${sessionId} created on day: ${routineId} with row id: ${result.insertId}`)
           navigation.pop()
         })
@@ -117,7 +117,7 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
         "
       >
         <View className="w-full flex-col">
-          <Text className="m-2 text-custom-white text-lg">Upcoming Session</Text>
+          <Text className="m-2 text-custom-white text-lg font-BaiJamjuree-RegularItalic">Upcoming Session</Text>
           <View className="mx-2 border-b border-custom-white" />
           <ScrollView 
             className="p-3 rounded-xl bg-custom-dark"
@@ -153,7 +153,7 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           onPress={deleteSession}
           activeOpacity={1}
         >
-          <Text className="mr-2 text-custom-white font-bold">Delete</Text>
+          <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Delete</Text>
           <Icon name="delete-outline" size={22} color="#F5F6F3" />
         </TouchableOpacity>
         <TouchableOpacity 
@@ -161,7 +161,7 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           onPress={registerSession}
           activeOpacity={1}
         >
-          <Text className="mr-2 text-custom-white font-bold">Confirm Session</Text>
+          <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Confirm Session</Text>
           <Icon name="check" size={22} color="#F5F6F3" />
         </TouchableOpacity>
 

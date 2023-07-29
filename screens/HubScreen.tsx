@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, ComponentType } from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Calendar from "@components/calendar/Calendar";
 import Routine from "@components/routine/Routine";
@@ -45,7 +45,7 @@ const HubScreen: ComponentType<Props> = ({ navigation }) => {
   }, [])
 
   return (
-    <GestureHandlerRootView className="bg-custom-dark h-full w-full px-2">
+    <View className="bg-custom-dark h-full w-full px-2">
       <Calendar 
         dataArray={dataArray}
         dayNow={dayNow}
@@ -59,7 +59,7 @@ const HubScreen: ComponentType<Props> = ({ navigation }) => {
       <Actions
         selectedDay={selectedDay + 1}
       />
-    </GestureHandlerRootView>
+    </View>
   )
 }
 

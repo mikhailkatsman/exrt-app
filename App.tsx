@@ -17,7 +17,7 @@ export type RootStackParamList = {
   Hub: undefined,
   Settings: undefined,
   NewSession: { 
-    routineId: number | undefined,
+    routineId: number,
     sessionExists: boolean,
     sessionId: number,
     sessionTime: string,
@@ -60,9 +60,6 @@ const App: React.FC = () => {
   }, [])
 
   return isInitialized ? (
-    <View>
-
-    </View>
     <NavigationContainer>
       <IconComponentProvider IconComponent={MaterialCommunityIcons}>
         <Stack.Navigator 
@@ -75,10 +72,10 @@ const App: React.FC = () => {
             },
             headerTitleStyle: {
               color: '#F5F6F3',
-              fontWeight: 'bold',
-              fontSize: 20,
+              fontFamily: 'BaiJamjuree-Bold',
+              fontSize: 18,
             },
-            headerTintColor: '#F5F6F3'
+            headerTintColor: '#F5F6F3',
           }}
         >
           <Stack.Screen

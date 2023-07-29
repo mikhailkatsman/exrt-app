@@ -54,7 +54,7 @@ const ScrollPickerGrid: React.FC<Props> = ({
     <View className="h-[25%] w-full mb-3 px-2">
       <View className="h-[50%] w-full flex-row mb-3">
 	<View className="flex-1 flex-row items-center justify-start">
-	  <Text className="w-12 text-custom-white text-xl">Sets</Text>
+	  <Text className="w-12 text-custom-white text-xl font-BaiJamjuree-Regular">Sets</Text>
 	  <ScrollPicker 
 	    dataArray={setValues} 
 	    width={50} 
@@ -63,25 +63,25 @@ const ScrollPickerGrid: React.FC<Props> = ({
 	</View>
 	  {weighted ? (
 	    <View className="flex-1 flex-row items-center justify-end">
-	      <Text className="text-custom-white text-xl">Weight</Text>
+	      <Text className="text-custom-white text-xl font-BaiJamjuree-Regular">Weight</Text>
 	      <ScrollPicker 
 		dataArray={kgValues} 
 		width={60}
 		onIndexChange={(index: number) => setInstanceWeight(kgValues[index])}
 	      />
-	      <Text className="text-custom-white text-lg">kg</Text>
+	      <Text className="text-custom-white text-lg font-BaiJamjuree-Regular">kg</Text>
 	    </View>
 	  ) : (
 	    <View className="flex-1 flex-row items-center justify-end">
 	      <Pressable onPress={() => setWeighted(true)}>
-		<Text className="text-custom-blue text-xl">Set Weight</Text>
+		<Text className="text-custom-blue text-xl font-BaiJamjuree-Regular">Set Weight</Text>
 	      </Pressable>
 	    </View>
 	  )}
       </View>
       <View className="h-[50%] w-full flex-row mb-2">
 	<View className="flex-1 flex-row items-center justify-start">
-	  <Text className="w-12 text-custom-white text-xl">Reps</Text>
+	  <Text className="w-12 text-custom-white text-xl font-BaiJamjuree-Regular">Reps</Text>
 	  <ScrollPicker 
 	    dataArray={repValues} 
 	    width={50} 
@@ -90,24 +90,24 @@ const ScrollPickerGrid: React.FC<Props> = ({
 	</View>
 	{timed ? (
 	  <View className="flex-1 flex-row items-center justify-end">
-	    <Text className="text-custom-white text-xl mr-1">Duration</Text>
+	    <Text className="text-custom-white text-xl mr-1 font-BaiJamjuree-Regular">Duration</Text>
 	    <ScrollPicker 
 	      dataArray={timeValues} 
 	      width={40} 
 	      onIndexChange={(index: number) => setInstanceDuration(timeValues[index] + instanceDuration.slice(2))}
 	    />
-	    <Text className="text-custom-white text-lg">m</Text>
+	    <Text className="text-custom-white text-lg font-BaiJamjuree-Regular">m</Text>
 	    <ScrollPicker 
 	      dataArray={timeValues} 
 	      width={40} 
 	      onIndexChange={(index: number) => setInstanceDuration(instanceDuration.slice(0, 2) + timeValues[index])}
 	    />
-	    <Text className="text-custom-white text-lg">s</Text>
+	    <Text className="text-custom-white text-lg font-BaiJamjuree-Regular">s</Text>
 	  </View>
 	) : (
 	  <View className="flex-1 flex-row items-center justify-end">
 	    <Pressable onPress={() => setTimed(true)}>
-	      <Text className="text-custom-blue text-xl">Set Duration</Text>
+	      <Text className="text-custom-blue text-xl font-BaiJamjuree-Regular">Set Duration</Text>
 	    </Pressable>
 	  </View>
 	)}

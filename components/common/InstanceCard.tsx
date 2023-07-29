@@ -49,8 +49,8 @@ const InstanceCard: React.FC<Props> = ({
         source={thumbnailImages[thumbnail]} 
       />
       <View className="w-[50%] pl-3 flex-col justify-center">
-        <Text className="text-custom-white mb-1 text-sm font-bold">{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
-        <Text className="text-custom-white">
+        <Text className="text-custom-white mb-1 text-sm font-BaiJamjuree-Bold">{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
+        <Text className="text-custom-white text-lg font-BaiJamjuree-Light">
           {sets}{reps && ` x ${reps}`}{weight && ` of ${weight}kg`}{duration && ` for ${duration}"`}
         </Text>
       </View>

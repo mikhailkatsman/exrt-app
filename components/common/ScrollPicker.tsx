@@ -36,8 +36,8 @@ const ScrollPicker: React.FC<Props> = ({ dataArray, width, onIndexChange }) => {
         {dataArray.map((item, index) => (
           <View key={index} className='h-8 justify-center items-center'>
             <Text className={selectedIndex === index 
-              ? 'font-bold text-2xl text-custom-blue' 
-              : 'text-lg text-custom-grey'}
+              ? 'font-BaiJamjuree-Bold text-2xl text-custom-blue' 
+              : 'font-BaiJamjuree-Light text-lg text-custom-grey'}
             >
               {item}
             </Text>

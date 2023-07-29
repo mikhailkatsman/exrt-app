@@ -47,20 +47,24 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
   }, [session])
 
   return (
-    <View className="flex-row flex-shrink flex-1 mb-2">
-      <View className="w-[14%] pr-1 justify-center">
-        <Text className="text-custom-blue font-extrabold">{session.time}</Text>
+    <View className="flex-row justify-between flex-1 mb-2">
+      <View className="w-[17%] mr-0.5 flex-row justify-center items-center">
+        <Text className="w-1/5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[0]}</Text>
+        <Text className="w-1/5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[1]}</Text>
+        <Text className="w-1/5 -mx-0.5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[2]}</Text>
+        <Text className="w-1/5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[3]}</Text>
+        <Text className="w-1/5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[4]}</Text>
       </View>
-      <View className="w-[8%] h-1/2 border-b border-custom-grey"/>
+      <View className="w-[6%] h-1/2 border-b border-custom-grey"/>
       <View
         className="
-          w-[78%] flex-row overflow-hidden
+          w-[77%] flex-row overflow-hidden
           justify-between rounded-xl
           border border-custom-grey
         "
       >
         <View className="w-[80%] flex-col">
-          <Text className="m-2 text-custom-white text-lg">Upcoming Session</Text>
+          <Text className="mx-2 mt-1 text-custom-white font-BaiJamjuree-RegularItalic text-lg">Upcoming Session</Text>
           <View className="mx-2 border-b border-custom-grey" />
           <ScrollView 
             className="m-2 rounded-xl bg-custom-dark"
@@ -85,7 +89,7 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
             className="
               mt-1 mr-1 mb-0.5 
               flex-1 items-center justify-center
-              border-2 border-custom-grey 
+              border border-custom-grey 
               rounded-lg
             "
             onPress={() => navigation.navigate("NewSession", { 
@@ -100,10 +104,10 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
           <TouchableOpacity className="
             mt-0.5 mr-1 mb-1 
             flex-1 items-center justify-center
-            border-2 border-custom-blue 
+            border border-custom-blue 
             rounded-lg"
           >
-            <Icon name="play" size={36} color="#2EB9DC" />
+            <Icon name="play" size={36} color="#5AABD6" />
           </TouchableOpacity>
         </View>
       </View>

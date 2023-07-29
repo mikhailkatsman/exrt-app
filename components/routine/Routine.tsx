@@ -18,7 +18,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay }) => {
       border rounded-xl border-custom-white"
     >
       <View className="h-[8%] px-2 flex justify-center">
-        <Text className="text-custom-dark text-md font-bold">{week[selectedDay]} Routine</Text>
+        <Text className="text-custom-dark font-BaiJamjuree-Bold">{week[selectedDay]} Routine</Text>
       </View>
       <TimeSlotList 
         dataArray={dataArray} 

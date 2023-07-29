@@ -36,7 +36,7 @@ const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
 	  className="flex-1 justify-center items-center"
 	  resizeMode="stretch"
 	>
-	  <Text className="text-custom-white text-2xl">Rest</Text>
+	  <Text className="text-custom-white font-BaiJamjuree-Regular text-4xl">Rest</Text>
 	</ImageBackground>
       ) : (
 	sessionsArray.map((session, index) => (
