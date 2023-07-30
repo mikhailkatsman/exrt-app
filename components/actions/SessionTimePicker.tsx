@@ -23,7 +23,7 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay }) => {
   }, [])
   const minuteValues: string[] = useMemo(() => {
     const values = []
-    for (let i = 0; i <= 59; i++) values.push(i.toString().padStart(2, '0'))
+    for (let i = 0; i <= 55; i += 5) values.push(i.toString().padStart(2, '0'))
     return values
   }, [])
 

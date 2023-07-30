@@ -65,10 +65,11 @@ const App: React.FC = () => {
         <Stack.Navigator 
           initialRouteName='Home'
           screenOptions={{
-            statusBarHidden: false,
-            statusBarColor: '#080B06',
+            cardStyle: {
+              backgroundColor: 'transparent',
+            },
             headerStyle: {
-              backgroundColor: '#080B06',
+              backgroundColor: 'transparent',
             },
             headerTitleStyle: {
               color: '#F5F6F3',

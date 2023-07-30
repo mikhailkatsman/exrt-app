@@ -8,10 +8,10 @@ type Props = {
   id: number,
   name: string,
   thumbnail: keyof typeof thumbnailImages,
-  sets: number|null,
-  reps: number|null,
-  duration: number|null,
-  weight: number|null,
+  sets: number | null,
+  reps: number | null,
+  weight: number | null,
+  duration: number | null
 }
 
 const InstanceCard: React.FC<Props> = ({ 
@@ -21,8 +21,8 @@ const InstanceCard: React.FC<Props> = ({
   thumbnail, 
   sets, 
   reps, 
-  duration, 
-  weight 
+  weight, 
+  duration 
 }) => {
   const deleteInstance = () => {
     DB.transaction(tx => {
@@ -40,6 +40,8 @@ const InstanceCard: React.FC<Props> = ({
       () => updateInstances()
     )
   }
+
+  console.log(`New Session Card data: ${sets} ${reps} ${duration} ${weight}`)
 
   return (
     <View className="w-full h-16 mb-3 flex-row">

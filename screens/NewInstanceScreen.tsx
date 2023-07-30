@@ -7,15 +7,16 @@ import { Icon } from "@react-native-material/core"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import DB from "@modules/DB"
+import { thumbnailImages } from "@modules/AssetPaths"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewInstance'>
 
 type InstanceData = {
   exerciseId: number | null,
   sets: number,
-  reps: number,
-  weight: number,
-  duration: string
+  reps: number | null,
+  weight: number | null,
+  duration: string | null
 }
 
 const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
@@ -24,35 +25,35 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
   const [instanceData, setInstanceData] = useState<InstanceData>({
     exerciseId: null,
     sets: 1,
-    reps: 1,
-    weight: 0,
-    duration: '0000'
+    reps: 1 ,
+    weight: null,
+    duration: null 
   })
   const [exerciseList, setExerciseList] = useState<{
     id: number, 
     name: string, 
-    thumbnail: string 
+    thumbnail: keyof typeof thumbnailImages 
   }[]>([])
   const [muscleSort, setMuscleSort] = useState<string | null>(null)
   const [typeSort, setTypeSort] = useState<string | null>(null)
 
-  const muscleGroupList: {item: string, label: string}[] = [
-    {item: 'chest', label: 'Chest'},
-    {item: 'biceps', label: 'Biceps'},
-    {item: 'triceps', label: 'Triceps'},
-    {item: 'abs', label: 'Abs'},
-    {item: 'traps', label: 'Traps'},
-    {item: 'forearms', label: 'Forearms'},
-    {item: 'lats', label: 'Lats'},
-    {item: 'delts', label: 'Delts'},
-    {item: 'glutes', label: 'Glutes'},
-    {item: 'quads', label: 'Quads'},
-    {item: 'calves', label: 'Calves'}
+  const muscleGroupList: { label: string, value: string }[] = [
+    { label: 'Chest', value: 'chest' },
+    { label: 'Biceps', value: 'biceps' },
+    { label: 'Triceps', value: 'triceps' },
+    { label: 'Abs', value: 'abs' },
+    { label: 'Traps', value: 'traps' },
+    { label: 'Forearms', value: 'forearms' },
+    { label: 'Lats', value: 'lats' },
+    { label: 'Delts', value: 'delts' },
+    { label: 'Glutes', value: 'glutes' },
+    { label: 'Quads', value: 'quads' },
+    { label: 'Calves', value: 'calves' }
   ]
-  const exerciseTypeList: {item: string, label: string}[] = [
-    {item: 'bodyweight', label: 'Body Weight'},
-    {item: 'equipment', label: 'Equipment'},
-    {item: 'freeweight', label: 'Free Weight'}
+  const exerciseTypeList: { label: string, value: string }[] = [
+    { label: 'Body Weight', value: 'bodyweight' },
+    { label: 'Equipment', value: 'equipment' },
+    { label: 'Free Weight', value: 'freeweight' }
   ]
   
   useEffect(() => {
@@ -71,7 +72,7 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
     sqlQuery += ' ORDER BY name;'
 
     let parameters = [muscleSort, typeSort].filter(param => param)
-    
+     
     DB.sql(
       sqlQuery,
       parameters,
@@ -80,10 +81,23 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
   }, [muscleSort, typeSort])
 
   const createInstance = () => {
+    let pendingInstanceData: InstanceData = {...instanceData} 
+    console.log()
+
+    if (pendingInstanceData.reps === 1 && pendingInstanceData.duration !== null) {
+      pendingInstanceData = {...pendingInstanceData, reps: null}
+    }
+
     DB.sql(`
       INSERT INTO exercise_instances (exercise_id, sets, reps, duration, weight)
       VALUES (?, ?, ?, ?, ?);
-    `, [instanceData.exerciseId, instanceData.sets, instanceData.reps, instanceData.duration, instanceData.weight],
+    `, [
+        pendingInstanceData.exerciseId,
+        pendingInstanceData.sets,
+        pendingInstanceData.reps,
+        pendingInstanceData.duration,
+        pendingInstanceData.weight
+      ],
       (_: any, result: any) => {
         DB.sql(`
           INSERT INTO session_exercise_instances (session_id, exercise_instance_id)
@@ -105,7 +119,7 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
         setInstanceReps={(value: number) => setInstanceData({...instanceData, reps: value})}
         setInstanceWeight={(value: number) => setInstanceData({...instanceData, weight: value})}
         setInstanceDuration={(value: string) => setInstanceData({...instanceData, duration: value})}
-        instanceDuration={instanceData.duration}
+        instanceDuration={instanceData.duration ? instanceData.duration : '0000'}
       />
       <View
        className="w-full h-[63%] mb-4 flex-row overflow-hidden justify-between"
@@ -116,13 +130,13 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
             <DropDown 
               placeholder='Muscle Group'
               listItems={muscleGroupList}
-              onIndexChange={(index: number) => setMuscleSort(muscleGroupList[index].item)}
+              onIndexChange={(index: number) => setMuscleSort(muscleGroupList[index].value)}
               reset={() => setMuscleSort(null)}
             />
             <DropDown 
               placeholder='Type' 
               listItems={exerciseTypeList} 
-              onIndexChange={(index: number) => setTypeSort(exerciseTypeList[index].item)}
+              onIndexChange={(index: number) => setTypeSort(exerciseTypeList[index].value)}
               reset={() => setTypeSort(null)}
             />
           </View>
@@ -148,13 +162,7 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
       </View>
       <TouchableOpacity 
         className="w-full h-[8%] bg-custom-blue rounded-xl flex-row justify-center items-center"
-        onPress={() => {
-          console.log('Adding new instance:')
-          console.log(instanceData)
-          console.log(sessionId ? `to session ${sessionId}` : 'to a new yet uncreated session')
-          console.log('----------------------------------------')
-          createInstance()
-        }}
+        onPress={createInstance}
       >
         <Text className="mr-2 text-custom-white font-bold">Add Exercise to Session</Text>
         <Icon name="check" size={22} color="#F5F6F3" />
