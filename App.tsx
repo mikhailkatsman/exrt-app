@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View } from 'react-native'
+import { Text } from 'react-native'
 import HubScreen from '@screens/HubScreen'
 import HomeScreen from '@screens/HomeScreen'
 import NewSessionScreen from '@screens/NewSessionScreen'
@@ -65,8 +65,10 @@ const App: React.FC = () => {
         <Stack.Navigator 
           initialRouteName='Home'
           screenOptions={{
+            statusBarHidden: false,
+            statusBarColor: '#121212',
             cardStyle: {
-              backgroundColor: 'transparent',
+              backgroundColor: '#121212',
             },
             headerStyle: {
               backgroundColor: 'transparent',

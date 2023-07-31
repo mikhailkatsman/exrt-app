@@ -15,7 +15,7 @@ const Actions: React.FC<Props> = ({ selectedDay }) => {
 	rounded-xl bg-custom-white"
       >
 	<Text className="text-xs mb-1 font-BaiJamjuree-Bold">Move Routine</Text>
-	<Icon name="swap-horizontal" color="#080B06" size={24} /> 
+	<Icon name="swap-horizontal" color="#121212" size={24} /> 
       </TouchableOpacity>
       <SessionTimePicker selectedDay={selectedDay} />
     </View>
