@@ -1,8 +1,8 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native"
+import { View, Text, ScrollView, TouchableOpacity, BackHandler } from "react-native"
 import { ComponentType, useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
-import { Icon } from "@react-native-material/core"
+import { even, Icon } from "@react-native-material/core"
 import InstanceCard from "@components/common/InstanceCard"
 import DB from "@modules/DB"
 
@@ -32,7 +32,6 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       WHERE session_exercise_instances.session_id = ?;
     `, [sessionId],
     (_, result) => {
-      console.log(`Instances for session id: ${sessionId} Fetched`)
       const instanceData = result.rows._array.map((row: any) => ({
         id: row.id,
         name: row.name,
@@ -48,21 +47,22 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
   }
 
   const registerSession = () => {
-    if (sessionExists && instances.length !== 0) {
+    if (instances.length === 0) {
+      navigation.navigate('ErrorModal', { 
+        title: 'No Exercises Added', 
+        message: 'Please Add at least one exercise to this session'
+      })
+      return
+    }
+
+    if (sessionExists) {
       navigation.pop()
     } else {
-      if (instances.length !== 0) {
-        DB.sql(`
-          INSERT INTO weekly_session_instances (day_id, session_id)
-          VALUES (?, ?);
-        `, [routineId, sessionId],
-        (_, result) => {
-          console.log(`New Session id:${sessionId} created on day: ${routineId} with row id: ${result.insertId}`)
-          navigation.pop()
-        })
-      } else {
-        console.log('No Instances Added. Please Add instances before finalizing session creation')
-      }
+      DB.sql(`
+        INSERT INTO weekly_session_instances (day_id, session_id)
+        VALUES (?, ?);
+      `, [routineId, sessionId],
+      () => navigation.pop())
     }
   }
 
@@ -71,17 +71,17 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       tx.executeSql(`
         DELETE FROM weekly_session_instances
         WHERE session_id = ?;
-      `, [sessionId], () => console.log('weekly session instances entry deleted'))
+      `, [sessionId])
 
       tx.executeSql(`
         DELETE FROM sessions
         WHERE id = ?;
-      `, [sessionId], () => console.log('sessions entry deleted'))
+      `, [sessionId])
 
       tx.executeSql(`
         DELETE FROM session_exercise_instances
         WHERE session_id = ?;
-      `, [sessionId], () => console.log('session exercise instances entry deleted'))
+      `, [sessionId])
 
       tx.executeSql(`
         DELETE FROM exercise_instances
@@ -90,7 +90,7 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           FROM session_exercise_instances
           WHERE session_id = ?
         );
-      `, [sessionId], () => console.log('exercise instances entry deleted'))
+      `, [sessionId])
     },
       error => console.log('Error deleting session from DB: ' + error),
       () => navigation.pop()
@@ -99,12 +99,10 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchInstances)
-    
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log(`Selected session: ${sessionId}`)
-    sessionTime && console.log('Session time: ' + sessionTime)
 
-    return () => { unsubscribeFocus() }
+    return () => { 
+      unsubscribeFocus()
+    }
   }, [])
 
   return (
@@ -150,7 +148,12 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       <View className="h-[8%] w-full flex-row items-center justify-between">
         <TouchableOpacity 
           className="w-[30%] h-full bg-custom-red rounded-xl flex-row justify-center items-center"
-          onPress={deleteSession}
+          onPress={() => {
+            navigation.navigate('ConfirmModal', {
+              text: 'Are you sure you want to delete this session?',
+              onConfirm: deleteSession
+            })
+          }}
           activeOpacity={1}
         >
           <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Delete</Text>

@@ -5,8 +5,7 @@ import Calendar from "@components/calendar/Calendar";
 import Routine from "@components/routine/Routine";
 import Actions from "@components/actions/Actions";
 import DB from '@modules/DB'
-
-import type { RootStackParamList } from "../App";
+import type { RootStackParamList } from "App";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
