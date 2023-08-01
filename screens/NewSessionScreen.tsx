@@ -1,12 +1,25 @@
-import { View, Text, ScrollView, TouchableOpacity, BackHandler } from "react-native"
+import { View, Text, ScrollView, TouchableOpacity } from "react-native"
 import { ComponentType, useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
-import { even, Icon } from "@react-native-material/core"
+import DraggableFlatList, { OpacityDecorator, RenderItemParams } from 'react-native-draggable-flatlist'
+import { Icon } from "@react-native-material/core"
 import InstanceCard from "@components/common/InstanceCard"
 import DB from "@modules/DB"
+import { thumbnailImages } from "@modules/AssetPaths"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewSession'>
+
+type Instance = {
+  key: string,
+  id: number,
+  name: string,
+  thumbnail: keyof typeof thumbnailImages,
+  sets: number | null,
+  reps: number | null,
+  weight: number | null,
+  duration: number | null
+}
 
 const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
   const routineId = route.params?.routineId
@@ -32,7 +45,8 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       WHERE session_exercise_instances.session_id = ?;
     `, [sessionId],
     (_, result) => {
-      const instanceData = result.rows._array.map((row: any) => ({
+      const instanceData = result.rows._array.map((row, index) => ({
+        key: `item=${index}`,
         id: row.id,
         name: row.name,
         thumbnail: row.thumbnail,
@@ -46,11 +60,31 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
     })
   }
 
+  const renderItem = ({ item, drag, isActive }: RenderItemParams<Instance>) => {
+    return (
+      <OpacityDecorator activeOpacity={0.6}>
+        <InstanceCard 
+          updateInstances={fetchInstances}
+          drag={drag}
+          isActive={isActive}
+          key={item.key}
+          id={item.id}
+          name={item.name}
+          thumbnail={item.thumbnail}
+          sets={item.sets}
+          reps={item.reps}
+          duration={item.duration}
+          weight={item.weight}
+        />
+      </OpacityDecorator>
+    )
+  }
+
   const registerSession = () => {
     if (instances.length === 0) {
       navigation.navigate('ErrorModal', { 
         title: 'No Exercises Added', 
-        message: 'Please Add at least one exercise to this session'
+        message: 'Please add at least one exercise to this session.'
       })
       return
     }
@@ -115,34 +149,31 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
         "
       >
         <View className="w-full flex-col">
-          <Text className="m-2 text-custom-white text-lg font-BaiJamjuree-RegularItalic">Upcoming Session</Text>
-          <View className="mx-2 border-b border-custom-white" />
-          <ScrollView 
-            className="p-3 rounded-xl bg-custom-dark"
-            horizontal={false}
-          >
-            {instances.map((instance, index) => (
-              <InstanceCard 
-                key={`instance-${index}`}
-                updateInstances={fetchInstances}
-                id={instance.id}
-                name={instance.name}
-                thumbnail={instance.thumbnail}
-                sets={instance.sets}
-                reps={instance.reps}
-                duration={instance.duration}
-                weight={instance.weight}
-              />
-            ))}
+          <View className="p-3 w-full h-[20%] flex-col justify-between">
+            <Text className="text-custom-white text-lg font-BaiJamjuree-RegularItalic">Upcoming Session</Text>
+            <View className="border-b border-custom-white" />
+          </View>
+          <DraggableFlatList 
+            className="p-3 h-[68%] rounded-xl"
+            data={instances}
+            onDragEnd={({ data }) => {
+              console.log(data)
+              setInstances(data)}
+            }
+            keyExtractor={item => item.key}
+            renderItem={renderItem}
+            dragItemOverflow={true}
+          />
+          <View className="w-full h-[12%] p-2">
             <TouchableOpacity className="
-              w-full h-12 mb-2 
-              border border-custom-white rounded-lg 
-              flex justify-center items-center"
+              flex-1 border border-custom-white rounded-lg 
+              flex-row justify-center items-center"
               onPress={() => navigation.navigate("NewInstance", { sessionId: sessionId })}
             >
-              <Icon name="plus" size={30} color="#F5F6F3" />
+              <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Exercise</Text>
+              <Icon name="plus" size={24} color="#F5F6F3" />
             </TouchableOpacity>
-          </ScrollView>
+          </View>
         </View>
       </View>
       <View className="h-[8%] w-full flex-row items-center justify-between">
@@ -167,7 +198,6 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Confirm Session</Text>
           <Icon name="check" size={22} color="#F5F6F3" />
         </TouchableOpacity>
-
       </View>
     </View>
   )

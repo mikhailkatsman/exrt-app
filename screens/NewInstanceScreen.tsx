@@ -81,6 +81,14 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
   }, [muscleSort, typeSort])
 
   const createInstance = () => {
+    if (!instanceData.exerciseId) {
+      navigation.navigate('ErrorModal', {
+        title: 'No Exercise Selected', 
+        message: 'Please select an exercise from the list.'
+      })
+      return
+    }
+
     let pendingInstanceData: InstanceData = {...instanceData} 
 
     if (pendingInstanceData.reps === 1 && pendingInstanceData.duration !== null) {
@@ -88,24 +96,30 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
     }
 
     DB.sql(`
-      INSERT INTO exercise_instances (exercise_id, sets, reps, duration, weight)
-      VALUES (?, ?, ?, ?, ?);
-    `, [
-        pendingInstanceData.exerciseId,
-        pendingInstanceData.sets,
-        pendingInstanceData.reps,
-        pendingInstanceData.duration,
-        pendingInstanceData.weight
-      ],
-      (_: any, result: any) => {
+      SELECT MAX(instance_order) as maxOrder 
+      FROM session_exercise_instances 
+      WHERE session_id = ?;
+    `, [sessionId], 
+    (_, result) => {
+      const maxOrder = result.rows._array[0].maxOrder || 0
+      DB.sql(`
+        INSERT INTO exercise_instances (exercise_id, sets, reps, duration, weight)
+        VALUES (?, ?, ?, ?, ?);
+      `, [
+          pendingInstanceData.exerciseId,
+          pendingInstanceData.sets,
+          pendingInstanceData.reps,
+          pendingInstanceData.duration,
+          pendingInstanceData.weight
+        ],
+      (_, result) => {
         DB.sql(`
-          INSERT INTO session_exercise_instances (session_id, exercise_instance_id)
-          VALUES (?, ?);
-        `, [sessionId, result.insertId],
-          (_: any, result: any) => navigation.pop()
-        )
-      }
-    )
+          INSERT INTO session_exercise_instances (session_id, exercise_instance_id, instance_order)
+          VALUES (?, ?, ?);
+        `, [sessionId, result.insertId, maxOrder + 1],
+        () => navigation.pop())
+      })
+    })
   }
 
   return (

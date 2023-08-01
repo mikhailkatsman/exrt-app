@@ -17,7 +17,7 @@ const ConfirmModal: React.FC<Props> = ({ navigation, route }) => {
   return (
     <View className="flex-1 bg-custom-dark/60 justify-center items-center">
       <View className="w-2/3 h-1/4 bg-custom-dark flex-col justify-between rounded-xl border border-custom-white">
-        <View className="h-[70%] pb-2 px-2 flex justify-center items-center">
+        <View className="h-[70%] pb-2 px-6 flex justify-center items-center">
           <Text className="text-custom-white font-BaiJamjuree-Regular">{text}</Text>
         </View>
         <View className="h-[30%] p-2 flex-row justify-between items-center">

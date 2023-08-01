@@ -17,7 +17,7 @@ const ErrorModal: React.FC<Props> = ({ navigation, route }) => {
         <View className="h-[20%] p-2 flex justify-center items-center">
           <Text className="text-custom-white font-BaiJamjuree-Bold">{title}</Text>
         </View>
-        <View className="h-[50%] pb-2 px-2 flex justify-center items-center">
+        <View className="h-[50%] pb-2 px-6 flex justify-center items-center">
           <Text className="text-custom-white font-BaiJamjuree-Regular">{message}</Text>
         </View>
         <View className="h-[30%] p-2">
