@@ -29,7 +29,8 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
       ON session_exercise_instances.exercise_instance_id = exercise_instances.id
       JOIN exercises
       ON exercise_instances.exercise_id = exercises.id
-      WHERE session_exercise_instances.session_id = ?;
+      WHERE session_exercise_instances.session_id = ?
+      ORDER BY instance_order ASC;
     `, [session.id],
     (_: any, result: any) => {
       const instanceData = result.rows._array.map((row: any) => ({
@@ -55,17 +56,17 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
         <Text className="w-1/5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[3]}</Text>
         <Text className="w-1/5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[4]}</Text>
       </View>
-      <View className="w-[6%] h-1/2 border-b border-custom-grey"/>
+      <View className="w-[6%] h-1/2 border-b border-custom-white"/>
       <View
         className="
           w-[77%] flex-row overflow-hidden
-          justify-between rounded-xl
-          border border-custom-grey
+          justify-between rounded-lg
+          border border-custom-white
         "
       >
         <View className="w-[80%] flex-col">
           <Text className="mx-2 mt-1 text-custom-white font-BaiJamjuree-RegularItalic text-lg">Upcoming Session</Text>
-          <View className="mx-2 border-b border-custom-grey" />
+          <View className="mx-2 border-b border-custom-white" />
           <ScrollView 
             className="m-2 rounded-xl bg-custom-dark"
             fadingEdgeLength={100}
@@ -89,8 +90,8 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
             className="
               mt-1 mr-1 mb-0.5 
               flex-1 items-center justify-center
-              border border-custom-grey 
-              rounded-lg
+              border border-custom-white
+              rounded
             "
             onPress={() => navigation.navigate("NewSession", { 
               routineId: routineId,
@@ -99,13 +100,13 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
               sessionTime: session.time 
             })}
           >
-            <Icon name="pencil" size={24} color="#4D594A" />
+            <Icon name="pencil" size={22} color="#F5F6F3" />
           </TouchableOpacity>
           <TouchableOpacity className="
             mt-0.5 mr-1 mb-1 
             flex-1 items-center justify-center
             border border-custom-blue 
-            rounded-lg"
+            rounded"
           >
             <Icon name="play" size={36} color="#5AABD6" />
           </TouchableOpacity>

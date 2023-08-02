@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native"
+import { View, Text, TouchableOpacity } from "react-native"
 import { ComponentType, useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
@@ -11,7 +11,7 @@ import { thumbnailImages } from "@modules/AssetPaths"
 type Props = NativeStackScreenProps<RootStackParamList, 'NewSession'>
 
 type Instance = {
-  key: string,
+  key: number,
   id: number,
   name: string,
   thumbnail: keyof typeof thumbnailImages,
@@ -42,11 +42,12 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       ON session_exercise_instances.exercise_instance_id = exercise_instances.id
       JOIN exercises
       ON exercise_instances.exercise_id = exercises.id
-      WHERE session_exercise_instances.session_id = ?;
+      WHERE session_exercise_instances.session_id = ?
+      ORDER BY instance_order ASC;
     `, [sessionId],
     (_, result) => {
       const instanceData = result.rows._array.map((row, index) => ({
-        key: `item=${index}`,
+        key: index.toString(),
         id: row.id,
         name: row.name,
         thumbnail: row.thumbnail,
@@ -131,6 +132,23 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
     )
   }
 
+  const updateInstanceOrder = (data: any) => {
+    setInstances(data)
+
+    DB.transaction(tx => {
+      data.forEach((instance: Instance, index: number) => {
+        tx.executeSql(`
+          UPDATE session_exercise_instances 
+          SET instance_order = ? 
+          WHERE exercise_instance_id = ? 
+          AND session_id = ?;
+        `, [index + 1, instance.id, sessionId])
+      })
+    },
+      error => console.log('Error updating instance order: ' + error),
+    )
+  }
+
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchInstances)
 
@@ -156,11 +174,8 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           <DraggableFlatList 
             className="p-3 h-[68%] rounded-xl"
             data={instances}
-            onDragEnd={({ data }) => {
-              console.log(data)
-              setInstances(data)}
-            }
-            keyExtractor={item => item.key}
+            onDragEnd={({ data }) => updateInstanceOrder(data)}
+            keyExtractor={(item: any) => item.key}
             renderItem={renderItem}
             dragItemOverflow={true}
           />

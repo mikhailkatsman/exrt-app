@@ -62,7 +62,7 @@ const InstanceCard: React.FC<Props> = ({
         </Text>
       </View>
       <TouchableOpacity 
-        className="w-[15%] flex items-center justify-center"
+        className="w-[10%] flex items-center justify-center"
         onPress={() => {
           navigation.navigate('ConfirmModal', {
             text: 'Are you sure you want to delete this exercise?',
@@ -75,7 +75,7 @@ const InstanceCard: React.FC<Props> = ({
         <Icon name="delete-outline" size={26} color='#F4533E' />
       </TouchableOpacity>
       <TouchableOpacity 
-        className="w-[10%] h-full flex items-end justify-center"
+        className="w-[15%] h-full flex items-end justify-center"
         onPressIn={drag}
         activeOpacity={1}
         disabled={isActive}
