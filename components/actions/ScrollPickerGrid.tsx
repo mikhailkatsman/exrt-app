@@ -51,7 +51,7 @@ const ScrollPickerGrid: React.FC<Props> = ({
   }, []);
 
   return (
-    <View className="h-[25%] w-full mb-3 px-2">
+    <View className="h-48 w-full mb-6 px-2">
       <View className="h-[50%] w-full flex-row mb-3">
 	<View className="flex-1 flex-row items-center justify-start">
 	  <Text className="w-12 text-custom-white text-xl font-BaiJamjuree-Regular">Sets</Text>

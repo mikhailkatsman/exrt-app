@@ -7,6 +7,8 @@ import { Icon } from "@react-native-material/core"
 import InstanceCard from "@components/common/InstanceCard"
 import DB from "@modules/DB"
 import { thumbnailImages } from "@modules/AssetPaths"
+import ScreenWrapper from "@components/common/ScreenWrapper"
+import BottomBarWrapper from "@components/common/BottomBarWrapper"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewSession'>
 
@@ -158,42 +160,39 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
   }, [])
 
   return (
-    <View className="h-full w-full p-2 bg-custom-dark">
-      <View
-        className="
-          w-full h-[90%] mb-4 flex-row overflow-hidden
-          justify-between rounded-xl
-          border border-custom-white
-        "
+    <ScreenWrapper>
+      <View className="flex-1 mb-3 rounded-xl
+        border border-custom-white flex-col justify-between"
       >
-        <View className="w-full flex-col">
-          <View className="p-3 w-full h-[20%] flex-col justify-between">
-            <Text className="text-custom-white text-lg font-BaiJamjuree-RegularItalic">Upcoming Session</Text>
-            <View className="border-b border-custom-white" />
-          </View>
+        <View className="p-3 h-32 flex-col justify-between">
+          <Text className="text-custom-white text-lg font-BaiJamjuree-RegularItalic">Upcoming Session</Text>
+          <View className="border-b border-custom-white" />
+        </View>
+        <View className="flex-1">
           <DraggableFlatList 
-            className="p-3 h-[68%] rounded-xl"
+            className="p-3 rounded-xl"
             data={instances}
             onDragEnd={({ data }) => updateInstanceOrder(data)}
             keyExtractor={(item: any) => item.key}
             renderItem={renderItem}
             dragItemOverflow={true}
+            fadingEdgeLength={200}
           />
-          <View className="w-full h-[12%] p-2">
-            <TouchableOpacity className="
-              flex-1 border border-custom-white rounded-lg 
-              flex-row justify-center items-center"
-              onPress={() => navigation.navigate("NewInstance", { sessionId: sessionId })}
-            >
-              <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Exercise</Text>
-              <Icon name="plus" size={24} color="#F5F6F3" />
-            </TouchableOpacity>
-          </View>
+        </View>
+        <View className="h-20 p-2">
+          <TouchableOpacity className="
+            flex-1 border border-custom-white rounded-lg 
+            flex-row justify-center items-center"
+            onPress={() => navigation.navigate("NewInstance", { sessionId: sessionId })}
+          >
+            <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Exercise</Text>
+            <Icon name="plus" size={24} color="#F5F6F3" />
+          </TouchableOpacity>
         </View>
       </View>
-      <View className="h-[8%] w-full flex-row items-center justify-between">
+      <BottomBarWrapper>
         <TouchableOpacity 
-          className="w-[30%] h-full bg-custom-red rounded-xl flex-row justify-center items-center"
+          className="w-[30%] bg-custom-red rounded-xl flex-row justify-center items-center"
           onPress={() => {
             navigation.navigate('ConfirmModal', {
               text: 'Are you sure you want to delete this session?',
@@ -205,16 +204,17 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Delete</Text>
           <Icon name="delete-outline" size={22} color="#F5F6F3" />
         </TouchableOpacity>
+        <View className="w-3" />
         <TouchableOpacity 
-          className="w-[67%] h-full bg-custom-blue rounded-xl flex-row justify-center items-center"
+          className="flex-1 bg-custom-blue rounded-xl flex-row justify-center items-center"
           onPress={registerSession}
           activeOpacity={1}
         >
           <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Confirm Session</Text>
           <Icon name="check" size={22} color="#F5F6F3" />
         </TouchableOpacity>
-      </View>
-    </View>
+      </BottomBarWrapper>
+    </ScreenWrapper>
   )
 }
 

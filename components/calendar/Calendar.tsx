@@ -27,7 +27,7 @@ const Calendar: React.FC<Props> = ({
   }, [dataArray])
 
   return (
-    <View className="flex-row w-full h-[10%] justify-between py-1 my-1">
+    <View className="flex-row w-full h-20 justify-between py-1 my-1">
       {week.map((day, index) => (
 	<TouchableOpacity 
 	  className="h-full flex-col flex-1 items-stretch" 

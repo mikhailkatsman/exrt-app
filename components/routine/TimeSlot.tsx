@@ -108,7 +108,7 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
             border border-custom-blue 
             rounded"
           >
-            <Icon name="play" size={36} color="#5AABD6" />
+            <Icon name="dumbbell" size={28} color="#5AABD6" />
           </TouchableOpacity>
         </View>
       </View>

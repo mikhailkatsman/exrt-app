@@ -13,7 +13,9 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import * as Font from 'expo-font'
 import { customFonts } from '@modules/AssetPaths'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import ActiveSessionScreen from '@screens/ActiveSessionScreen'
 
 export type RootStackParamList = {
   Home: undefined,
@@ -29,6 +31,7 @@ export type RootStackParamList = {
     sessionId: number,
   },
   NewProgram: undefined,
+  ActiveSession: undefined,
   ErrorModal: {
     title: string,
     message: string,
@@ -72,66 +75,72 @@ const App: React.FC = () => {
 
   return isInitialized ? (
     <GestureHandlerRootView className='flex-1'>
-      <NavigationContainer>
-        <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-          <Stack.Navigator initialRouteName='Home'>
-            <Stack.Group
-              screenOptions={{
-                presentation: 'card',
-                statusBarHidden: false,
-                statusBarColor: '#121212',
-                cardStyle: {
-                  backgroundColor: '#121212',
-                },
-                headerStyle: {
-                  backgroundColor: 'transparent',
-                },
-                headerTitleStyle: {
-                  color: '#F5F6F3',
-                  fontFamily: 'BaiJamjuree-Bold',
-                  fontSize: 18,
-                },
-                headerTintColor: '#F5F6F3',
-              }}
-            >
-              <Stack.Screen
-                name='Home'
-                component={HomeScreen}
-              />
-              <Stack.Screen
-                name='Hub'
-                component={HubScreen}
-                options={{title: 'Hub'}}
-              />
-              <Stack.Screen
-                name='NewSession'
-                component={NewSessionScreen}
-                options={{title: 'Edit Session'}}
-              />
-              <Stack.Screen
-                name='NewInstance'
-                component={NewInstanceScreen}
-                options={{title: 'Add New Session Exercise'}}
-              />
-            </Stack.Group>
-            <Stack.Group 
-              screenOptions={{ 
-                presentation: 'transparentModal',
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen
-                name='ErrorModal'
-                component={ErrorModal}
-              />
-              <Stack.Screen
-                name='ConfirmModal'
-                component={ConfirmModal}
-              />
-            </Stack.Group>
-          </Stack.Navigator>
-        </IconComponentProvider>
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+            <Stack.Navigator initialRouteName='Home'>
+              <Stack.Group
+                screenOptions={{
+                  presentation: 'card',
+                  statusBarHidden: false,
+                  statusBarColor: '#121212',
+                  cardStyle: {
+                    backgroundColor: '#121212',
+                  },
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTitleStyle: {
+                    color: '#F5F6F3',
+                    fontFamily: 'BaiJamjuree-Bold',
+                    fontSize: 18,
+                  },
+                  headerTintColor: '#F5F6F3',
+                }}
+              >
+                <Stack.Screen
+                  name='Home'
+                  component={HomeScreen}
+                />
+                <Stack.Screen
+                  name='Hub'
+                  component={HubScreen}
+                  options={{title: 'Hub'}}
+                />
+                <Stack.Screen
+                  name='NewSession'
+                  component={NewSessionScreen}
+                  options={{title: 'Edit Session'}}
+                />
+                <Stack.Screen
+                  name='NewInstance'
+                  component={NewInstanceScreen}
+                  options={{title: 'Add New Session Exercise'}}
+                />
+                <Stack.Screen
+                  name='ActiveSession'
+                  component={ActiveSessionScreen}
+                />
+              </Stack.Group>
+              <Stack.Group 
+                screenOptions={{ 
+                  presentation: 'transparentModal',
+                  headerShown: false,
+                }}
+              >
+                <Stack.Screen
+                  name='ErrorModal'
+                  component={ErrorModal}
+                />
+                <Stack.Screen
+                  name='ConfirmModal'
+                  component={ConfirmModal}
+                />
+              </Stack.Group>
+            </Stack.Navigator>
+          </IconComponentProvider>
+        </NavigationContainer>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   ) : (
     <Text>Loading...</Text>

@@ -11,7 +11,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay }) => {
 
   return (
     <View className="
-      h-[76%] my-2
+      flex-auto mt-2
       flex-col
       bg-custom-white
       overflow-hidden

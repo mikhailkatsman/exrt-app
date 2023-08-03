@@ -5,9 +5,12 @@ import ScrollPicker from "@components/common/ScrollPicker"
 import { useNavigation } from "@react-navigation/native"
 import DB from "@modules/DB"
 
-type Props = { selectedDay: number }
+type Props = { 
+  selectedDay: number,
+  sessionTimes: any[]
+}
 
-const SessionTimePicker: React.FC<Props> = ({ selectedDay }) => {
+const SessionTimePicker: React.FC<Props> = ({ selectedDay, sessionTimes }) => {
   const navigation = useNavigation()
 
   const [isActive, setIsActive] = useState<boolean>(false)
@@ -40,6 +43,15 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay }) => {
   const handlePress = () => setIsActive(!isActive)
 
   const navigateToNewSessionScreen = () => {
+    if (sessionTimes.find(item => item === selectedTime)) {
+      navigation.navigate("ErrorModal", {
+	title: 'Time Already Allocated',
+	message: 'This time slot is already used. Please choose another!'
+      })
+      handlePress()
+      return
+    }
+
     DB.sql(`
       INSERT INTO sessions (time) VALUES (?)
     `, [selectedTime], 
@@ -51,6 +63,7 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay }) => {
 	  sessionTime: selectedTime
       })
       handlePress()
+      return
     })
   }
 
@@ -60,15 +73,15 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay }) => {
 	ref={buttonRef}
 	onLayout={handleLayout}
 	className={`
-	  h-14 border-2 border-custom-white
-	  flex-1 items-center justify-center 
+	  flex-1 border-2 border-custom-white
+	  flex-row items-center justify-center 
 	  rounded-xl bg-custom-white
 	`}
 	onPress={handlePress}
 	activeOpacity={0.5}
       >
-	<Text className="text-xs font-BaiJamjuree-Bold mb-1">Create New Session</Text>
-	<Icon name="dumbbell" color="#080B06" size={22} /> 
+	<Text className="text-xs font-BaiJamjuree-Bold mr-2">Create Session</Text>
+	<Icon name="plus" color="#080B06" size={22} /> 
       </TouchableOpacity>
       {isActive && (
 	<Modal
@@ -82,15 +95,15 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay }) => {
 	      position: "absolute",
 	      left: buttonPosition.x,
 	      width: buttonPosition.width,
-	      top: buttonPosition.yb - 208, 
+	      top: buttonPosition.yb - 224, 
 	    }}
 	    className="
-	      h-52 border-2 border-custom-white rounded-xl 
+	      h-56 border-2 border-custom-white rounded-xl 
 	      bg-custom-dark flex-col
 	    "
 	  >
 	    <View className="w-full mt-3 flex-col justify-center items-center">
-	      <Text className="text-custom-white mb-2 font-BaiJamjuree-Regular">Choose Time:</Text>
+	      <Text className="text-custom-white mb-3 font-BaiJamjuree-Regular">Choose Time:</Text>
 	      <View className="flex-row items-center">
 		<ScrollPicker 
 		  dataArray={hourValues} 
@@ -111,12 +124,12 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay }) => {
 	    </View>
 	  </View>
 	  <TouchableOpacity
-	    className="h-14 bg-custom-white rounded-xl flex-row items-center justify-center"
+	    className="h-16 bg-custom-white rounded-xl flex-row items-center justify-center"
 	    style={{
 	      position: "absolute",
 	      left: buttonPosition.x,
 	      width: buttonPosition.width,
-	      top: buttonPosition.yb - 56, 
+	      top: buttonPosition.yb - 64, 
 	    }}
 	    activeOpacity={1}
 	    onPress={navigateToNewSessionScreen}

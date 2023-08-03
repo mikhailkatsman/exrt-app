@@ -8,6 +8,8 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import DB from "@modules/DB"
 import { thumbnailImages } from "@modules/AssetPaths"
+import ScreenWrapper from "@components/common/ScreenWrapper"
+import BottomBarWrapper from "@components/common/BottomBarWrapper"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'NewInstance'>
 
@@ -123,61 +125,75 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
   }
 
   return (
-    <View className="h-full w-full px-2 bg-custom-dark">
-      <ScrollPickerGrid 
-        setInstanceSets={(value: number) => setInstanceData({...instanceData, sets: value})}
-        setInstanceReps={(value: number) => setInstanceData({...instanceData, reps: value})}
-        setInstanceWeight={(value: number) => setInstanceData({...instanceData, weight: value})}
-        setInstanceDuration={(value: string) => setInstanceData({...instanceData, duration: value})}
-        instanceDuration={instanceData.duration ? instanceData.duration : '0000'}
-      />
-      <View
-       className="w-full h-[63%] mb-4 flex-row overflow-hidden justify-between"
-      >
-        <View className="w-full flex-col">
-          <View className="h-[15%] p-2 flex-row items-center justify-between">
-            <Text className="text-custom-white mb-1 font-bold">Sort by</Text>
-            <DropDown 
-              placeholder='Muscle Group'
-              listItems={muscleGroupList}
-              onIndexChange={(index: number) => setMuscleSort(muscleGroupList[index].value)}
-              reset={() => setMuscleSort(null)}
-            />
-            <DropDown 
-              placeholder='Type' 
-              listItems={exerciseTypeList} 
-              onIndexChange={(index: number) => setTypeSort(exerciseTypeList[index].value)}
-              reset={() => setTypeSort(null)}
-            />
-          </View>
-          <ScrollView 
-            className="h-[85%] p-2 bg-custom-dark"
-            horizontal={false}
-            fadingEdgeLength={200}
-          >
-            {exerciseList.map((exercise, index) => (
-              <ExerciseCard 
-                key={index}
-                id={exercise.id}
-                selectedId={instanceData?.exerciseId}
-                setSelectedId={(id: number) => setInstanceData(
-                  {...instanceData, exerciseId: instanceData.exerciseId === id ? null : id}
-                )}
-                name={exercise.name}
-                thumbnail={exercise.thumbnail}
+    <ScreenWrapper>
+      <View className="flex-1 mb-3">
+        <ScrollPickerGrid 
+          setInstanceSets={(value: number) => setInstanceData({...instanceData, sets: value})}
+          setInstanceReps={(value: number) => setInstanceData({...instanceData, reps: value})}
+          setInstanceWeight={(value: number) => setInstanceData({...instanceData, weight: value})}
+          setInstanceDuration={(value: string) => setInstanceData({...instanceData, duration: value})}
+          instanceDuration={instanceData.duration ? instanceData.duration : '0000'}
+        />
+        <View className="flex-1 mb-3 flex-row overflow-hidden justify-between">
+          <View className="w-full flex-col">
+            <View className="h-[15%] p-2 flex-row items-center justify-between">
+              <Text className="text-custom-white mb-1 font-bold">Sort by</Text>
+              <DropDown 
+                placeholder='Muscle Group'
+                listItems={muscleGroupList}
+                onIndexChange={(index: number) => setMuscleSort(muscleGroupList[index].value)}
+                reset={() => setMuscleSort(null)}
               />
-            ))}
-          </ScrollView>
+              <DropDown 
+                placeholder='Type' 
+                listItems={exerciseTypeList} 
+                onIndexChange={(index: number) => setTypeSort(exerciseTypeList[index].value)}
+                reset={() => setTypeSort(null)}
+              />
+            </View>
+            <ScrollView 
+              className="h-[85%] p-2 bg-custom-dark"
+              horizontal={false}
+              fadingEdgeLength={200}
+            >
+              {exerciseList.map((exercise, index) => (
+                <ExerciseCard 
+                  key={index}
+                  id={exercise.id}
+                  selectedId={instanceData?.exerciseId}
+                  setSelectedId={(id: number) => setInstanceData(
+                    {...instanceData, exerciseId: instanceData.exerciseId === id ? null : id}
+                  )}
+                  name={exercise.name}
+                  thumbnail={exercise.thumbnail}
+                />
+              ))}
+            </ScrollView>
+          </View>
         </View>
       </View>
-      <TouchableOpacity 
-        className="w-full h-[8%] bg-custom-blue rounded-xl flex-row justify-center items-center"
-        onPress={createInstance}
-      >
-        <Text className="mr-2 text-custom-white font-bold">Add Exercise to Session</Text>
-        <Icon name="check" size={22} color="#F5F6F3" />
-      </TouchableOpacity>
-    </View>
+      <BottomBarWrapper>
+        <TouchableOpacity 
+          className="flex-1 rounded-xl border border-custom-white flex-row justify-center items-center"
+          onPress={() => {}}
+        >
+          <Text className="mr-2 text-custom-white font-bold">
+            Create Exercise
+          </Text>
+          <Icon name="check" size={22} color="#F5F6F3" />
+        </TouchableOpacity>
+        <View className="w-3" />
+        <TouchableOpacity 
+          className="flex-1 bg-custom-blue rounded-xl flex-row justify-center items-center"
+          onPress={createInstance}
+        >
+          <Text className="mr-2 text-custom-white font-bold">
+            Add to Session
+          </Text>
+          <Icon name="check" size={22} color="#F5F6F3" />
+        </TouchableOpacity>
+      </BottomBarWrapper>
+    </ScreenWrapper>
   )
 }
 
