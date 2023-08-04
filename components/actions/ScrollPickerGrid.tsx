@@ -6,16 +6,16 @@ type Props = {
   setInstanceSets: (value: number) => void,
   setInstanceReps: (value: number) => void,
   setInstanceWeight: (value: number) => void,
-  setInstanceDuration: (value: string) => void,
-  instanceDuration: string,
+  setInstanceMinuteDuration: (value: number) => void,
+  setInstanceSecondDuration: (value: number) => void,
 }
 
 const ScrollPickerGrid: React.FC<Props> = ({
   setInstanceReps,
   setInstanceSets,
   setInstanceWeight,
-  setInstanceDuration,
-  instanceDuration
+  setInstanceMinuteDuration,
+  setInstanceSecondDuration,
 }) => {
   const [weighted, setWeighted] = useState<boolean>(false)
   const [timed, setTimed] = useState<boolean>(false)
@@ -44,9 +44,15 @@ const ScrollPickerGrid: React.FC<Props> = ({
     return values;
   }, []);
 
-  const timeValues: string[] = useMemo(() => {
+  const minuteValues: number[] = useMemo(() => {
     const values = [];
-    for (let i = 0; i <= 59; i++) values.push(i.toString().padStart(2, '0'));
+    for (let i = 0; i <= 59; i++) values.push(i);
+    return values;
+  }, []);
+
+  const secondValues: number[] = useMemo(() => {
+    const values = [];
+    for (let i = 0; i <= 55; i += 5) values.push(i);
     return values;
   }, []);
 
@@ -92,15 +98,15 @@ const ScrollPickerGrid: React.FC<Props> = ({
 	  <View className="flex-1 flex-row items-center justify-end">
 	    <Text className="text-custom-white text-xl mr-1 font-BaiJamjuree-Regular">Duration</Text>
 	    <ScrollPicker 
-	      dataArray={timeValues} 
+	      dataArray={minuteValues.map(value => value.toString().padStart(2, '0'))} 
 	      width={40} 
-	      onIndexChange={(index: number) => setInstanceDuration(timeValues[index] + instanceDuration.slice(2))}
+	      onIndexChange={(index: number) => setInstanceMinuteDuration(minuteValues[index])}
 	    />
 	    <Text className="text-custom-white text-lg font-BaiJamjuree-Regular">m</Text>
 	    <ScrollPicker 
-	      dataArray={timeValues} 
+	      dataArray={secondValues.map(value => value.toString().padStart(2, '0'))} 
 	      width={40} 
-	      onIndexChange={(index: number) => setInstanceDuration(instanceDuration.slice(0, 2) + timeValues[index])}
+	      onIndexChange={(index: number) => setInstanceSecondDuration(secondValues[index])}
 	    />
 	    <Text className="text-custom-white text-lg font-BaiJamjuree-Regular">s</Text>
 	  </View>

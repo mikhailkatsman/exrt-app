@@ -7,7 +7,8 @@ type Props = {
   thumbnail: keyof typeof thumbnailImages,
   sets: number|null,
   reps: number|null,
-  duration: number|null,
+  minuteDuration: number|null,
+  secondDuration: number|null,
   weight: number|null,
 }
 
@@ -17,7 +18,8 @@ const TimeSlotInstanceCard: React.FC<Props> = ({
   thumbnail, 
   sets, 
   reps, 
-  duration, 
+  minuteDuration, 
+  secondDuration, 
   weight 
 }) => {
   return (
@@ -30,7 +32,12 @@ const TimeSlotInstanceCard: React.FC<Props> = ({
       <View className="w-[75%] pl-2 flex-col justify-center">
         <Text className="mb-1 text-custom-white text-xs font-BaiJamjuree-Bold">{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
         <Text className="text-custom-white text-sm font-BaiJamjuree-Light">
-          {sets}{reps && ` x ${reps}`}{weight && ` of ${weight}kg`}{duration && ` for ${duration}"`}
+          {sets}
+          {reps && ` x ${reps}`}
+          {weight && ` with ${weight}kg`}
+          {(minuteDuration || secondDuration) && ' for '}
+          {minuteDuration && `${minuteDuration}m`}
+          {secondDuration && `${secondDuration}s`}
         </Text>
       </View>
     </View>

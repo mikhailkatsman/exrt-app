@@ -20,7 +20,8 @@ type Instance = {
   sets: number | null,
   reps: number | null,
   weight: number | null,
-  duration: number | null
+  minuteDuration: number | null,
+  secondDuration: number | null,
 }
 
 const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
@@ -35,7 +36,8 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       SELECT exercise_instances.id AS id, 
              exercise_instances.sets AS sets, 
              exercise_instances.reps AS reps, 
-             exercise_instances.duration AS duration, 
+             exercise_instances.minuteDuration AS minuteDuration, 
+             exercise_instances.secondDuration AS secondDuration, 
              exercise_instances.weight AS weight,
              exercises.name as name,
              exercises.thumbnail AS thumbnail
@@ -55,7 +57,8 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
         thumbnail: row.thumbnail,
         sets: row.sets,
         reps: row.reps,
-        duration: row.duration,
+        minuteDuration: row.minuteDuration,
+        secondDuration: row.secondDuration,
         weight: row.weight
       }))
 
@@ -76,7 +79,8 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           thumbnail={item.thumbnail}
           sets={item.sets}
           reps={item.reps}
-          duration={item.duration}
+          minuteDuration={item.minuteDuration}
+          secondDuration={item.secondDuration}
           weight={item.weight}
         />
       </OpacityDecorator>

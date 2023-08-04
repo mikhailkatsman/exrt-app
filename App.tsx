@@ -117,10 +117,6 @@ const App: React.FC = () => {
                   component={NewInstanceScreen}
                   options={{title: 'Add New Session Exercise'}}
                 />
-                <Stack.Screen
-                  name='ActiveSession'
-                  component={ActiveSessionScreen}
-                />
               </Stack.Group>
               <Stack.Group 
                 screenOptions={{ 
@@ -135,6 +131,16 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='ConfirmModal'
                   component={ConfirmModal}
+                />
+              </Stack.Group>
+              <Stack.Group 
+                screenOptions={{
+                  headerShown: false
+                }}
+              >
+                <Stack.Screen
+                  name='ActiveSession'
+                  component={ActiveSessionScreen}
                 />
               </Stack.Group>
             </Stack.Navigator>

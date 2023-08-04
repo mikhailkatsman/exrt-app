@@ -20,7 +20,8 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
       SELECT exercise_instances.id AS id, 
              exercise_instances.sets AS sets, 
              exercise_instances.reps AS reps, 
-             exercise_instances.duration AS duration, 
+             exercise_instances.minuteDuration AS minuteDuration, 
+             exercise_instances.secondDuration AS secondDuration, 
              exercise_instances.weight AS weight,
              exercises.name as name,
              exercises.thumbnail AS thumbnail
@@ -39,7 +40,8 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
         thumbnail: row.thumbnail,
         sets: row.sets,
         reps: row.reps || null,
-        duration: row.duration || null,
+        minuteDuration: row.minuteDuration || null,
+        secondDuration: row.secondDuration || null,
         weight: row.weight || null
       }))
 
@@ -79,7 +81,8 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
                 thumbnail={instance.thumbnail}
                 sets={instance.sets}
                 reps={instance.reps}
-                duration={instance.duration}
+                minuteDuration={instance.minuteDuration}
+                secondDuration={instance.secondDuration}
                 weight={instance.weight}
               />
             ))}
@@ -90,8 +93,7 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
             className="
               mt-1 mr-1 mb-0.5 
               flex-1 items-center justify-center
-              border border-custom-white
-              rounded
+              border border-custom-white rounded
             "
             onPress={() => navigation.navigate("NewSession", { 
               routineId: routineId,
@@ -102,11 +104,13 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
           >
             <Icon name="pencil" size={22} color="#F5F6F3" />
           </TouchableOpacity>
-          <TouchableOpacity className="
-            mt-0.5 mr-1 mb-1 
-            flex-1 items-center justify-center
-            border border-custom-blue 
-            rounded"
+          <TouchableOpacity 
+            className="
+              mt-0.5 mr-1 mb-1 
+              flex-1 items-center justify-center
+              border border-custom-blue rounded
+            "
+            onPress={() => {}}
           >
             <Icon name="dumbbell" size={28} color="#5AABD6" />
           </TouchableOpacity>

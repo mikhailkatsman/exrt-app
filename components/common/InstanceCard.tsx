@@ -14,7 +14,8 @@ type Props = {
   sets: number | null,
   reps: number | null,
   weight: number | null,
-  duration: number | null,
+  minuteDuration: number | null,
+  secondDuration: number | null,
 }
 
 const InstanceCard: React.FC<Props> = ({ 
@@ -27,7 +28,8 @@ const InstanceCard: React.FC<Props> = ({
   sets, 
   reps, 
   weight, 
-  duration
+  minuteDuration,
+  secondDuration
 }) => {
   const navigation = useNavigation()
 
@@ -56,9 +58,16 @@ const InstanceCard: React.FC<Props> = ({
         source={thumbnailImages[thumbnail]} 
       />
       <View className="w-[55%] pl-3 flex-col justify-center">
-        <Text className="text-custom-white mb-1 text-sm font-BaiJamjuree-Bold">{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
+        <Text className="text-custom-white mb-1 text-sm font-BaiJamjuree-Bold">
+          {name.charAt(0).toUpperCase() + name.slice(1)}
+        </Text>
         <Text className="text-custom-white text-lg font-BaiJamjuree-Light">
-          {sets}{reps && ` x ${reps}`}{weight && ` of ${weight}kg`}{duration && ` for ${duration}"`}
+          {sets}
+          {reps && ` x ${reps}`}
+          {weight && ` with ${weight}kg`}
+          {(minuteDuration || secondDuration) && ' for '}
+          {minuteDuration && `${minuteDuration}m`}
+          {secondDuration && `${secondDuration}s`}
         </Text>
       </View>
       <TouchableOpacity 

@@ -18,7 +18,8 @@ type InstanceData = {
   sets: number,
   reps: number | null,
   weight: number | null,
-  duration: string | null
+  minuteDuration: number | null,
+  secondDuration: number | null
 }
 
 const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
@@ -29,7 +30,8 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
     sets: 1,
     reps: 1 ,
     weight: null,
-    duration: null 
+    minuteDuration: null,
+    secondDuration: null
   })
   const [exerciseList, setExerciseList] = useState<{
     id: number, 
@@ -93,9 +95,14 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
 
     let pendingInstanceData: InstanceData = {...instanceData} 
 
-    if (pendingInstanceData.reps === 1 && pendingInstanceData.duration !== null) {
+    if (pendingInstanceData.reps === 1 
+        && (pendingInstanceData.minuteDuration !== null 
+        || pendingInstanceData.secondDuration !== null)) {
+      console.log('timed')
       pendingInstanceData = {...pendingInstanceData, reps: null}
     }
+
+    console.log(pendingInstanceData)
 
     DB.sql(`
       SELECT MAX(instance_order) as maxOrder 
@@ -105,13 +112,14 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
     (_, result) => {
       const maxOrder = result.rows._array[0].maxOrder || 0
       DB.sql(`
-        INSERT INTO exercise_instances (exercise_id, sets, reps, duration, weight)
-        VALUES (?, ?, ?, ?, ?);
+        INSERT INTO exercise_instances (exercise_id, sets, reps, minuteDuration, secondDuration, weight)
+        VALUES (?, ?, ?, ?, ?, ?);
       `, [
           pendingInstanceData.exerciseId,
           pendingInstanceData.sets,
           pendingInstanceData.reps,
-          pendingInstanceData.duration,
+          pendingInstanceData.minuteDuration,
+          pendingInstanceData.secondDuration,
           pendingInstanceData.weight
         ],
       (_, result) => {
@@ -131,8 +139,12 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
           setInstanceSets={(value: number) => setInstanceData({...instanceData, sets: value})}
           setInstanceReps={(value: number) => setInstanceData({...instanceData, reps: value})}
           setInstanceWeight={(value: number) => setInstanceData({...instanceData, weight: value})}
-          setInstanceDuration={(value: string) => setInstanceData({...instanceData, duration: value})}
-          instanceDuration={instanceData.duration ? instanceData.duration : '0000'}
+          setInstanceMinuteDuration={(value: number) => 
+            setInstanceData({...instanceData, minuteDuration: value === 0 ? null : value})
+          }
+          setInstanceSecondDuration={(value: number) => 
+            setInstanceData({...instanceData, secondDuration: value === 0 ? null : value})
+          }
         />
         <View className="flex-1 mb-3 flex-row overflow-hidden justify-between">
           <View className="w-full flex-col">
