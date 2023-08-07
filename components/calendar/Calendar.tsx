@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import SelectedDay from "./SelectedDay"
 import Hatch from "../../assets/Hatch"
-import DaySessionIndicator from "./DaySessionIndicator"
+import DaySessionIndicator from "@components/calendar/DaySessionIndicator"
 
 type Props = {
   dataArray: any[]

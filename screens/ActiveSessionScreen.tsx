@@ -1,4 +1,4 @@
-import { ComponentType, useEffect } from "react";
+import { ComponentType } from "react";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import { View, Text, TouchableOpacity } from "react-native";
@@ -6,16 +6,22 @@ import { Icon } from "@react-native-material/core";
 import { useKeepAwake } from "expo-keep-awake";
 import ScreenWrapper from "@components/common/ScreenWrapper";
 import BottomBarWrapper from "@components/common/BottomBarWrapper";
+import TimeLine from "@components/activeSession/TimeLine";
+import CurrentActivity from "@components/activeSession/CurrentActivity";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 
 const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
+  const sessionId: number = route.params.sessionId
+
+
   useKeepAwake()
 
   return (
     <ScreenWrapper>
-      <View className="flex-1 mb-3">
-        <Text className="text-custom-white">Session id: {route.params.sessionId}</Text>
+      <View className="flex-1 my-3">
+        <TimeLine sessionId={sessionId}/>
+        <CurrentActivity activity={{ type: 'exercise', data: 1 }} />
       </View>
       <BottomBarWrapper>
         <TouchableOpacity className="
