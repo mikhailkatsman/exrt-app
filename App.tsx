@@ -31,7 +31,9 @@ export type RootStackParamList = {
     sessionId: number,
   },
   NewProgram: undefined,
-  ActiveSession: undefined,
+  ActiveSession: {
+    sessionId: number,
+  },
   ErrorModal: {
     title: string,
     message: string,

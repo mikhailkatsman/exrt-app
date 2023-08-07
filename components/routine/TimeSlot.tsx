@@ -110,7 +110,9 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
               flex-1 items-center justify-center
               border border-custom-blue rounded
             "
-            onPress={() => {}}
+            onPress={() => navigation.navigate("ActiveSession", {
+              sessionId: session.id
+            })}
           >
             <Icon name="dumbbell" size={28} color="#5AABD6" />
           </TouchableOpacity>
