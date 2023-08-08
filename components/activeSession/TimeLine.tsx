@@ -1,4 +1,4 @@
-import { View } from "react-native"
+import { Text, View } from "react-native"
 
 type Props = {
 	sessionId: number,
@@ -7,7 +7,9 @@ type Props = {
 const TimeLine: React.FC<Props> = ({ sessionId }) => {
 	return (
 		<View className="h-36 mb-3 border border-custom-grey">
-
+			<Text className="text-custom-white">
+				Session Id: {sessionId}
+			</Text>
 		</View>
 	)
 }
