@@ -5,11 +5,11 @@ type Props = {
   id: number,
   name: string,
   thumbnail: keyof typeof thumbnailImages,
-  sets: number|null,
-  reps: number|null,
-  minuteDuration: number|null,
-  secondDuration: number|null,
-  weight: number|null,
+  sets: number | null,
+  reps: number | null,
+  minuteDuration: number | null,
+  secondDuration: number | null,
+  weight: number | null,
 }
 
 const TimeSlotInstanceCard: React.FC<Props> = ({ 
