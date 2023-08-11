@@ -23,8 +23,9 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
              exercise_instances.minuteDuration AS minuteDuration, 
              exercise_instances.secondDuration AS secondDuration, 
              exercise_instances.weight AS weight,
-             exercises.name as name,
-             exercises.thumbnail AS thumbnail
+             exercises.name AS name,
+             exercises.thumbnail AS thumbnail,
+             exercises.style AS style
       FROM session_exercise_instances
       JOIN exercise_instances
       ON session_exercise_instances.exercise_instance_id = exercise_instances.id
@@ -38,12 +39,15 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
         id: row.id,
         name: row.name,
         thumbnail: row.thumbnail,
+        style: row.style,
         sets: row.sets,
         reps: row.reps || null,
         minuteDuration: row.minuteDuration || null,
         secondDuration: row.secondDuration || null,
         weight: row.weight || null
       }))
+
+      //console.log(JSON.stringify(instanceData, null, 2))
 
       setInstances(instanceData)
     })
@@ -111,7 +115,8 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
               border border-custom-blue rounded
             "
             onPress={() => navigation.navigate("ActiveSession", {
-              sessionId: session.id
+              sessionId: session.id,
+              instanceData: instances
             })}
           >
             <Icon name="dumbbell" size={28} color="#5AABD6" />

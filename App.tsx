@@ -33,7 +33,7 @@ export type RootStackParamList = {
   NewProgram: undefined,
   ActiveSession: {
     sessionId: number,
-    warmup: boolean
+    instanceData: any[],
   },
   ErrorModal: {
     title: string,

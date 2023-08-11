@@ -1,4 +1,4 @@
-import { FlatList, Text, View } from "react-native"
+import { FlatList, View } from "react-native"
 import TimeLineSlot from "./TimeLineSlot"
 
 type Props = {
@@ -10,24 +10,11 @@ const TimeLine: React.FC<Props> = ({ instances }) => {
 		<View className="h-36 w-full mb-3 border border-custom-grey">
 			<FlatList 
 				data={instances}
-				renderItem={({item}) => 
-					<TimeLineSlot
-						isActive={true}
-						name={item.name}
-						style={item.style}
-						thumbnail={item.thumbnail}
-						sets={item.sets}
-						reps={item.reps}
-						minuteDuration={item.minuteDuration}
-						secondDuration={item.secondDuration}
-						weight={item.weight}
-					/>
-				}
-				keyExtractor={item => item.id}
+				renderItem={({item}) => <TimeLineSlot type={item.type} data={item.data} /> }
+				keyExtractor={(_, index) => index.toString()}
 				horizontal={true}
 				showsHorizontalScrollIndicator={false}
 			/>
-
 		</View>
 	)
 }
