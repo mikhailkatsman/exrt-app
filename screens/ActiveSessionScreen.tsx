@@ -4,7 +4,6 @@ import type { RootStackParamList } from 'App'
 import { View, Text, TouchableOpacity } from "react-native";
 import { Icon } from "@react-native-material/core";
 import { useKeepAwake } from "expo-keep-awake";
-import DB from "@modules/DB";
 import ScreenWrapper from "@components/common/ScreenWrapper";
 import BottomBarWrapper from "@components/common/BottomBarWrapper";
 import TimeLine from "@components/activeSession/TimeLine";

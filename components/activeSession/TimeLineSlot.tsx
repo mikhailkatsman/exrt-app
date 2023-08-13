@@ -8,7 +8,7 @@ type Props = {
 const TimeLineSlot: React.FC<Props> = ({ type, data }) => {
 	return (
 		<View className={`h-[70%] w-24 p-2
-			flex-col items-center justify-center border border-custom-white`}
+			flex-col items-center justify-center`}
 		>
 			{type === 'exercise' ?
 				<>
@@ -18,7 +18,9 @@ const TimeLineSlot: React.FC<Props> = ({ type, data }) => {
 						{data.name}
 					</Text>
 					<Text className="text-custom-white text-2xl font-BaiJamjuree-Bold">
-						x {data.reps}
+						{data.minuteDuration && `${data.minuteDuration}m`}
+						{data.secondDuration && `${data.secondDuration}s`}
+						{data.reps && `x ${data.reps}`}
 					</Text>
 				</>
 			:
