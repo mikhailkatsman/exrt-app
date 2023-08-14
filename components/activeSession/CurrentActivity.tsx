@@ -7,7 +7,7 @@ type Props = {
 const CurrentActivity: React.FC<Props> = ({ activity }) => {
 
 	return (
-		<View className="flex-1 p-3 rounded-xl border border-custom-red">
+		<View className="flex-1 p-3">
 			{activity.type === 'exercise' ? 
 				<Text className="text-custom-white">
 					{JSON.stringify(activity.data, null, 2)}

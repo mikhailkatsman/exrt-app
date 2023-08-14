@@ -16,11 +16,12 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
   const instanceData: any[] = route.params.instanceData
 
   const [activities, setActivities] = useState<any[]>([])
-  const [currentActivity, setCurrentActivity] = 
-    useState<{ type: string, data: {} | number }>({
-      type: 'rest',
-      data: 0
-    })
+  const [currentActivity, setCurrentActivity] = useState<{
+    type: string, data: {} | number
+  }>({
+    type: 'exercise', 
+    data: activities[0]
+  })
   const [currentActivityIndex, setCurrentActivityIndex] = useState<number>(0)
 
   useEffect(() => {
@@ -44,8 +45,6 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
         }
       })
 
-      //console.log(JSON.stringify(activityList, null, 2))
-
       setActivities(activityList)
       setCurrentActivity(activityList[currentActivityIndex])
   }, [])
@@ -55,7 +54,10 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
   return (
     <ScreenWrapper>
       <View className="flex-1 my-3">
-        <TimeLine instances={activities} />
+        <TimeLine 
+          instances={activities} 
+          currentActivityIndex={currentActivityIndex} 
+        />
         <CurrentActivity activity={currentActivity} />
       </View>
       <BottomBarWrapper>
@@ -64,7 +66,7 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
           justify-center rounded-xl bg-custom-green"
           onPress={() => {
             setCurrentActivityIndex(currentActivityIndex + 1)
-            setCurrentActivity(activities[currentActivityIndex])
+            setCurrentActivity(activities[currentActivityIndex + 1])
           }}
         >
           <Text className="text-xs mr-2 text-custom-white font-BaiJamjuree-Bold">Start Session</Text>
