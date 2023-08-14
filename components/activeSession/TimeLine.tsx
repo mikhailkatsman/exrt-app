@@ -1,7 +1,6 @@
 import { Dimensions, FlatList, View } from "react-native"
 import { useRef, useEffect, useState } from 'react'
 import TimeLineSlot from "./TimeLineSlot"
-import { LinearGradient } from "expo-linear-gradient"
 
 type Props = {
 	instances: any[],
@@ -27,21 +26,13 @@ const TimeLine: React.FC<Props> = ({ instances, currentActivityIndex }) => {
 	return (
 		<View className="h-32 w-full mb-3">
 			<View 
-				className="w-24 border rounded-2xl border-custom-red" 
+				className="w-24 border-x rounded-2xl border-custom-red" 
 				style={{
 					position: 'absolute', 
 					left: halfScreenWidth - 48,
 					top: 4,
 					bottom: 4
 				}}
-			/>
-			<LinearGradient 
-				colors={['#121212', 'transparent']}
-				className="h-4 w-full absolute top-1"
-			/>
-			<LinearGradient 
-				colors={['transparent', '#121212']}
-				className="h-4 w-full absolute bottom-1"
 			/>
 			<FlatList 
 				ref={flatListRef}

@@ -45,6 +45,8 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
         }
       })
 
+      activityList.pop()
+
       setActivities(activityList)
       setCurrentActivity(activityList[currentActivityIndex])
   }, [])
@@ -65,6 +67,10 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
           className="flex-1 flex-row items-center 
           justify-center rounded-xl bg-custom-green"
           onPress={() => {
+            if (currentActivityIndex === activities.length - 1) {
+              console.log('end reached')
+              return
+            }
             setCurrentActivityIndex(currentActivityIndex + 1)
             setCurrentActivity(activities[currentActivityIndex + 1])
           }}
