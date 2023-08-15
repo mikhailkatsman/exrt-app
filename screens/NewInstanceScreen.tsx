@@ -186,23 +186,23 @@ const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
       </View>
       <BottomBarWrapper>
         <TouchableOpacity 
-          className="flex-1 rounded-xl border border-custom-white flex-row justify-center items-center"
+          className="flex-1 rounded-xl border-2 border-custom-white flex-row justify-center items-center"
           onPress={() => {}}
         >
-          <Text className="mr-2 text-custom-white font-bold">
+          <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">
             Create Exercise
           </Text>
           <Icon name="check" size={22} color="#F5F6F3" />
         </TouchableOpacity>
         <View className="w-3" />
         <TouchableOpacity 
-          className="flex-1 bg-custom-blue rounded-xl flex-row justify-center items-center"
+          className="flex-1 rounded-xl border-2 border-custom-blue flex-row justify-center items-center"
           onPress={createInstance}
         >
-          <Text className="mr-2 text-custom-white font-bold">
+          <Text className="mr-2 text-custom-blue font-BaiJamjuree-Bold">
             Add to Session
           </Text>
-          <Icon name="check" size={22} color="#F5F6F3" />
+          <Icon name="check" size={22} color="#5AABD6" />
         </TouchableOpacity>
       </BottomBarWrapper>
     </ScreenWrapper>

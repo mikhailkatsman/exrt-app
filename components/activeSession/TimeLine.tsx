@@ -48,6 +48,7 @@ const TimeLine: React.FC<Props> = ({ instances, currentActivityIndex }) => {
 				showsHorizontalScrollIndicator={false}
 				fadingEdgeLength={160}
 				onContentSizeChange={() => setIsReady(true)}
+				scrollEnabled={false}
 			/>
 		</View>
 	)

@@ -51,6 +51,37 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
       setCurrentActivity(activityList[currentActivityIndex])
   }, [])
 
+  const renderButtonContent = () => {
+    if (currentActivity.type === 'rest') {
+      return <>
+        <Text className="text-xs mr-2 text-custom-red font-BaiJamjuree-Bold">Skip Rest</Text>
+        <Icon name="timer-outline" color="#F4533E" size={24} /> 
+      </>
+    }
+
+    if (currentActivityIndex === activities.length - 1) {
+      return <>
+        <Text className="text-xs mr-2 text-custom-green font-BaiJamjuree-Bold">Finish Session</Text>
+        <Icon name="flag-checkered" color="#74AC5D" size={24} /> 
+      </>
+    }
+
+    return <>
+      <Text className="text-xs mr-2 text-custom-white font-BaiJamjuree-Bold">Complete</Text>
+      <Icon name="dumbbell" color="#F5F6F3" size={24} /> 
+    </>
+  }
+
+  const renderButtonBorderColor = () => {
+    if (currentActivity.type === 'rest') {
+      return 'border-custom-red'
+    }
+    if (currentActivityIndex === activities.length - 1) {
+      return 'border-custom-green'
+    }
+    return 'border-custom-white'
+  }
+
   useKeepAwake()
 
   return (
@@ -64,8 +95,11 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
       </View>
       <BottomBarWrapper>
         <TouchableOpacity 
-          className="flex-1 flex-row items-center 
-          justify-center rounded-xl bg-custom-green"
+          className={`
+            flex-1 flex-row items-center 
+            justify-center rounded-xl border
+            ${renderButtonBorderColor()}
+          `}
           onPress={() => {
             if (currentActivityIndex === activities.length - 1) {
               console.log('end reached')
@@ -75,8 +109,7 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
             setCurrentActivity(activities[currentActivityIndex + 1])
           }}
         >
-          <Text className="text-xs mr-2 text-custom-white font-BaiJamjuree-Bold">Start Session</Text>
-          <Icon name="timer-outline" color="#F5F6F3" size={24} /> 
+          {renderButtonContent()}
         </TouchableOpacity>
       </BottomBarWrapper>
     </ScreenWrapper>

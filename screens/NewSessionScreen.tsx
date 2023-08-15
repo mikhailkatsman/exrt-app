@@ -185,7 +185,7 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
         </View>
         <View className="h-20 p-2">
           <TouchableOpacity className="
-            flex-1 border border-custom-white rounded-lg 
+            flex-1 border-2 border-custom-white rounded-lg 
             flex-row justify-center items-center"
             onPress={() => navigation.navigate("NewInstance", { sessionId: sessionId })}
           >
@@ -196,7 +196,7 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
       </View>
       <BottomBarWrapper>
         <TouchableOpacity 
-          className="w-[30%] bg-custom-red rounded-xl flex-row justify-center items-center"
+          className="w-[30%] rounded-xl border-2 border-custom-red flex-row justify-center items-center"
           onPress={() => {
             navigation.navigate('ConfirmModal', {
               text: 'Are you sure you want to delete this session?',
@@ -205,17 +205,17 @@ const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
           }}
           activeOpacity={1}
         >
-          <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Delete</Text>
-          <Icon name="delete-outline" size={22} color="#F5F6F3" />
+          <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
+          <Icon name="delete-outline" size={22} color="#F4533E" />
         </TouchableOpacity>
         <View className="w-3" />
         <TouchableOpacity 
-          className="flex-1 bg-custom-blue rounded-xl flex-row justify-center items-center"
+          className="flex-1 border-2 border-custom-blue rounded-xl flex-row justify-center items-center"
           onPress={registerSession}
           activeOpacity={1}
         >
-          <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Confirm Session</Text>
-          <Icon name="check" size={22} color="#F5F6F3" />
+          <Text className="mr-2 text-custom-blue font-BaiJamjuree-Bold">Confirm Session</Text>
+          <Icon name="check" size={22} color="#5AABD6" />
         </TouchableOpacity>
       </BottomBarWrapper>
     </ScreenWrapper>

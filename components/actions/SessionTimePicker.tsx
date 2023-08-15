@@ -72,16 +72,15 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay, sessionTimes }) => {
       <TouchableOpacity 
 	ref={buttonRef}
 	onLayout={handleLayout}
-	className={`
+	className="
 	  flex-1 border-2 border-custom-white
 	  flex-row items-center justify-center 
-	  rounded-xl bg-custom-white
-	`}
+	  rounded-xl"
 	onPress={handlePress}
 	activeOpacity={0.5}
       >
-	<Text className="text-xs font-BaiJamjuree-Bold mr-2">Create Session</Text>
-	<Icon name="plus" color="#080B06" size={22} /> 
+	<Text className="text-xs text-custom-white font-BaiJamjuree-Bold mr-2">Create Session</Text>
+	<Icon name="plus" color="#F5F6F3" size={22} /> 
       </TouchableOpacity>
       {isActive && (
 	<Modal

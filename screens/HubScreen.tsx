@@ -74,10 +74,10 @@ const HubScreen: ComponentType<Props> = ({ navigation }) => {
         <TouchableOpacity className="
           flex-1 border-2 border-custom-white
           flex-row items-center justify-center 
-          rounded-xl bg-custom-white"
+          rounded-xl"
         >
-          <Text className="text-xs mr-2 font-BaiJamjuree-Bold">Move Routine</Text>
-          <Icon name="swap-horizontal" color="#121212" size={24} /> 
+          <Text className="text-xs text-custom-white mr-2 font-BaiJamjuree-Bold">Move Routine</Text>
+          <Icon name="swap-horizontal" color="#F5F6F3" size={24} /> 
         </TouchableOpacity>
         <View className="w-3" />
         <SessionTimePicker 
