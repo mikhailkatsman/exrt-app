@@ -4,6 +4,14 @@ export const thumbnailImages = {
   classic_squat: require('@thumbnails/classic_squat.webp'),
 }
 
+export const backgrounds = {
+  background_placeholder: require('@backgrounds/background_placeholder.webp'),
+}
+
+export const videoFiles = {
+  video_placeholder: require('@videos/video_placeholder.mp4'),
+}
+
 export const customFonts = {
   'BaiJamjuree-Light': require('@fonts/BaiJamjuree-Light.ttf'),
   'BaiJamjuree-LightItalic': require('@fonts/BaiJamjuree-LightItalic.ttf'),

@@ -84,6 +84,7 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay, sessionTimes }) => {
       </TouchableOpacity>
       {isActive && (
 	<Modal
+	  animationType="fade"
 	  onDismiss={handlePress}
 	  onRequestClose={handlePress}
 	  transparent={true}

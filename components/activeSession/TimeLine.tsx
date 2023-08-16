@@ -24,7 +24,7 @@ const TimeLine: React.FC<Props> = ({ instances, currentActivityIndex }) => {
 	}, [currentActivityIndex, isReady])
 
 	return (
-		<View className="h-32 w-full mb-3">
+		<View className="h-28 w-full mb-3">
 			<View 
 				className="w-24 border-x rounded-2xl border-custom-red" 
 				style={{
@@ -46,7 +46,7 @@ const TimeLine: React.FC<Props> = ({ instances, currentActivityIndex }) => {
 					paddingHorizontal: halfScreenWidth - 48,
 				}}
 				showsHorizontalScrollIndicator={false}
-				fadingEdgeLength={160}
+				fadingEdgeLength={100}
 				onContentSizeChange={() => setIsReady(true)}
 				scrollEnabled={false}
 			/>

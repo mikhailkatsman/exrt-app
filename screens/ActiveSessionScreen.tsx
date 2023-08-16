@@ -7,7 +7,7 @@ import { useKeepAwake } from "expo-keep-awake";
 import ScreenWrapper from "@components/common/ScreenWrapper";
 import BottomBarWrapper from "@components/common/BottomBarWrapper";
 import TimeLine from "@components/activeSession/TimeLine";
-import CurrentActivity from "@components/activeSession/CurrentActivity";
+import CurrentActivityContainer from "@components/activeSession/CurrentActivityContainer";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 
@@ -91,7 +91,7 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
           instances={activities} 
           currentActivityIndex={currentActivityIndex} 
         />
-        <CurrentActivity activity={currentActivity} />
+        <CurrentActivityContainer activity={currentActivity} />
       </View>
       <BottomBarWrapper>
         <TouchableOpacity 

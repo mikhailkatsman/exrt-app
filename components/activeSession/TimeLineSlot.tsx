@@ -9,7 +9,7 @@ const TimeLineSlot: React.FC<Props> = ({ type, data }) => {
 	const words = data.name && data.name.split(' ')
 
 	return (
-		<View className={`w-24 p-2 py-7
+		<View className={`w-24 py-4 px-1
 			flex-col items-center justify-between`}
 		>
 			{type === 'exercise' ?

@@ -25,7 +25,11 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
              exercise_instances.weight AS weight,
              exercises.name AS name,
              exercises.thumbnail AS thumbnail,
-             exercises.style AS style
+             exercises.background AS background,
+             exercises.style AS style,
+             exercises.video AS video,
+             exercises.description AS description,
+             exercises.type AS type
       FROM session_exercise_instances
       JOIN exercise_instances
       ON session_exercise_instances.exercise_instance_id = exercise_instances.id
@@ -39,7 +43,11 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
         id: row.id,
         name: row.name,
         thumbnail: row.thumbnail,
+        background: row.background,
+        video: row.video,
         style: row.style,
+        type: row.type,
+        description: row.description,
         sets: row.sets,
         reps: row.reps || null,
         minuteDuration: row.minuteDuration || null,
