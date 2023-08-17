@@ -12,7 +12,7 @@ module.exports = {
       'custom-white': '#F5F6F3',
       'custom-green': '#74AC5D',
       'custom-dark': '#121212',
-      'custom-grey': '#606060',
+      'custom-grey': '#505050',
       'custom-blue': '#5AABD6',
     },
     extend: {

@@ -1,4 +1,4 @@
-import { Text } from "react-native"
+import { Text, View } from "react-native"
 import { useState, useEffect } from 'react'
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated"
 import RemainingTimeIndicator from "./RemainingTimeIndicator"
@@ -34,8 +34,9 @@ const CurrentRest: React.FC<Props> = ({ duration, endRest }) => {
 				remainingSeconds={seconds} 
 			/>
 			<Text className={`absolute top-[44%]
-				${seconds > 10 ? 'text-custom-white' : 'text-custom-red'} 
-				text-8xl font-BaiJamjuree-Light`}
+				text-8xl font-BaiJamjuree-Light
+				${seconds > 10 ? 'text-custom-white' : 'text-custom-red'}
+			`}
 			>
 				{seconds.toString()}
 			</Text>

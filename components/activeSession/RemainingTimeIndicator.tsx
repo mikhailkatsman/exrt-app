@@ -9,7 +9,7 @@ type Props = {
 const { width } =  Dimensions.get("window")
 const size = width - 64 
 const mainStrokeWidth = 5
-const bgStrokeWidth = 3
+const bgStrokeWidth = 2
 const radius = (size - mainStrokeWidth) / 2
 const circum = radius * 2 * Math.PI 
 
@@ -19,7 +19,7 @@ const RemainingTimeIndicator: React.FC<Props> = ({ duration, remainingSeconds })
 	return (
 		<Svg width={size} height={size}>
 			<Circle 
-				stroke="#606060"
+				stroke={remainingSeconds > 10 ? '#505050' : '#5E2E28'}
 				fill="none"
 				cy={size / 2}
 				cx={size / 2}
@@ -27,7 +27,7 @@ const RemainingTimeIndicator: React.FC<Props> = ({ duration, remainingSeconds })
 				strokeWidth={bgStrokeWidth}
 			/>
 			<Circle 
-				stroke={remainingSeconds > 10 ? `#F5F6F3` : '#F4533E'}
+				stroke={remainingSeconds > 10 ? '#F5F6F3' : '#F4533E'}
 				fill="none"
 				cy={size / 2}
 				cx={size / 2}
