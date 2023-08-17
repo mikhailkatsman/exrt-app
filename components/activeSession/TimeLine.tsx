@@ -26,7 +26,7 @@ const TimeLine: React.FC<Props> = ({ instances, currentActivityIndex }) => {
 	return (
 		<View className="h-28 w-full mb-3">
 			<View 
-				className="w-24 border-x rounded-2xl border-custom-red" 
+				className="w-24 border-x-2 rounded-2xl border-custom-red" 
 				style={{
 					position: 'absolute', 
 					left: halfScreenWidth - 48,

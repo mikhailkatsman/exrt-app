@@ -15,10 +15,11 @@ type Props = {
 			style: string,
 			type: string,
 		} | number 
-	}
+	},
+	nextActivity: () => void
 }
 
-const CurrentActivityContainer: React.FC<Props> = ({ activity }) => {
+const CurrentActivityContainer: React.FC<Props> = ({ activity, nextActivity }) => {
 
 	return (
 		<View className="flex-1 rounded-xl object-contain">
@@ -35,7 +36,10 @@ const CurrentActivityContainer: React.FC<Props> = ({ activity }) => {
 					type={activity.data?.type}
 				/>
 			:
-				<CurrentRest duration={activity.data as number} />
+				<CurrentRest 
+					duration={activity.data as number} 
+					endRest={nextActivity}
+				/>
 			}
 		</View>
 	)

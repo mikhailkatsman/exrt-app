@@ -8,6 +8,7 @@ import ScreenWrapper from "@components/common/ScreenWrapper";
 import BottomBarWrapper from "@components/common/BottomBarWrapper";
 import TimeLine from "@components/activeSession/TimeLine";
 import CurrentActivityContainer from "@components/activeSession/CurrentActivityContainer";
+import { backgrounds, videoFiles } from "@modules/AssetPaths";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 
@@ -17,12 +18,28 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
 
   const [activities, setActivities] = useState<any[]>([])
   const [currentActivity, setCurrentActivity] = useState<{
-    type: string, data: {} | number
+    type: string, 
+    data: {
+      name: string,
+      reps: number,
+      background: keyof typeof backgrounds,
+      video: keyof typeof videoFiles,
+      description: string,
+      style: string,
+      type: string
+    } | number
   }>({
     type: 'exercise', 
     data: activities[0]
   })
   const [currentActivityIndex, setCurrentActivityIndex] = useState<number>(0)
+
+  useKeepAwake()
+
+  const switchActivity = () => {
+    setCurrentActivityIndex(currentActivityIndex + 1)
+    setCurrentActivity(activities[currentActivityIndex + 1])
+  }
 
   useEffect(() => {
       let activityList: any[] = []
@@ -51,38 +68,55 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
       setCurrentActivity(activityList[currentActivityIndex])
   }, [])
 
-  const renderButtonContent = () => {
+  const renderButtons = () => {
     if (currentActivity.type === 'rest') {
       return <>
-        <Text className="text-xs mr-2 text-custom-red font-BaiJamjuree-Bold">Skip Rest</Text>
-        <Icon name="timer-outline" color="#F4533E" size={24} /> 
+        <TouchableOpacity className="w-[25%] flex-row 
+          items-center justify-center rounded-xl border-2 border-custom-white"
+          onPress={() => {}}
+        >
+          <Text className="text-custom-white font-BaiJamjuree-Bold">- 10"</Text>
+        </TouchableOpacity>
+        <View className="w-3" />
+        <TouchableOpacity className="flex-1 flex-row 
+          items-center justify-center rounded-xl border-2 border-custom-red"
+          onPress={switchActivity}
+        >
+          <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Skip Rest</Text>
+          <Icon name="timer-outline" color="#F4533E" size={24} /> 
+        </TouchableOpacity>
+        <View className="w-3" />
+        <TouchableOpacity className="w-[25%] flex-row items-center 
+          justify-center rounded-xl border-2 border-custom-white"
+          onPress={() => {}}
+        >
+          <Text className="text-custom-white font-BaiJamjuree-Bold">+ 10"</Text>
+        </TouchableOpacity>
       </>
     }
 
     if (currentActivityIndex === activities.length - 1) {
-      return <>
-        <Text className="text-xs mr-2 text-custom-green font-BaiJamjuree-Bold">Finish Session</Text>
-        <Icon name="flag-checkered" color="#74AC5D" size={24} /> 
-      </>
+      return ( 
+        <TouchableOpacity className="flex-1 flex-row items-center 
+          justify-center rounded-xl border-2 border-custom-green"
+          onPress={() => {}}
+        >
+          <Text className="mr-2 text-custom-green font-BaiJamjuree-Bold">Finish Session</Text>
+          <Icon name="flag-checkered" color="#74AC5D" size={24} /> 
+        </TouchableOpacity>
+      )
     }
 
-    return <>
-      <Text className="text-xs mr-2 text-custom-white font-BaiJamjuree-Bold">Complete</Text>
-      <Icon name="dumbbell" color="#F5F6F3" size={24} /> 
-    </>
+    return (
+      <TouchableOpacity className="flex-1 flex-row items-center 
+        justify-center rounded-xl border-2 border-custom-white"
+        onPress={switchActivity}
+      >
+        <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Complete</Text>
+        <Icon name="dumbbell" color="#F5F6F3" size={24} /> 
+      </TouchableOpacity>
+    )
   }
-
-  const renderButtonBorderColor = () => {
-    if (currentActivity.type === 'rest') {
-      return 'border-custom-red'
-    }
-    if (currentActivityIndex === activities.length - 1) {
-      return 'border-custom-green'
-    }
-    return 'border-custom-white'
-  }
-
-  useKeepAwake()
 
   return (
     <ScreenWrapper>
@@ -91,26 +125,13 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
           instances={activities} 
           currentActivityIndex={currentActivityIndex} 
         />
-        <CurrentActivityContainer activity={currentActivity} />
+        <CurrentActivityContainer 
+          activity={currentActivity} 
+          nextActivity={switchActivity}
+        />
       </View>
       <BottomBarWrapper>
-        <TouchableOpacity 
-          className={`
-            flex-1 flex-row items-center 
-            justify-center rounded-xl border
-            ${renderButtonBorderColor()}
-          `}
-          onPress={() => {
-            if (currentActivityIndex === activities.length - 1) {
-              console.log('end reached')
-              return
-            }
-            setCurrentActivityIndex(currentActivityIndex + 1)
-            setCurrentActivity(activities[currentActivityIndex + 1])
-          }}
-        >
-          {renderButtonContent()}
-        </TouchableOpacity>
+        {renderButtons()}
       </BottomBarWrapper>
     </ScreenWrapper>
   )
