@@ -2,7 +2,7 @@ import { Dimensions } from "react-native"
 import { Circle, Svg } from "react-native-svg"
 
 type Props = { 
-	duration: number,
+	totalSeconds: number,
 	remainingSeconds: number 
 }
 
@@ -13,8 +13,8 @@ const bgStrokeWidth = 2
 const radius = (size - mainStrokeWidth) / 2
 const circum = radius * 2 * Math.PI 
 
-const RemainingTimeIndicator: React.FC<Props> = ({ duration, remainingSeconds }) => {
-	const offset = (1 - (remainingSeconds / duration)) * circum;
+const RemainingTimeIndicator: React.FC<Props> = ({ totalSeconds, remainingSeconds }) => {
+	const offset: number = (1 - (remainingSeconds / totalSeconds)) * circum;
 
 	return (
 		<Svg width={size} height={size}>

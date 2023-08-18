@@ -70,29 +70,15 @@ const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
 
   const renderButtons = () => {
     if (currentActivity.type === 'rest') {
-      return <>
-        <TouchableOpacity className="w-[25%] flex-row 
-          items-center justify-center rounded-xl border-2 border-custom-white"
-          onPress={() => {}}
-        >
-          <Text className="text-custom-white font-BaiJamjuree-Bold">- 10"</Text>
-        </TouchableOpacity>
-        <View className="w-3" />
-        <TouchableOpacity className="flex-1 flex-row 
-          items-center justify-center rounded-xl border-2 border-custom-red"
+      return (
+        <TouchableOpacity className="flex-1 flex-row items-center 
+          justify-center rounded-xl border-2 border-custom-red"
           onPress={switchActivity}
         >
           <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Skip Rest</Text>
           <Icon name="timer-outline" color="#F4533E" size={24} /> 
         </TouchableOpacity>
-        <View className="w-3" />
-        <TouchableOpacity className="w-[25%] flex-row items-center 
-          justify-center rounded-xl border-2 border-custom-white"
-          onPress={() => {}}
-        >
-          <Text className="text-custom-white font-BaiJamjuree-Bold">+ 10"</Text>
-        </TouchableOpacity>
-      </>
+      )
     }
 
     if (currentActivityIndex === activities.length - 1) {
