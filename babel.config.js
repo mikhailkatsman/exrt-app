@@ -10,6 +10,7 @@ module.exports = function(api) {
           '@thumbnails': './assets/images/exercises/thumbnails',
           '@backgrounds': './assets/images/exercises/backgrounds',
           '@videos': './assets/videos',
+          '@sounds': './assets/sounds',
           '@fonts': './assets/fonts',
           '@components': './components',
           '@modules': './modules',

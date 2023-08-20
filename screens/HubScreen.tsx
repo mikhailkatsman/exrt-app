@@ -17,7 +17,6 @@ const HubScreen: ComponentType<Props> = ({ navigation }) => {
   const [dataArray, setDataArray] = useState<any[]>([])
   const [selectedDay, setSelectedDay] = useState<number>(0)
 
-
   const fetchRoutineData = () => {
     DB.transaction(tx => {
       tx.executeSql(`
@@ -29,6 +28,7 @@ const HubScreen: ComponentType<Props> = ({ navigation }) => {
         GROUP BY weekly_session_instances.day_id;
       `, [], 
       (_, result) => {
+        console.log(result.rows._array)
         setDataArray(result.rows._array)
       }) 
     })
@@ -48,10 +48,7 @@ const HubScreen: ComponentType<Props> = ({ navigation }) => {
 
   useEffect(() => {
     setSelectedDay(dayNow)
-    console.log('day set')
-  }, [])
 
-  useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchRoutineData)
     return () => { unsubscribeFocus() }
   }, [])

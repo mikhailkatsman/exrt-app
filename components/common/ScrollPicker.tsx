@@ -9,7 +9,7 @@ type Props = {
 
 const ScrollPicker: React.FC<Props> = ({ dataArray, width, onIndexChange }) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
-  const itemHeight: number = 32
+  const itemHeight: number = 28
   const flatListRef = useRef<FlatList>(null)
   const scrollOffsetY = useRef(new Animated.Value(0)).current
 
@@ -26,9 +26,9 @@ const ScrollPicker: React.FC<Props> = ({ dataArray, width, onIndexChange }) => {
   const renderItem = useCallback(
     ({ item, index }: { item: number | string, index: number }) => {
       return (
-        <View className='h-8 justify-center items-center'>
+        <View className='h-7 justify-center items-center'>
           <Text className={selectedIndex === index 
-            ? 'font-BaiJamjuree-Bold text-2xl text-custom-blue' 
+            ? 'font-BaiJamjuree-Bold text-xl text-custom-blue' 
             : 'font-BaiJamjuree-Light text-lg text-custom-grey'}
           >
             {item}
@@ -39,7 +39,7 @@ const ScrollPicker: React.FC<Props> = ({ dataArray, width, onIndexChange }) => {
   )
 
   return (
-    <View className="h-[96px] overflow-hidden" style={{ width: width }}>
+    <View className="h-[84px] overflow-hidden" style={{ width: width }}>
       <FlatList
         data={dataArray}
         ref={flatListRef}
@@ -51,8 +51,8 @@ const ScrollPicker: React.FC<Props> = ({ dataArray, width, onIndexChange }) => {
         getItemLayout={(_, index) => (
           {length: itemHeight, offset: itemHeight * index, index}
         )}
-        ListHeaderComponent={<View style={{ height: 96 / 2 - itemHeight / 2 }} />}
-        ListFooterComponent={<View style={{ height: 96 / 2 - itemHeight / 2 }} />}
+        ListHeaderComponent={<View style={{ height: 84 / 2 - itemHeight / 2 }} />}
+        ListFooterComponent={<View style={{ height: 84 / 2 - itemHeight / 2 }} />}
         keyExtractor={(_, index) => index.toString()} 
       />
     </View>

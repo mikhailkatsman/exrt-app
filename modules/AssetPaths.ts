@@ -12,6 +12,11 @@ export const videoFiles = {
   video_placeholder: require('@videos/video_placeholder.mp4'),
 }
 
+export const audioFiles = {
+  'low_beep': require('@sounds/countdown/sine_440.wav'),
+  'high_beep': require('@sounds/countdown/sine_880.wav'),
+}
+
 export const customFonts = {
   'BaiJamjuree-Light': require('@fonts/BaiJamjuree-Light.ttf'),
   'BaiJamjuree-LightItalic': require('@fonts/BaiJamjuree-LightItalic.ttf'),

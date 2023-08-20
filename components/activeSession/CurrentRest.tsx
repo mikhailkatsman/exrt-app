@@ -2,6 +2,9 @@ import { Text, View, TouchableOpacity } from "react-native"
 import { useState, useEffect } from 'react'
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated"
 import RemainingTimeIndicator from "./RemainingTimeIndicator"
+import { Audio } from "expo-av"
+import { audioFiles } from "@modules/AssetPaths"
+import { unloadAsync } from "expo-font"
 
 type Props = {
 	duration: number,
@@ -12,8 +15,27 @@ const CurrentRest: React.FC<Props> = ({ duration, endRest }) => {
 	const [total, setTotal] = useState<number>(duration)
 	const [remaining, setRemaining] = useState<number>(duration)
 
+	const [countdownSound, setCountdownSound] = useState<Audio.Sound>()
+
+	const playLowSound = async() => {
+		const { sound } = await Audio.Sound.createAsync(audioFiles.low_beep)
+		setCountdownSound(sound)
+		await sound.playAsync()
+	}
+
+	const playHighSound = async() => {
+		const { sound } = await Audio.Sound.createAsync(audioFiles.high_beep)
+		setCountdownSound(sound)
+		await sound.playAsync()
+	}
+
 	useEffect(() => {
+		if ( remaining <= 3 && remaining > 0) {
+			playLowSound()
+		}
+
 		if (remaining <= 0) {
+			playHighSound()
 			endRest()
 			return
 		}
@@ -21,7 +43,10 @@ const CurrentRest: React.FC<Props> = ({ duration, endRest }) => {
 			setRemaining(prev => prev - 1)
 		}, 1000)
 
-		return () => clearTimeout(timerId)
+		return () => {
+			clearTimeout(timerId)
+			countdownSound ? countdownSound.unloadAsync() : undefined
+		}
 	}, [remaining])
 
 	return (

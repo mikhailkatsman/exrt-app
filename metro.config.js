@@ -8,6 +8,7 @@ const extraNodeModules = {
   '@thumbnails': __dirname + '/assets/images/exercises/thumbnails',
   '@backgrounds': __dirname + '/assets/images/exercises/backgrounds',
   '@videos': __dirname + '/assets/videos',
+  '@sounds': __dirname + '/assets/sounds',
   '@fonts': __dirname + '/assets/fonts',
   '@components': __dirname + '/components',
   '@modules': __dirname + '/modules',
