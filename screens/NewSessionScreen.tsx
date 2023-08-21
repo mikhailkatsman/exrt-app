@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native"
-import { ComponentType, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import DraggableFlatList, { OpacityDecorator, RenderItemParams } from 'react-native-draggable-flatlist'
@@ -24,7 +24,7 @@ type Instance = {
   secondDuration: number | null,
 }
 
-const NewSessionsScreen: ComponentType<Props> = ({ navigation, route }) => {
+const NewSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   const routineId = route.params?.routineId
   const sessionExists = route.params.sessionExists
   const sessionTime = route.params.sessionTime

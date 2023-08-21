@@ -1,11 +1,15 @@
-export const thumbnailImages = {
-  thumbnail_placeholder: require('@thumbnails/thumbnail_placeholder.webp'),
-  pushup: require('@thumbnails/pushup.webp'),
-  classic_squat: require('@thumbnails/classic_squat.webp'),
+export const exerciseThumbnails = {
+  thumbnail_placeholder: require('@exerciseThumbnails/thumbnail_placeholder.webp'),
+  pushup: require('@exerciseThumbnails/pushup.webp'),
+  classic_squat: require('@exerciseThumbnails/classic_squat.webp'),
 }
 
-export const backgrounds = {
-  background_placeholder: require('@backgrounds/background_placeholder.webp'),
+export const exerciseBackgrounds = {
+  background_placeholder: require('@exerciseBackgrounds/background_placeholder.webp'),
+}
+
+export const programThumbnails = {
+  program_thumbnail_placeholder: require('@programThumbnails/program_thumbnail_placeholder.jpg')
 }
 
 export const videoFiles = {

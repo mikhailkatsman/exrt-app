@@ -1,4 +1,4 @@
-import { ComponentType, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import { View, Text, TouchableOpacity } from "react-native";
@@ -12,7 +12,7 @@ import { backgrounds, videoFiles } from "@modules/AssetPaths";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 
-const ActiveSessionScreen: ComponentType<Props> = ({ navigation, route }) => {
+const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const sessionId: number = route.params.sessionId
   const instanceData: any[] = route.params.instanceData
 

@@ -1,5 +1,5 @@
 import { Text, View, Image, TouchableOpacity, Pressable } from "react-native"
-import { thumbnailImages } from "@modules/AssetPaths"
+import { exerciseThumbnails } from "@modules/AssetPaths"
 import { Icon } from "@react-native-material/core"
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
   selectedId: number | null,
   setSelectedId: (id: number) => void,
   name: string,
-  thumbnail: keyof typeof thumbnailImages,
+  thumbnail: keyof typeof exerciseThumbnails,
 }
 
 const InstanceCard: React.FC<Props> = ({ id, selectedId, setSelectedId, name, thumbnail }) => {
@@ -22,7 +22,7 @@ const InstanceCard: React.FC<Props> = ({ id, selectedId, setSelectedId, name, th
       <Image
         className={`w-1/6 h-full rounded-lg ${selectedId === id || !selectedId ? '' : 'opacity-50'}`}
         resizeMode="contain" 
-        source={thumbnailImages[thumbnail]} 
+        source={exerciseThumbnails[thumbnail]} 
       />
       <View className="w-2/3 pl-3 flex-col justify-center">
         <Text className={`${selectedId === id || !selectedId ? 'text-custom-white' : 'text-custom-grey'} font-BaiJamjuree-Regular text-lg`}>

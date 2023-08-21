@@ -1,10 +1,10 @@
 import { Text, View, Image } from "react-native"
-import { thumbnailImages } from "@modules/AssetPaths"
+import { exerciseThumbnails } from "@modules/AssetPaths"
 
 type Props = {
   id: number,
   name: string,
-  thumbnail: keyof typeof thumbnailImages,
+  thumbnail: keyof typeof exerciseThumbnails,
   sets: number | null,
   reps: number | null,
   minuteDuration: number | null,
@@ -27,7 +27,7 @@ const TimeSlotInstanceCard: React.FC<Props> = ({
       <Image
         className="w-[25%] h-full rounded-xl"
         resizeMode="contain" 
-        source={thumbnailImages[thumbnail]} 
+        source={exerciseThumbnails[thumbnail]} 
       />
       <View className="w-[75%] pl-2 flex-col justify-center">
         <Text className="mb-1 text-custom-white text-xs font-BaiJamjuree-Bold">{name.charAt(0).toUpperCase() + name.slice(1)}</Text>

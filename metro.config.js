@@ -5,8 +5,9 @@ const defaultConfig = getDefaultConfig(__dirname)
 defaultConfig.resolver.assetExts.push('db')
 
 const extraNodeModules = {
-  '@thumbnails': __dirname + '/assets/images/exercises/thumbnails',
-  '@backgrounds': __dirname + '/assets/images/exercises/backgrounds',
+  '@exerciseThumbnails': __dirname + '/assets/images/exercises/thumbnails',
+  '@exercireBackgrounds': __dirname + '/assets/images/exercises/backgrounds',
+  'programThumbnails': __dirname + '/assets/images/programs',
   '@videos': __dirname + '/assets/videos',
   '@sounds': __dirname + '/assets/sounds',
   '@fonts': __dirname + '/assets/fonts',

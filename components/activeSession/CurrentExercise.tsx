@@ -1,4 +1,4 @@
-import { backgrounds, videoFiles } from "@modules/AssetPaths"
+import { exerciseBackgrounds, videoFiles } from "@modules/AssetPaths"
 import { Icon } from "@react-native-material/core"
 import { LinearGradient } from "expo-linear-gradient"
 import { Image, Text, View, TouchableOpacity } from "react-native"
@@ -11,7 +11,7 @@ type Props = {
 	reps: number,
 	minuteDuration: number,
 	secondDuration: number,
-	background: keyof typeof backgrounds,
+	background: keyof typeof exerciseBackgrounds,
 	video: keyof typeof videoFiles,
 	description: string,
 	style: string,
@@ -47,7 +47,7 @@ const CurrentExercise: React.FC<Props> = ({
 					<Image
 						className="absolute h-full w-full top-0 rounded-xl"
 						resizeMode="cover"
-						source={backgrounds[background]} 
+						source={exerciseBackgrounds[background]} 
 					/>
 					<LinearGradient 
 						className="absolute h-full w-full top-0"

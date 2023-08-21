@@ -7,8 +7,9 @@ module.exports = function(api) {
       'react-native-reanimated/plugin',
       ['module-resolver', { 
         alias: {
-          '@thumbnails': './assets/images/exercises/thumbnails',
-          '@backgrounds': './assets/images/exercises/backgrounds',
+          '@exerciseThumbnails': './assets/images/exercises/thumbnails',
+          '@exerciseBackgrounds': './assets/images/exercises/backgrounds',
+          '@programThumbnails': './assets/images/programs',
           '@videos': './assets/videos',
           '@sounds': './assets/sounds',
           '@fonts': './assets/fonts',

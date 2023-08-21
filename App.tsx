@@ -4,6 +4,8 @@ import HubScreen from '@screens/HubScreen'
 import HomeScreen from '@screens/HomeScreen'
 import NewSessionScreen from '@screens/NewSessionScreen'
 import NewInstanceScreen from '@screens/NewInstanceScreen'
+import NewProgramScreen from '@screens/NewProgramScreen'
+import ProgramsScreen from '@screens/ProgramsScreen'
 import ErrorModal from '@screens/ErrorModal'
 import ConfirmModal from '@screens/ConfirmModal'
 import DB from '@modules/DB'
@@ -16,10 +18,14 @@ import { customFonts } from '@modules/AssetPaths'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import ActiveSessionScreen from '@screens/ActiveSessionScreen'
+import EditProgramScreen from '@screens/EditProgramScreen'
 
 export type RootStackParamList = {
   Home: undefined,
-  Hub: undefined,
+  Programs: undefined,
+  Hub: {
+    programId: number,
+  },
   Settings: undefined,
   NewSession: { 
     routineId: number,
@@ -31,6 +37,11 @@ export type RootStackParamList = {
     sessionId: number,
   },
   NewProgram: undefined,
+  EditProgram: {
+    name: string,
+    description: string | null,
+    thumbnail: string | null,
+  },
   ActiveSession: {
     sessionId: number,
     instanceData: any[],
@@ -106,6 +117,11 @@ const App: React.FC = () => {
                   component={HomeScreen}
                 />
                 <Stack.Screen
+                  name='Programs'
+                  component={ProgramsScreen}
+                  options={{title: 'Programs'}}
+                />
+                <Stack.Screen
                   name='Hub'
                   component={HubScreen}
                   options={{title: 'Hub'}}
@@ -119,6 +135,16 @@ const App: React.FC = () => {
                   name='NewInstance'
                   component={NewInstanceScreen}
                   options={{title: 'Add New Session Exercise'}}
+                />
+                <Stack.Screen
+                  name='NewProgram'
+                  component={NewProgramScreen}
+                  options={{title: 'Create New Program'}}
+                />
+                <Stack.Screen
+                  name='EditProgram'
+                  component={EditProgramScreen}
+                  options={data => ({title: data.route.params.name})}
                 />
               </Stack.Group>
               <Stack.Group 

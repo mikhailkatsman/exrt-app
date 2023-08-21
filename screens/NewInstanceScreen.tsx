@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native"
-import { ComponentType, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import ScrollPickerGrid from "@components/actions/ScrollPickerGrid"
 import ExerciseCard from "@components/common/ExerciseCard"
 import DropDown from "@components/common/Dropdown"
@@ -22,7 +22,7 @@ type InstanceData = {
   secondDuration: number | null
 }
 
-const NewInstanceScreen: ComponentType<Props> = ({ navigation, route }) => {
+const NewInstanceScreen: React.FC<Props> = ({ navigation, route }) => {
   const sessionId = route.params.sessionId
 
   const [instanceData, setInstanceData] = useState<InstanceData>({

@@ -5,7 +5,7 @@ type Props = { children: ReactNode }
 
 const BottomBarWrapper: React.FC<Props> = ({ children }) => {
   return (
-    <View className="h-16 flex-row justify-between">
+    <View className="h-16 mb-2 flex-row justify-between">
       {children}
     </View>
   )

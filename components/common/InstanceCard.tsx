@@ -1,5 +1,5 @@
 import { Text, View, Image, TouchableOpacity } from "react-native"
-import { thumbnailImages } from "@modules/AssetPaths"
+import { exerciseThumbnails } from "@modules/AssetPaths"
 import { Icon } from "@react-native-material/core"
 import DB from "@modules/DB"
 import { useNavigation } from "@react-navigation/native"
@@ -10,7 +10,7 @@ type Props = {
   isActive: boolean,
   id: number,
   name: string,
-  thumbnail: keyof typeof thumbnailImages,
+  thumbnail: keyof typeof exerciseThumbnails,
   sets: number | null,
   reps: number | null,
   weight: number | null,
@@ -55,7 +55,7 @@ const InstanceCard: React.FC<Props> = ({
       <Image
         className="w-[20%] h-full rounded-xl"
         resizeMode="contain" 
-        source={thumbnailImages[thumbnail]} 
+        source={exerciseThumbnails[thumbnail]} 
       />
       <View className="w-[60%] pl-3 flex-col justify-center">
         <Text className="text-custom-white mb-1 mr-2 text-sm font-BaiJamjuree-Bold">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, ComponentType } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Icon } from "@react-native-material/core";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -12,7 +12,7 @@ import BottomBarWrapper from "@components/common/BottomBarWrapper";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
-const HubScreen: ComponentType<Props> = ({ navigation }) => {
+const HubScreen: React.FC<Props> = ({ navigation }) => {
   const [dayNow, setDayNow] = useState<number>(0)
   const [dataArray, setDataArray] = useState<any[]>([])
   const [selectedDay, setSelectedDay] = useState<number>(0)
