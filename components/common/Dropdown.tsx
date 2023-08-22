@@ -50,6 +50,7 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, rese
           onDismiss={handleDropdownState}
           onRequestClose={handleDropdownState}
           transparent={true}
+          animationType="fade"
         >
           <Pressable className="w-full h-full bg-custom-dark/60" onPress={handleDropdownState} />
           <View className="w-32 border-2 border-custom-white rounded-lg"

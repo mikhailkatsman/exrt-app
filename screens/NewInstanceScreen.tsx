@@ -7,7 +7,7 @@ import { Icon } from "@react-native-material/core"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import DB from "@modules/DB"
-import { thumbnailImages } from "@modules/AssetPaths"
+import { exerciseThumbnails } from "@modules/AssetPaths"
 import ScreenWrapper from "@components/common/ScreenWrapper"
 import BottomBarWrapper from "@components/common/BottomBarWrapper"
 
@@ -36,7 +36,7 @@ const NewInstanceScreen: React.FC<Props> = ({ navigation, route }) => {
   const [exerciseList, setExerciseList] = useState<{
     id: number, 
     name: string, 
-    thumbnail: keyof typeof thumbnailImages 
+    thumbnail: keyof typeof exerciseThumbnails
   }[]>([])
   const [muscleSort, setMuscleSort] = useState<string | null>(null)
   const [typeSort, setTypeSort] = useState<string | null>(null)
@@ -98,11 +98,8 @@ const NewInstanceScreen: React.FC<Props> = ({ navigation, route }) => {
     if (pendingInstanceData.reps === 1 
         && (pendingInstanceData.minuteDuration !== null 
         || pendingInstanceData.secondDuration !== null)) {
-      console.log('timed')
       pendingInstanceData = {...pendingInstanceData, reps: null}
     }
-
-    console.log(pendingInstanceData)
 
     DB.sql(`
       SELECT MAX(instance_order) as maxOrder 

@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Text } from 'react-native'
 import HubScreen from '@screens/HubScreen'
 import HomeScreen from '@screens/HomeScreen'
-import NewSessionScreen from '@screens/NewSessionScreen'
+import EditSessionScreen from '@screens/EditSessionScreen'
+import ActiveSessionScreen from '@screens/ActiveSessionScreen'
 import NewInstanceScreen from '@screens/NewInstanceScreen'
 import NewProgramScreen from '@screens/NewProgramScreen'
-import ProgramsScreen from '@screens/ProgramsScreen'
+import ProgramsListScreen from '@screens/ProgramsListScreen'
+import EditProgramScreen from '@screens/EditProgramScreen'
 import ErrorModal from '@screens/ErrorModal'
 import ConfirmModal from '@screens/ConfirmModal'
 import DB from '@modules/DB'
@@ -17,8 +19,6 @@ import * as Font from 'expo-font'
 import { customFonts } from '@modules/AssetPaths'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import ActiveSessionScreen from '@screens/ActiveSessionScreen'
-import EditProgramScreen from '@screens/EditProgramScreen'
 
 export type RootStackParamList = {
   Home: undefined,
@@ -27,7 +27,7 @@ export type RootStackParamList = {
     programId: number,
   },
   Settings: undefined,
-  NewSession: { 
+  EditSession: { 
     routineId: number,
     sessionExists: boolean,
     sessionId: number,
@@ -38,9 +38,7 @@ export type RootStackParamList = {
   },
   NewProgram: undefined,
   EditProgram: {
-    name: string,
-    description: string | null,
-    thumbnail: string | null,
+    programId: number,
   },
   ActiveSession: {
     sessionId: number,
@@ -70,12 +68,18 @@ const App: React.FC = () => {
       return await Font.loadAsync(customFonts) 
     }
 
+    const logAllData = async () => {
+      return await DB.logAllDataAsJson()
+    }
+
     const loadAllAppAssets = async () => {
       try {
         await Promise.all([
           initializeDatabase(),
           loadFonts(),
         ])
+
+        await logAllData()
 
         console.log('App Initialized!')
         setIsInitialized(true)
@@ -118,18 +122,13 @@ const App: React.FC = () => {
                 />
                 <Stack.Screen
                   name='Programs'
-                  component={ProgramsScreen}
+                  component={ProgramsListScreen}
                   options={{title: 'Programs'}}
                 />
                 <Stack.Screen
                   name='Hub'
                   component={HubScreen}
                   options={{title: 'Hub'}}
-                />
-                <Stack.Screen
-                  name='NewSession'
-                  component={NewSessionScreen}
-                  options={{title: 'Edit Session'}}
                 />
                 <Stack.Screen
                   name='NewInstance'
@@ -140,11 +139,6 @@ const App: React.FC = () => {
                   name='NewProgram'
                   component={NewProgramScreen}
                   options={{title: 'Create New Program'}}
-                />
-                <Stack.Screen
-                  name='EditProgram'
-                  component={EditProgramScreen}
-                  options={data => ({title: data.route.params.name})}
                 />
               </Stack.Group>
               <Stack.Group 
@@ -170,6 +164,14 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='ActiveSession'
                   component={ActiveSessionScreen}
+                />
+                <Stack.Screen
+                  name='EditSession'
+                  component={EditSessionScreen}
+                />
+                <Stack.Screen
+                  name='EditProgram'
+                  component={EditProgramScreen}
                 />
               </Stack.Group>
             </Stack.Navigator>

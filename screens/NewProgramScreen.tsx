@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { View, TouchableOpacity, Text, TextInput, Image } from 'react-native'
+import { useState, useEffect } from "react"
+import { View, TouchableOpacity, Text, TextInput, Image, Dimensions } from 'react-native'
 import { Icon } from "@react-native-material/core"
 import * as ImagePicker from 'expo-image-picker'
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
@@ -11,10 +11,34 @@ import { programThumbnails } from "@modules/AssetPaths"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditProgram'>
 
+const windowWidth = Dimensions.get('window').width - 16
+
 const NewProgramScreen: React.FC<Props> = ({ navigation }) => {
-  const [name, setName] = useState<string | null>(null)
+  const [name, setName] = useState<string>('My Custom Program 1')
   const [description, setDescription] = useState<string | null>(null)
-  const [thumbnail, setThumbnail] = useState<string | null>(null)
+  const [thumbnail, setThumbnail] = useState<string>("program_thumbnail_placeholder")
+
+  useEffect(()=> {
+    DB.transaction(tx => {
+      tx.executeSql(`
+        SELECT name
+        FROM programs
+        WHERE name LIKE 'My Custom Program %'
+        ORDER BY CAST(SUBSTR(name, LENGTH('My Custom Program ') + 1) AS INTEGER) DESC
+        LIMIT 1;
+      `, [],
+      (_, result) => {
+        if (result.rows.length !== 0) {
+          const currentName = result.rows.item(0).name
+          console.log(currentName)
+          const currentNumber = parseInt(currentName.replace('My Custom Program ', ''))
+          const newName = 'My Custom Program ' + (currentNumber + 1)
+          console.log(newName)
+          setName(newName)
+        }
+      },
+    )})
+  }, [])
 
   const pickImage = async() => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -29,6 +53,22 @@ const NewProgramScreen: React.FC<Props> = ({ navigation }) => {
     }
   }
 
+  const registerProgram = () => {
+    console.log(`Data to be passed to DB: ${name}, ${description}, ${thumbnail}`)
+
+    DB.transaction(tx => {
+      tx.executeSql(`
+        INSERT INTO programs (name, description, thumbnail)
+        VALUES (?, ?, ?);
+      `, [name, description, thumbnail],
+      (_, result) => {
+        console.log('registering program')
+        const programId: number = result.insertId ?? 666
+        navigation.navigate('EditProgram', { programId: programId })
+      })
+    })
+  }
+
   return (
     <ScreenWrapper>
       <View className="flex-1 mb-3">
@@ -39,9 +79,10 @@ const NewProgramScreen: React.FC<Props> = ({ navigation }) => {
           underlineColorAndroid="#ffffff"
         />
         <Image
-          className="w-full h-48 rounded-xl"
-          resizeMode="contain" 
-          source={thumbnail ? {uri: thumbnail} : programThumbnails["program_thumbnail_placeholder"]} 
+          className="w-full rounded-xl"
+          style={{ height: (windowWidth * 9) / 16 }}
+          resizeMode="center" 
+          source={programThumbnails[thumbnail as keyof typeof programThumbnails]} 
         />
         <TouchableOpacity 
           onPress={pickImage}
@@ -60,11 +101,7 @@ const NewProgramScreen: React.FC<Props> = ({ navigation }) => {
           flex-1 border-2 border-custom-blue
           flex-row items-center justify-center 
           rounded-xl"
-          onPress={() => navigation.navigate('EditProgram', {
-            name: name === null || name === '' ? 'My Custom Program' : name,
-            description: description,
-            thumbnail: thumbnail,
-          })}
+          onPress={registerProgram}
         >
           <Text className="text-xs text-custom-blue mr-2 font-BaiJamjuree-Bold">Create Your Program</Text>
           <Icon name="swap-horizontal" color="#5AABD6" size={24} /> 

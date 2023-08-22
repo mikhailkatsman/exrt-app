@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { View, TouchableOpacity, Text, TextInput, Image } from 'react-native'
+import { View, TouchableOpacity, Text, TextInput, ImageBackground } from 'react-native'
 import { Icon } from "@react-native-material/core"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
@@ -10,9 +10,8 @@ import BottomBarWrapper from "@components/common/BottomBarWrapper"
 type Props = NativeStackScreenProps<RootStackParamList, 'EditProgram'>
 
 const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
-  console.log(route.params.name)
-  console.log(route.params.description)
-  console.log(route.params.thumbnail)
+  const programId: number = route.params.programId
+  console.log(programId)
 
   return (
     <ScreenWrapper>

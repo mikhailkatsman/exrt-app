@@ -55,8 +55,6 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
         weight: row.weight || null
       }))
 
-      //console.log(JSON.stringify(instanceData, null, 2))
-
       setInstances(instanceData)
     })
   }, [session])
@@ -107,7 +105,7 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
               flex-1 items-center justify-center
               border border-custom-white rounded
             "
-            onPress={() => navigation.navigate("NewSession", { 
+            onPress={() => navigation.navigate("EditSession", { 
               routineId: routineId,
               sessionExists: true,
               sessionId: session.id, 

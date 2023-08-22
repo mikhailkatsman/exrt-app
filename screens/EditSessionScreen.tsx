@@ -6,17 +6,17 @@ import DraggableFlatList, { OpacityDecorator, RenderItemParams } from 'react-nat
 import { Icon } from "@react-native-material/core"
 import InstanceCard from "@components/common/InstanceCard"
 import DB from "@modules/DB"
-import { thumbnailImages } from "@modules/AssetPaths"
+import { exerciseThumbnails } from "@modules/AssetPaths"
 import ScreenWrapper from "@components/common/ScreenWrapper"
 import BottomBarWrapper from "@components/common/BottomBarWrapper"
 
-type Props = NativeStackScreenProps<RootStackParamList, 'NewSession'>
+type Props = NativeStackScreenProps<RootStackParamList, 'EditSession'>
 
 type Instance = {
   key: number,
   id: number,
   name: string,
-  thumbnail: keyof typeof thumbnailImages,
+  thumbnail: keyof typeof exerciseThumbnails,
   sets: number | null,
   reps: number | null,
   weight: number | null,
@@ -24,7 +24,7 @@ type Instance = {
   secondDuration: number | null,
 }
 
-const NewSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
+const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   const routineId = route.params?.routineId
   const sessionExists = route.params.sessionExists
   const sessionTime = route.params.sessionTime
@@ -100,7 +100,7 @@ const NewSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
       navigation.pop()
     } else {
       DB.sql(`
-        INSERT INTO weekly_session_instances (day_id, session_id)
+        INSERT INTO phase_session_instances (day_id, session_id)
         VALUES (?, ?);
       `, [routineId, sessionId],
       () => navigation.pop())
@@ -110,7 +110,16 @@ const NewSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   const deleteSession = () => {
     DB.transaction(tx => {
       tx.executeSql(`
-        DELETE FROM weekly_session_instances
+        DELETE FROM exercise_instances
+        WHERE id IN (
+          SELECT exercise_instance_id
+          FROM session_exercise_instances
+          WHERE session_id = ?
+        );
+      `, [sessionId])
+
+      tx.executeSql(`
+        DELETE FROM phase_session_instances
         WHERE session_id = ?;
       `, [sessionId])
 
@@ -122,15 +131,6 @@ const NewSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
       tx.executeSql(`
         DELETE FROM session_exercise_instances
         WHERE session_id = ?;
-      `, [sessionId])
-
-      tx.executeSql(`
-        DELETE FROM exercise_instances
-        WHERE id IN (
-          SELECT exercise_instance_id
-          FROM session_exercise_instances
-          WHERE session_id = ?
-        );
       `, [sessionId])
     },
       error => console.log('Error deleting session from DB: ' + error),
@@ -222,4 +222,4 @@ const NewSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   )
 }
 
-export default NewSessionsScreen
+export default EditSessionsScreen

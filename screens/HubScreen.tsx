@@ -20,15 +20,14 @@ const HubScreen: React.FC<Props> = ({ navigation }) => {
   const fetchRoutineData = () => {
     DB.transaction(tx => {
       tx.executeSql(`
-        SELECT weekly_session_instances.day_id AS day_id,
+        SELECT phase_session_instances.day_id AS day_id,
                GROUP_CONCAT(sessions.id, ',') AS session_ids,
                GROUP_CONCAT(sessions.time, ',') AS session_times
-        FROM weekly_session_instances
-        JOIN sessions ON weekly_session_instances.session_id = sessions.id
-        GROUP BY weekly_session_instances.day_id;
+        FROM phase_session_instances
+        JOIN sessions ON phase_session_instances.session_id = sessions.id
+        GROUP BY phase_session_instances.day_id;
       `, [], 
       (_, result) => {
-        console.log(result.rows._array)
         setDataArray(result.rows._array)
       }) 
     })

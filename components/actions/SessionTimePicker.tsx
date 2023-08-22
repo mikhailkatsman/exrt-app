@@ -53,10 +53,11 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay, sessionTimes }) => {
     }
 
     DB.sql(`
-      INSERT INTO sessions (time) VALUES (?)
+      INSERT INTO sessions (time) 
+      VALUES (?)
     `, [selectedTime], 
     (_, result) => {
-      navigation.navigate("NewSession", {
+      navigation.navigate("EditSession", {
 	  routineId: selectedDay,
 	  sessionExists: false,
 	  sessionId: result.insertId, 
@@ -131,7 +132,7 @@ const SessionTimePicker: React.FC<Props> = ({ selectedDay, sessionTimes }) => {
 	      width: buttonPosition.width,
 	      top: buttonPosition.yb - 64, 
 	    }}
-	    activeOpacity={1}
+	    activeOpacity={0.5}
 	    onPress={navigateToNewSessionScreen}
 	  >
 	    <Text className="text-xs font-BaiJamjuree-Bold mr-2">Confirm</Text>

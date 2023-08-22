@@ -17,8 +17,8 @@ export const videoFiles = {
 }
 
 export const audioFiles = {
-  'low_beep': require('@sounds/countdown/sine_440.wav'),
-  'high_beep': require('@sounds/countdown/sine_880.wav'),
+  low_beep: require('@sounds/countdown/sine_440.wav'),
+  high_beep: require('@sounds/countdown/sine_880.wav'),
 }
 
 export const customFonts = {
