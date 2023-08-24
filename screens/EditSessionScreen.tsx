@@ -206,7 +206,7 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
           activeOpacity={1}
         >
           <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
-          <Icon name="delete-outline" size={22} color="#F4533E" />
+          <Icon name="delete-outline" size={20} color="#F4533E" />
         </TouchableOpacity>
         <View className="w-3" />
         <TouchableOpacity 

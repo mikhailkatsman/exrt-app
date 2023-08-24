@@ -5,7 +5,6 @@ import HomeScreen from '@screens/HomeScreen'
 import EditSessionScreen from '@screens/EditSessionScreen'
 import ActiveSessionScreen from '@screens/ActiveSessionScreen'
 import NewInstanceScreen from '@screens/NewInstanceScreen'
-import NewProgramScreen from '@screens/NewProgramScreen'
 import ProgramsListScreen from '@screens/ProgramsListScreen'
 import EditProgramScreen from '@screens/EditProgramScreen'
 import ErrorModal from '@screens/ErrorModal'
@@ -24,7 +23,7 @@ export type RootStackParamList = {
   Home: undefined,
   Programs: undefined,
   Hub: {
-    programId: number,
+    phaseId: number,
   },
   Settings: undefined,
   EditSession: { 
@@ -34,9 +33,8 @@ export type RootStackParamList = {
     sessionTime: string,
   },
   NewInstance: { 
-    sessionId: number,
+    sessionId: number | undefined,
   },
-  NewProgram: undefined,
   EditProgram: {
     programId: number,
   },
@@ -136,9 +134,9 @@ const App: React.FC = () => {
                   options={{title: 'Add New Session Exercise'}}
                 />
                 <Stack.Screen
-                  name='NewProgram'
-                  component={NewProgramScreen}
-                  options={{title: 'Create New Program'}}
+                  name='EditProgram'
+                  component={EditProgramScreen}
+                  options={{title: 'Edit Program'}}
                 />
               </Stack.Group>
               <Stack.Group 
@@ -168,10 +166,6 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='EditSession'
                   component={EditSessionScreen}
-                />
-                <Stack.Screen
-                  name='EditProgram'
-                  component={EditProgramScreen}
                 />
               </Stack.Group>
             </Stack.Navigator>
