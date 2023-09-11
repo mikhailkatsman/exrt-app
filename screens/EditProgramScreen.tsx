@@ -108,7 +108,20 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const deleteProgram = () => {
+    DB.transaction(tx => {
+      tx.executeSql(`
+        DELETE FROM program_phases
+        WHERE program_id = ?;
+      `, [programId])
 
+      tx.executeSql(`
+        DELETE FROM programs
+        WHERE id = ?;
+      `, [programId])
+    },
+      error => console.log('Error deleting program from DB: ' + error),
+      () => navigation.pop()
+    )
   }
 
   return (
