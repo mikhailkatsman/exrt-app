@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { View, TouchableOpacity, Text, TextInput, Dimensions, ImageBackground, FlatList } from 'react-native'
 import { Icon } from "@react-native-material/core"
 import * as ImagePicker from 'expo-image-picker'
+import * as FileSystem from 'expo-file-system'
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import DB from "@modules/DB"
@@ -93,7 +94,21 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     })
 
     if (!result.canceled) {
-      setThumbnail(result.assets[0].uri)
+      const resultUri = result.assets[0].uri
+      const fileName = resultUri.split('/').pop()
+      const newFileUri = FileSystem.documentDirectory + 'images/programs/' + fileName
+
+      await FileSystem.makeDirectoryAsync(
+        FileSystem.documentDirectory + 'images/programs/', 
+        { intermediates: true }
+      )
+
+      await FileSystem.copyAsync({
+        from: resultUri,
+        to: newFileUri,
+      })
+
+      setThumbnail(newFileUri)
     }
   }
 
@@ -107,7 +122,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     () => navigation.pop())
   }
 
-  const deleteProgram = () => {
+  const deleteProgram = async() => {
     DB.transaction(tx => {
       tx.executeSql(`
         DELETE FROM program_phases
@@ -122,6 +137,10 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       error => console.log('Error deleting program from DB: ' + error),
       () => navigation.pop()
     )
+
+    if (thumbnail !== 'program_thumbnail_placeholder') {
+      FileSystem.deleteAsync(thumbnail, {idempotent: true})
+    }
   }
 
   return (
@@ -131,7 +150,10 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           className="w-full mb-4 rounded-xl overflow-hidden"
           style={{ height: (windowWidth * 9) / 16 }}
           resizeMode="center" 
-          source={programThumbnails[thumbnail as keyof typeof programThumbnails]} 
+          source={
+            programThumbnails[thumbnail as keyof typeof programThumbnails] || 
+            {uri: thumbnail}
+          } 
         >
           <View className="h-full w-full p-3 flex-col justify-between items-end">
             {isEditingName ? 
