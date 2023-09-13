@@ -1,6 +1,7 @@
 import { Text, View, TouchableOpacity, ImageBackground, Dimensions } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { programThumbnails } from "@modules/AssetPaths"
+import { LinearGradient } from "expo-linear-gradient"
 
 type Props = {
   id: number,
@@ -34,9 +35,16 @@ const ProgramCard: React.FC<Props> = ({
           {uri: thumbnail}
         }
       >
-
+        <LinearGradient 
+          className="absolute h-full w-full"
+          colors={['rgba(0,0,0,0.7)', 'transparent']}
+        />
+        <View className="flex-1 p-3">
+          <Text className="text-custom-white text-xl font-BaiJamjuree-Bold">
+            {name}
+          </Text>
+        </View>
       </ImageBackground>
-
     </TouchableOpacity>
   )
 }

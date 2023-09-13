@@ -113,8 +113,12 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const registerProgram = () => {
-    console.log(`Data to be passed to DB: ${name}, ${description}, ${thumbnail}`)
     // TODO: check all names in existing programs if exists before insert
+    if (programId) {
+      console.log('PROGRAM EXISTS')
+      return
+    }
+
     DB.sql(`
       INSERT INTO programs (name, description, thumbnail, status)
       VALUES (?, ?, ?, ?);
