@@ -23,6 +23,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   const [name, setName] = useState<string>('My Custom Program 1')
   const [description, setDescription] = useState<string>('No description provided.')
   const [thumbnail, setThumbnail] = useState<string>("program_thumbnail_placeholder")
+  const [status, setStatus] = useState<string>('')
   const [phases, setPhases] = useState<any[]>([])
 
   useEffect(()=> {
@@ -48,7 +49,8 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         tx.executeSql(`
           SELECT name AS name,
                  description AS description,
-                 thumbnail AS thumbnail
+                 thumbnail AS thumbnail,
+                 status AS status
           FROM programs
           WHERE id = ?;
         `, [programId], 
@@ -57,6 +59,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           setName(item.name)
           setDescription(item.description)
           setThumbnail(item.thumbnail)
+          setStatus(item.status)
         })
 
         // Fetch all program related phases
@@ -113,17 +116,24 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const registerProgram = () => {
-    // TODO: check all names in existing programs if exists before insert
     if (programId) {
-      console.log('PROGRAM EXISTS')
-      return
+      DB.sql(`
+        UPDATE programs
+        SET name = ?,
+            description = ?,
+            thumbnail = ?,
+            status = ?
+        WHERE id = ?;
+      `, [name, description, thumbnail, status, programId], 
+      () => navigation.pop())
+    } else {
+      DB.sql(`
+        INSERT INTO programs (name, description, thumbnail, status)
+        VALUES (?, ?, ?, ?);
+      `, [name, description, thumbnail, 'subscribed'],
+      () => navigation.pop())
     }
 
-    DB.sql(`
-      INSERT INTO programs (name, description, thumbnail, status)
-      VALUES (?, ?, ?, ?);
-    `, [name, description, thumbnail, 'subscribed'],
-    () => navigation.pop())
   }
 
   const deleteProgram = async() => {
