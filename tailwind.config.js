@@ -15,6 +15,8 @@ module.exports = {
       'custom-grey': '#505050',
       'custom-blue': '#5AABD6',
       'custom-yellow': '#F7EA40',
+      'half-transparent': 'rgba(0, 0, 0, 0.5)',
+      '2/3-transparent': 'rgba(0, 0, 0, 0.75)',
     },
     extend: {
       fontFamily: {

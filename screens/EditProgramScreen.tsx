@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { View, TouchableOpacity, Text, TextInput, Dimensions, ImageBackground, FlatList } from 'react-native'
+import { LinearGradient } from "expo-linear-gradient"
 import { Icon } from "@react-native-material/core"
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
@@ -26,7 +27,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   const [status, setStatus] = useState<string>('')
   const [phases, setPhases] = useState<any[]>([])
 
-  useEffect(()=> {
+  const fetchProgramData = () => {
     if (!programId) {
       DB.sql(`
         SELECT name
@@ -45,7 +46,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       })
     } else {
       DB.transaction(tx => {
-        // Fetch program data
         tx.executeSql(`
           SELECT name AS name,
                  description AS description,
@@ -62,7 +62,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           setStatus(item.status)
         })
 
-        // Fetch all program related phases
         tx.executeSql(`
           SELECT phases.id AS phaseId,
                  phases.name AS phaseName,
@@ -86,7 +85,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         })
       })
     }
-  }, [])
+  }
 
   const pickImage = async() => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -130,10 +129,9 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       DB.sql(`
         INSERT INTO programs (name, description, thumbnail, status)
         VALUES (?, ?, ?, ?);
-      `, [name, description, thumbnail, 'subscribed'],
+      `, [name, description, thumbnail, 'active'],
       () => navigation.pop())
     }
-
   }
 
   const deleteProgram = async() => {
@@ -157,6 +155,14 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }
 
+  useEffect(()=> {
+    const unsibscribeFocus = navigation.addListener('focus', fetchProgramData)
+
+    return () => {
+      unsibscribeFocus()
+    }
+  }, [])
+
   return (
     <ScreenWrapper>
       <View className="flex-1 mb-3">
@@ -169,6 +175,10 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             {uri: thumbnail}
           } 
         >
+          <LinearGradient 
+            className="absolute h-full w-full"
+            colors={['rgba(0,0,0,0.7)', 'transparent']}
+          />
           <View className="h-full w-full p-3 flex-col justify-between items-end">
             {isEditingName ? 
               <TextInput 

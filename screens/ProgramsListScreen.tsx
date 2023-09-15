@@ -1,7 +1,5 @@
-import BottomBarWrapper from "@components/common/BottomBarWrapper"
 import ScreenWrapper from "@components/common/ScreenWrapper"
-import { View, TouchableOpacity, Text, ScrollView } from "react-native"
-import { Icon } from "@react-native-material/core"
+import { View, ScrollView } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import { useEffect, useState } from "react"
@@ -13,9 +11,24 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Programs'>
 const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
   const [programsList, setProgramsList] = useState<any[]>([])
 
-  useEffect(() => {
+  const fetchPrograms = () => {
     DB.sql(`
-      SELECT * FROM programs;
+      SELECT
+        p.id,
+        p.name,
+        p.description,
+        p.thumbnail,
+        p.status,
+        COUNT(pp.phase_id) AS total_phases,
+        COUNT(CASE WHEN ph.status = 'completed' THEN 1 ELSE NULL END) AS completed_phases
+      FROM
+        programs p
+      LEFT JOIN
+        program_phases pp ON p.id = pp.program_id
+      LEFT JOIN
+        phases ph ON pp.phase_id = ph.id
+      GROUP BY
+        p.id;
     `, [], 
     (_, result) => {
       const programDetails: any[] = []
@@ -26,13 +39,21 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
           description: item.description,
           thumbnail: item.thumbnail,
           status: item.status,
+          total_phases: item.total_phases,
+          completed_phases: item.completed_phases
         })
       })
 
       setProgramsList(programDetails)
     })
+  }
 
-    
+  useEffect(() => {
+    const unsubscribeFocus = navigation.addListener('focus', fetchPrograms)
+
+    return () => {
+      unsubscribeFocus()
+    }
   }, [])
 
   return (
@@ -46,6 +67,8 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
               name={item.name}
               thumbnail={item.thumbnail}
               status={item.status}
+              total_phases={item.total_phases}
+              completed_phases={item.completed_phases}
             />
           ))}
         </ScrollView>
