@@ -31,18 +31,15 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
         p.id;
     `, [], 
     (_, result) => {
-      const programDetails: any[] = []
-      result.rows._array.forEach(item => {
-        programDetails.push({
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          thumbnail: item.thumbnail,
-          status: item.status,
-          total_phases: item.total_phases,
-          completed_phases: item.completed_phases
-        })
-      })
+      const programDetails = result.rows._array.map(item => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        thumbnail: item.thumbnail,
+        status: item.status,
+        total_phases: item.total_phases,
+        completed_phases: item.completed_phases
+      }))
 
       setProgramsList(programDetails)
     })

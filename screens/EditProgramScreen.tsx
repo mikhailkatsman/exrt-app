@@ -27,7 +27,94 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   const [status, setStatus] = useState<string>('')
   const [phases, setPhases] = useState<any[]>([])
 
-  const fetchProgramData = () => {
+  const pickImage = async() => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 0.5,
+    })
+
+    if (!result.canceled) {
+      if (thumbnail !== 'program_thumbnail_placeholder') {
+        await FileSystem.deleteAsync(thumbnail, { idempotent: true })
+      }
+
+      const resultUri = result.assets[0].uri
+      const fileName = resultUri.split('/').pop()
+      const folderPath = FileSystem.documentDirectory + 'images/programs/'
+      const newFileUri = folderPath + fileName
+
+      //DEBUG DELETE ALL IMAGES
+      //const initfiles = await FileSystem.readDirectoryAsync(folderPath)
+      //for (const file of initfiles) {
+      //  await FileSystem.deleteAsync(`${folderPath}${file}`)
+      //}
+
+      await FileSystem.makeDirectoryAsync(
+        FileSystem.documentDirectory + 'images/programs/', 
+        { intermediates: true }
+      )
+
+      await FileSystem.copyAsync({
+        from: resultUri,
+        to: newFileUri,
+      })
+
+      setThumbnail(newFileUri)
+      
+      if (programId) {
+        DB.sql(`
+          UPDATE programs
+          SET thumbnail = ?
+          WHERE id = ?;
+        `, [newFileUri, programId]) 
+      }
+
+      // DEBUG
+      const files = await FileSystem.readDirectoryAsync(folderPath)
+      console.log('Directory Content:', files)
+    }
+  }
+
+  const registerProgram = async() => {
+    if (!programId) {
+      DB.sql(`
+        INSERT INTO programs (name, description, thumbnail, status)
+        VALUES (?, ?, ?, ?);
+      `, [name, description, thumbnail, 'active'],
+      () => navigation.pop())
+      return
+    }
+
+    navigation.pop()
+  }
+
+  const deleteProgram = async() => {
+    DB.transaction(tx => {
+      tx.executeSql(`
+        DELETE FROM program_phases
+        WHERE program_id = ?;
+      `, [programId])
+
+      tx.executeSql(`
+        DELETE FROM programs
+        WHERE id = ?;
+      `, [programId])
+    },
+      error => console.log('Error deleting program from DB: ' + error),
+      () => {
+        if (thumbnail !== 'program_thumbnail_placeholder') {
+          FileSystem.deleteAsync(thumbnail, {idempotent: true}).then(() => navigation.pop())
+          return
+        }
+
+        navigation.pop()
+      }
+    )
+  }
+
+  useEffect(()=> {
     if (!programId) {
       DB.sql(`
         SELECT name
@@ -85,89 +172,13 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         })
       })
     }
-  }
-
-  const pickImage = async() => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [16, 9],
-      quality: 0.5,
-    })
-
-    if (!result.canceled) {
-      const resultUri = result.assets[0].uri
-      const fileName = resultUri.split('/').pop()
-      const newFileUri = FileSystem.documentDirectory + 'images/programs/' + fileName
-
-      await FileSystem.makeDirectoryAsync(
-        FileSystem.documentDirectory + 'images/programs/', 
-        { intermediates: true }
-      )
-
-      await FileSystem.copyAsync({
-        from: resultUri,
-        to: newFileUri,
-      })
-
-      setThumbnail(newFileUri)
-    }
-  }
-
-  const registerProgram = () => {
-    if (programId) {
-      DB.sql(`
-        UPDATE programs
-        SET name = ?,
-            description = ?,
-            thumbnail = ?,
-            status = ?
-        WHERE id = ?;
-      `, [name, description, thumbnail, status, programId], 
-      () => navigation.pop())
-    } else {
-      DB.sql(`
-        INSERT INTO programs (name, description, thumbnail, status)
-        VALUES (?, ?, ?, ?);
-      `, [name, description, thumbnail, 'active'],
-      () => navigation.pop())
-    }
-  }
-
-  const deleteProgram = async() => {
-    DB.transaction(tx => {
-      tx.executeSql(`
-        DELETE FROM program_phases
-        WHERE program_id = ?;
-      `, [programId])
-
-      tx.executeSql(`
-        DELETE FROM programs
-        WHERE id = ?;
-      `, [programId])
-    },
-      error => console.log('Error deleting program from DB: ' + error),
-      () => navigation.pop()
-    )
-
-    if (thumbnail !== 'program_thumbnail_placeholder') {
-      FileSystem.deleteAsync(thumbnail, {idempotent: true})
-    }
-  }
-
-  useEffect(()=> {
-    const unsibscribeFocus = navigation.addListener('focus', fetchProgramData)
-
-    return () => {
-      unsibscribeFocus()
-    }
   }, [])
 
   return (
     <ScreenWrapper>
       <View className="flex-1 mb-3">
         <ImageBackground
-          className="w-full mb-4 rounded-xl overflow-hidden"
+          className="w-full mb-5 rounded-xl overflow-hidden"
           style={{ height: (windowWidth * 9) / 16 }}
           resizeMode="center" 
           source={
@@ -183,22 +194,30 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             {isEditingName ? 
               <TextInput 
                 onChangeText={setName}
-                onSubmitEditing={() => setIsEditingName(false)}
+                onSubmitEditing={() => {
+                  DB.sql(`
+                    UPDATE programs
+                    SET name = ?
+                    WHERE id = ?;
+                  `, [name, programId], 
+                  () => setIsEditingName(false))
+                }}
                 className="w-full text-custom-white text-xl font-BaiJamjuree-Bold"
                 autoCapitalize="words"
-                maxLength={20}
                 defaultValue={name}
                 autoFocus={true}
               />
-              : 
+            : 
               <TouchableOpacity
                 className="w-full flex-row justify-between items-center"
                 onPress={() => setIsEditingName(true)}
               >
-                <Text className="text-custom-white text-xl font-BaiJamjuree-Bold">
+                <Text className="w-5/6 text-custom-white text-xl font-BaiJamjuree-Bold">
                   {name}
                 </Text>
-                <Icon name="pencil" color="#F5F6F3" size={22} /> 
+                <View className="w-1/6 h-full flex-row items-start justify-end">
+                  <Icon name="pencil" color="#F5F6F3" size={22} /> 
+                </View>
               </TouchableOpacity>
             }
             <TouchableOpacity 
@@ -209,27 +228,39 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           </View>
         </ImageBackground>
         <View className="px-3 mb-3 flex-1">
-          <Text className="text-custom-white font-BaiJamjuree-Bold">Description:</Text>
+          <View className="w-full flex-row justify-between">
+            <Text className="flex-1 text-custom-white font-BaiJamjuree-Bold">Description:</Text>
+            {!isEditingDescription &&
+              <TouchableOpacity
+                className="w-1/6 flex-row items-start justify-end"
+                onPress={() => setIsEditingDescription(true)}
+              >
+                <Icon name="pencil" color="#F5F6F3" size={22} /> 
+              </TouchableOpacity>
+            }
+          </View>
           {isEditingDescription ? 
             <TextInput 
               onChangeText={setDescription}
-              onSubmitEditing={() => setIsEditingDescription(false)}
+              onSubmitEditing={() => {
+                DB.sql(`
+                  UPDATE programs
+                  SET description = ?
+                  WHERE id = ?;
+                `, [description, programId], 
+                () => setIsEditingDescription(false))
+                }}
               className="w-full text-custom-white font-BaiJamjuree-Light"
               autoCapitalize="sentences"
               defaultValue={description}
               autoFocus={true}
+              multiline={true}
             />
           :
-            <TouchableOpacity
-              className="w-full flex-row justify-between items-start"
-              onPress={() => setIsEditingDescription(true)}
-            >
-              <Text className="text-custom-white font-BaiJamjuree-Light">{description}</Text>
-              <Icon name="pencil" color="#F5F6F3" size={22} /> 
-            </TouchableOpacity>
+            <Text className="text-custom-white font-BaiJamjuree-Light">{description}</Text>
           }
         </View>
-        <View className="px-3 h-80">
+        <View className="px-3 flex-1">
           <Text className="mb-3 text-custom-white font-BaiJamjuree-Bold">Phases:</Text>
           <FlatList 
             data={phases}
@@ -245,33 +276,35 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           />
         </View>
       </View>
-      <BottomBarWrapper>
-        <TouchableOpacity 
-          className="w-[30%] rounded-xl border-2 border-custom-red flex-row justify-center items-center"
-          onPress={() => {
-            navigation.navigate('ConfirmModal', {
-              text: 'Are you sure you want to delete this program?',
-              onConfirm: deleteProgram
-            })
-          }}
-          activeOpacity={1}
-        >
-          <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
-          <Icon name="delete-outline" size={20} color="#F4533E" />
-        </TouchableOpacity>
-        <View className="w-3" />
-        <TouchableOpacity className="
-          flex-1 border-2 border-custom-blue
-          flex-row items-center justify-center 
-          rounded-xl"
-          onPress={registerProgram}
-        >
-          <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">
-            Confirm Program
-          </Text>
-          <Icon name="check" color="#5AABD6" size={22} /> 
-        </TouchableOpacity>
-      </BottomBarWrapper>
+      {(!isEditingName && !isEditingDescription) &&
+        <BottomBarWrapper>
+          <TouchableOpacity 
+            className="w-[30%] rounded-xl border-2 border-custom-red flex-row justify-center items-center"
+            onPress={() => {
+              navigation.navigate('ConfirmModal', {
+                text: 'Are you sure you want to delete this program?',
+                onConfirm: deleteProgram
+              })
+            }}
+            activeOpacity={1}
+          >
+            <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
+            <Icon name="delete-outline" size={20} color="#F4533E" />
+          </TouchableOpacity>
+          <View className="w-3" />
+          <TouchableOpacity className="
+            flex-1 border-2 border-custom-blue
+            flex-row items-center justify-center 
+            rounded-xl"
+            onPress={registerProgram}
+          >
+            <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">
+              Confirm Program
+            </Text>
+            <Icon name="check" color="#5AABD6" size={22} /> 
+          </TouchableOpacity>
+        </BottomBarWrapper>
+      }
     </ScreenWrapper>
   )
 }
