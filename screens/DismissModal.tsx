@@ -7,17 +7,19 @@ LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ])
 
-type Props = NativeStackScreenProps<RootStackParamList, 'ConfirmModal'>
+type Props = NativeStackScreenProps<RootStackParamList, 'DismissModal'>
 
-const ConfirmModal: React.FC<Props> = ({ navigation, route }) => {
-  const text: string = route.params.text
+const DismissModal: React.FC<Props> = ({ navigation, route }) => {
   const onConfirm = route.params.onConfirm
 
   return (
     <View className="flex-1 bg-custom-dark/60 justify-center items-center">
       <View className="w-2/3 h-1/4 bg-custom-dark flex-col justify-between rounded-xl border border-custom-white">
         <View className="h-[70%] pb-2 px-6 flex justify-center items-center">
-          <Text className="text-custom-white font-BaiJamjuree-Regular">{text}</Text>
+          <Text className="text-custom-white font-BaiJamjuree-Regular">
+            Are you sure you want to go back? 
+            Any unsaved changes will be lost.
+          </Text>
         </View>
         <View className="h-[30%] p-2 flex-row justify-between items-center">
           <TouchableOpacity 
@@ -27,7 +29,7 @@ const ConfirmModal: React.FC<Props> = ({ navigation, route }) => {
               navigation.goBack()
             }}
           >
-            <Text className="text-custom-red font-BaiJamjuree-Bold">Delete</Text>
+            <Text className="text-custom-red font-BaiJamjuree-Bold">Go back</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             className="h-full w-1/2 flex justify-center items-center" 
@@ -41,4 +43,4 @@ const ConfirmModal: React.FC<Props> = ({ navigation, route }) => {
   )
 }
 
-export default ConfirmModal
+export default DismissModal

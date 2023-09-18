@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text } from 'react-native'
+import { Text, TouchableOpacity } from 'react-native'
 import HubScreen from '@screens/HubScreen'
 import HomeScreen from '@screens/HomeScreen'
 import EditSessionScreen from '@screens/EditSessionScreen'
@@ -10,7 +10,7 @@ import EditProgramScreen from '@screens/EditProgramScreen'
 import ErrorModal from '@screens/ErrorModal'
 import ConfirmModal from '@screens/ConfirmModal'
 import DB from '@modules/DB'
-import { IconComponentProvider } from '@react-native-material/core'
+import { Icon, IconComponentProvider } from '@react-native-material/core'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -18,6 +18,7 @@ import * as Font from 'expo-font'
 import { customFonts } from '@modules/AssetPaths'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import DismissModal from '@screens/DismissModal'
 
 export type RootStackParamList = {
   Home: undefined,
@@ -50,6 +51,10 @@ export type RootStackParamList = {
     text: string,
     onConfirm: () => void,
   },
+  DismissModal: {
+    imageUri: string,
+    onConfirm: () => void,
+  }
 }
 
 const App: React.FC = () => {
@@ -109,9 +114,9 @@ const App: React.FC = () => {
                   headerTitleStyle: {
                     color: '#F5F6F3',
                     fontFamily: 'BaiJamjuree-Bold',
-                    fontSize: 18,
+                    fontSize: 16,
                   },
-                  headerTintColor: '#F5F6F3',
+                  headerTintColor: '#F5F6F3'
                 }}
               >
                 <Stack.Screen
@@ -134,6 +139,10 @@ const App: React.FC = () => {
                   options={{title: 'Add New Session Exercise'}}
                 />
                 <Stack.Screen
+                  name='EditSession'
+                  component={EditSessionScreen}
+                />
+                <Stack.Screen
                   name='EditProgram'
                   component={EditProgramScreen}
                   options={{title: 'Edit Program'}}
@@ -153,6 +162,10 @@ const App: React.FC = () => {
                   name='ConfirmModal'
                   component={ConfirmModal}
                 />
+                <Stack.Screen
+                  name='DismissModal'
+                  component={DismissModal}
+                />
               </Stack.Group>
               <Stack.Group 
                 screenOptions={{
@@ -162,10 +175,6 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='ActiveSession'
                   component={ActiveSessionScreen}
-                />
-                <Stack.Screen
-                  name='EditSession'
-                  component={EditSessionScreen}
                 />
               </Stack.Group>
             </Stack.Navigator>

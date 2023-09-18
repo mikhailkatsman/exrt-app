@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react"
-import { View, TouchableOpacity, Text, TextInput, Dimensions, ImageBackground, FlatList } from 'react-native'
+import { useState, useEffect, useCallback } from "react"
+import { View, TouchableOpacity, Text, TextInput, Dimensions, ImageBackground, FlatList, BackHandler } from 'react-native'
 import { LinearGradient } from "expo-linear-gradient"
 import { Icon } from "@react-native-material/core"
+import { HeaderBackButton } from '@react-navigation/elements'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
-import type { NativeStackScreenProps } from "@react-navigation/native-stack"
+import { type NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import DB from "@modules/DB"
 import ScreenWrapper from "@components/common/ScreenWrapper"
 import BottomBarWrapper from "@components/common/BottomBarWrapper"
 import PhaseCard from "@components/common/PhaseCard"
 import { programThumbnails } from "@modules/AssetPaths"
+import { useFocusEffect } from "@react-navigation/native"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditProgram'>
 
@@ -21,9 +23,12 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   
   const [isEditingName, setIsEditingName] = useState<boolean>(false)
   const [isEditingDescription, setIsEditingDescription] = useState<boolean>(false)
+  const [dirPath, setDirPath] = useState<string>('')
+  const [cachePath, setCachePath] = useState<string>('')
   const [name, setName] = useState<string>('My Custom Program 1')
   const [description, setDescription] = useState<string>('No description provided.')
   const [thumbnail, setThumbnail] = useState<string>("program_thumbnail_placeholder")
+  const [ogThumbnailPath, setOgThumbnailPath]= useState<string>(thumbnail)
   const [status, setStatus] = useState<string>('')
   const [phases, setPhases] = useState<any[]>([])
 
@@ -36,58 +41,92 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     })
 
     if (!result.canceled) {
-      if (thumbnail !== 'program_thumbnail_placeholder') {
-        await FileSystem.deleteAsync(thumbnail, { idempotent: true })
-      }
-
-      const resultUri = result.assets[0].uri
-      const fileName = resultUri.split('/').pop()
-      const folderPath = FileSystem.documentDirectory + 'images/programs/'
-      const newFileUri = folderPath + fileName
-
-      //DEBUG DELETE ALL IMAGES
-      //const initfiles = await FileSystem.readDirectoryAsync(folderPath)
-      //for (const file of initfiles) {
-      //  await FileSystem.deleteAsync(`${folderPath}${file}`)
-      //}
-
-      await FileSystem.makeDirectoryAsync(
-        FileSystem.documentDirectory + 'images/programs/', 
-        { intermediates: true }
-      )
-
+      const resultfileName = result.assets[0].uri.split('/').pop()
+      const tempFileUri = cachePath + resultfileName 
       await FileSystem.copyAsync({
-        from: resultUri,
-        to: newFileUri,
+        from: result.assets[0].uri,
+        to: tempFileUri,
       })
 
-      setThumbnail(newFileUri)
-      
-      if (programId) {
-        DB.sql(`
-          UPDATE programs
-          SET thumbnail = ?
-          WHERE id = ?;
-        `, [newFileUri, programId]) 
-      }
+      setThumbnail(tempFileUri)
 
-      // DEBUG
-      const files = await FileSystem.readDirectoryAsync(folderPath)
-      console.log('Directory Content:', files)
+      console.log('New Thumbnail chosen and saved to cache')
+      const cacheDir = await FileSystem.readDirectoryAsync(cachePath)
+      console.log('Cache contents: ' + cacheDir)
+      console.log('New Thumbnail set to: ' + tempFileUri)
     }
   }
 
+  const saveThumbnailImage = async() => {
+    await FileSystem.makeDirectoryAsync(dirPath, { intermediates: true })
+    const newThumbnailPath = dirPath + thumbnail.split('/').pop() 
+
+    //DELETE ALL IMAGES IN PATH
+    //const folder = await FileSystem.readDirectoryAsync(dirPath)
+    //for (const img of folder) {
+    //  await FileSystem.deleteAsync(`${dirPath}${img}`)
+    //}
+
+    await FileSystem.copyAsync({
+      from: thumbnail,
+      to: newThumbnailPath,
+    })
+
+    if (ogThumbnailPath !== 'program_thumbnail_placeholder') {
+      console.log('To be deleted: ' + ogThumbnailPath)
+      await FileSystem.deleteAsync(ogThumbnailPath)
+    }
+    
+    const dirArray = await FileSystem.readDirectoryAsync(dirPath)
+    
+    console.log('-------------------------------------------------------------')
+    console.log('Thumbnail Saved to storage')
+    console.log('images/programs content: ' + dirArray)
+  }
+
+  const clearImageCache = async() => {
+    let cache = await FileSystem.readDirectoryAsync(cachePath)
+
+    for (const file of cache) {
+      await FileSystem.deleteAsync(`${cachePath}${file}`)
+    }
+
+    cache = await FileSystem.readDirectoryAsync(cachePath)
+
+    console.log('Image cache cleared')
+    console.log('Cache contents: ' + cache)
+    console.log('-------------------------------------------------------------')
+  }
+
   const registerProgram = async() => {
+    if (thumbnail !== 'program_thumbnail_placeholder' 
+      && thumbnail !== ogThumbnailPath) {
+      await saveThumbnailImage()
+      await clearImageCache()
+    }
+
     if (!programId) {
       DB.sql(`
         INSERT INTO programs (name, description, thumbnail, status)
         VALUES (?, ?, ?, ?);
       `, [name, description, thumbnail, 'active'],
       () => navigation.pop())
-      return
-    }
+    } else {
 
-    navigation.pop()
+      let newThumbnailPath = thumbnail
+      if (thumbnail !== 'program_thumbnail_placeholder') {
+        newThumbnailPath = dirPath + thumbnail.split('/').pop() 
+      }
+
+      DB.sql(`
+        UPDATE programs
+        SET name = ?,
+            description = ?,
+            thumbnail = ?
+        WHERE id = ?;
+      `, [name, description, newThumbnailPath, programId], 
+      () => navigation.pop())
+    }
   }
 
   const deleteProgram = async() => {
@@ -105,7 +144,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       error => console.log('Error deleting program from DB: ' + error),
       () => {
         if (thumbnail !== 'program_thumbnail_placeholder') {
-          FileSystem.deleteAsync(thumbnail, {idempotent: true}).then(() => navigation.pop())
+          FileSystem.deleteAsync(ogThumbnailPath).then(() => navigation.pop())
           return
         }
 
@@ -114,7 +153,43 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
+  const onBackPressed = () => {
+    navigation.navigate('DismissModal', {
+      imageUri: thumbnail,
+      onConfirm: () => {
+        if (thumbnail !== 'program_thumbnail_placeholder') {
+          clearImageCache().then(() => navigation.pop())
+          return
+        }
+
+        navigation.pop()
+      },
+    })
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      BackHandler.addEventListener('hardwareBackPress', () => {
+        onBackPressed()
+        return true
+      })
+    }, [])
+  )
+
   useEffect(()=> {
+    navigation.setOptions({
+      headerLeft: (props) => (
+        <HeaderBackButton
+          {...props}
+          style={{ marginLeft: -4, marginRight: 30 }}
+          onPress={onBackPressed}
+        />      
+      )
+    })
+
+    setDirPath(FileSystem.documentDirectory + 'images/programs/')
+    setCachePath(FileSystem.cacheDirectory + 'thumbnails/')
+
     if (!programId) {
       DB.sql(`
         SELECT name
@@ -146,6 +221,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           setName(item.name)
           setDescription(item.description)
           setThumbnail(item.thumbnail)
+          setOgThumbnailPath(item.thumbnail)
           setStatus(item.status)
         })
 
@@ -194,14 +270,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             {isEditingName ? 
               <TextInput 
                 onChangeText={setName}
-                onSubmitEditing={() => {
-                  DB.sql(`
-                    UPDATE programs
-                    SET name = ?
-                    WHERE id = ?;
-                  `, [name, programId], 
-                  () => setIsEditingName(false))
-                }}
+                onSubmitEditing={() => setIsEditingName(false)}
                 className="w-full text-custom-white text-xl font-BaiJamjuree-Bold"
                 autoCapitalize="words"
                 defaultValue={name}
@@ -242,14 +311,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           {isEditingDescription ? 
             <TextInput 
               onChangeText={setDescription}
-              onSubmitEditing={() => {
-                DB.sql(`
-                  UPDATE programs
-                  SET description = ?
-                  WHERE id = ?;
-                `, [description, programId], 
-                () => setIsEditingDescription(false))
-                }}
+              onSubmitEditing={() => setIsEditingDescription(false)}
               className="w-full text-custom-white font-BaiJamjuree-Light"
               autoCapitalize="sentences"
               defaultValue={description}
