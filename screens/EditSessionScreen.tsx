@@ -1,8 +1,10 @@
-import { View, Text, TouchableOpacity } from "react-native"
-import { useEffect, useState } from "react"
+import { View, Text, TouchableOpacity, BackHandler } from "react-native"
+import { useEffect, useState, useCallback } from "react"
+import { useFocusEffect } from "@react-navigation/native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import DraggableFlatList, { OpacityDecorator, RenderItemParams } from 'react-native-draggable-flatlist'
+import { HeaderBackButton } from '@react-navigation/elements'
 import { Icon } from "@react-native-material/core"
 import InstanceCard from "@components/common/InstanceCard"
 import DB from "@modules/DB"
@@ -155,8 +157,32 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
+  const onBackPressed = () => {
+    navigation.navigate('DismissModal', {
+      onConfirm: () => navigation.pop()
+    })
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      BackHandler.addEventListener('hardwareBackPress', () => {
+        onBackPressed()
+        return true
+      })
+    }, [])
+  )
+
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchInstances)
+    navigation.setOptions({
+      headerLeft: (props) => (
+        <HeaderBackButton
+          {...props}
+          style={{ marginLeft: -4, marginRight: 30 }}
+          onPress={onBackPressed}
+        />      
+      )
+    })
 
     return () => { 
       unsubscribeFocus()

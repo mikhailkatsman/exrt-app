@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, TouchableOpacity } from 'react-native'
+import { Text } from 'react-native'
 import HubScreen from '@screens/HubScreen'
 import HomeScreen from '@screens/HomeScreen'
 import EditSessionScreen from '@screens/EditSessionScreen'
@@ -10,7 +10,7 @@ import EditProgramScreen from '@screens/EditProgramScreen'
 import ErrorModal from '@screens/ErrorModal'
 import ConfirmModal from '@screens/ConfirmModal'
 import DB from '@modules/DB'
-import { Icon, IconComponentProvider } from '@react-native-material/core'
+import { IconComponentProvider } from '@react-native-material/core'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -52,7 +52,6 @@ export type RootStackParamList = {
     onConfirm: () => void,
   },
   DismissModal: {
-    imageUri: string,
     onConfirm: () => void,
   }
 }

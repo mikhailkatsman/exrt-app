@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react"
 import { View, TouchableOpacity, Text, TextInput, Dimensions, ImageBackground, FlatList, BackHandler } from 'react-native'
+import { useState, useEffect, useCallback } from "react"
+import { useFocusEffect } from "@react-navigation/native"
 import { LinearGradient } from "expo-linear-gradient"
 import { Icon } from "@react-native-material/core"
 import { HeaderBackButton } from '@react-navigation/elements'
@@ -12,7 +13,6 @@ import ScreenWrapper from "@components/common/ScreenWrapper"
 import BottomBarWrapper from "@components/common/BottomBarWrapper"
 import PhaseCard from "@components/common/PhaseCard"
 import { programThumbnails } from "@modules/AssetPaths"
-import { useFocusEffect } from "@react-navigation/native"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditProgram'>
 
@@ -53,7 +53,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       console.log('New Thumbnail chosen and saved to cache')
       const cacheDir = await FileSystem.readDirectoryAsync(cachePath)
       console.log('Cache contents: ' + cacheDir)
-      console.log('New Thumbnail set to: ' + tempFileUri)
+      console.log('New temp Thumbnail set to: ' + tempFileUri)
     }
   }
 
@@ -74,14 +74,16 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
 
     if (ogThumbnailPath !== 'program_thumbnail_placeholder') {
       console.log('To be deleted: ' + ogThumbnailPath)
-      await FileSystem.deleteAsync(ogThumbnailPath)
+      await FileSystem.deleteAsync(ogThumbnailPath, { idempotent: true })
     }
     
     const dirArray = await FileSystem.readDirectoryAsync(dirPath)
     
     console.log('-------------------------------------------------------------')
-    console.log('Thumbnail Saved to storage')
+    console.log(`New thumbnail saved as: ${newThumbnailPath}`)
     console.log('images/programs content: ' + dirArray)
+    
+    return newThumbnailPath
   }
 
   const clearImageCache = async() => {
@@ -99,9 +101,11 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const registerProgram = async() => {
+    let newThumbnailPath = thumbnail
+
     if (thumbnail !== 'program_thumbnail_placeholder' 
       && thumbnail !== ogThumbnailPath) {
-      await saveThumbnailImage()
+      newThumbnailPath = await saveThumbnailImage()
       await clearImageCache()
     }
 
@@ -109,15 +113,9 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       DB.sql(`
         INSERT INTO programs (name, description, thumbnail, status)
         VALUES (?, ?, ?, ?);
-      `, [name, description, thumbnail, 'active'],
+      `, [name, description, newThumbnailPath, 'active'],
       () => navigation.pop())
     } else {
-
-      let newThumbnailPath = thumbnail
-      if (thumbnail !== 'program_thumbnail_placeholder') {
-        newThumbnailPath = dirPath + thumbnail.split('/').pop() 
-      }
-
       DB.sql(`
         UPDATE programs
         SET name = ?,
@@ -155,7 +153,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const onBackPressed = () => {
     navigation.navigate('DismissModal', {
-      imageUri: thumbnail,
       onConfirm: () => {
         if (thumbnail !== 'program_thumbnail_placeholder') {
           clearImageCache().then(() => navigation.pop())
