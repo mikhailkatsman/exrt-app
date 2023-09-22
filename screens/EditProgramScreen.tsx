@@ -61,12 +61,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     await FileSystem.makeDirectoryAsync(dirPath, { intermediates: true })
     const newThumbnailPath = dirPath + thumbnail.split('/').pop() 
 
-    //DELETE ALL IMAGES IN PATH
-    //const folder = await FileSystem.readDirectoryAsync(dirPath)
-    //for (const img of folder) {
-    //  await FileSystem.deleteAsync(`${dirPath}${img}`)
-    //}
-
     await FileSystem.copyAsync({
       from: thumbnail,
       to: newThumbnailPath,
@@ -90,7 +84,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     let cache = await FileSystem.readDirectoryAsync(cachePath)
 
     for (const file of cache) {
-      await FileSystem.deleteAsync(`${cachePath}${file}`)
+      await FileSystem.deleteAsync(`${cachePath}${file}`, { idempotent: true })
     }
 
     cache = await FileSystem.readDirectoryAsync(cachePath)

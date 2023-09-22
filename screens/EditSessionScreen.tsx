@@ -159,7 +159,15 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const onBackPressed = () => {
     navigation.navigate('DismissModal', {
-      onConfirm: () => navigation.pop()
+      onConfirm: () => {
+        if (instances.length === 0 && !sessionExists) {
+          console.log('instances before delition: ' + instances)
+          console.log('instances length is 0')
+          deleteSession()
+        } else {
+          navigation.pop()
+        }
+      }
     })
   }
 
@@ -174,6 +182,7 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchInstances)
+
     navigation.setOptions({
       headerLeft: (props) => (
         <HeaderBackButton
@@ -188,6 +197,8 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
       unsubscribeFocus()
     }
   }, [])
+
+  useEffect(() => console.log('Current Session Instances fentched: ' + JSON.stringify(instances, null, 2)), [instances])
 
   return (
     <ScreenWrapper>

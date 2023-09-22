@@ -18,9 +18,18 @@ class DB {
     const sqlDir: string = FileSystem.documentDirectory + 'SQLite/'
     const dbPath: string = sqlDir + internalDbName
     
-    //const temp = SQLite.openDatabase(internalDbName)
-    //temp.closeAsync()
-    //temp.deleteAsync()
+    const debugClearData = async() => {
+      const temp = SQLite.openDatabase(internalDbName)
+      temp.closeAsync()
+      temp.deleteAsync()
+      const dirPath = FileSystem.documentDirectory + 'images/programs/'
+      const folder = await FileSystem.readDirectoryAsync(dirPath)
+      for (const img of folder) {
+        await FileSystem.deleteAsync(`${dirPath}${img}`, { idempotent: true })
+      }
+    }
+
+    //await debugClearData()
 
     try {
       const { exists } = await FileSystem.getInfoAsync(dbPath)
