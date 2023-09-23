@@ -7,6 +7,7 @@ import ActiveSessionScreen from '@screens/ActiveSessionScreen'
 import NewInstanceScreen from '@screens/NewInstanceScreen'
 import ProgramsListScreen from '@screens/ProgramsListScreen'
 import EditProgramScreen from '@screens/EditProgramScreen'
+import EditPhaseScreen from '@screens/EditPhaseScreen'
 import ErrorModal from '@screens/ErrorModal'
 import ConfirmModal from '@screens/ConfirmModal'
 import DB from '@modules/DB'
@@ -38,6 +39,10 @@ export type RootStackParamList = {
   },
   EditProgram: {
     programId: number,
+  },
+  EditPhase: {
+    phaseId: number,
+    phaseName: string,
   },
   ActiveSession: {
     sessionId: number,
@@ -145,6 +150,11 @@ const App: React.FC = () => {
                   name='EditProgram'
                   component={EditProgramScreen}
                   options={{title: 'Edit Program'}}
+                />
+                <Stack.Screen
+                  name='EditPhase'
+                  component={EditPhaseScreen}
+                  options={({ route }) => ({ title: route.params.phaseName ?? 'Phase Details' })}
                 />
               </Stack.Group>
               <Stack.Group 

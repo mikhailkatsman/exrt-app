@@ -17,7 +17,6 @@ const PhaseCard: React.FC<Props> = ({ id, name, status }) => {
     } else if (status === 'completed') {
       return <Text className="mr-3 text-custom-green text-sm font-BaiJamjuree-LightItalic">Completed</Text>
     }
-
     return
   }
 
@@ -25,7 +24,7 @@ const PhaseCard: React.FC<Props> = ({ id, name, status }) => {
     <TouchableOpacity className="w-full h-20 p-3 mb-3 
       flex-row justify-between items-center
       rounded-xl border border-custom-white"
-      onPress={() => navigation.navigate('Hub', { phaseId: id })}
+      onPress={() => navigation.navigate('EditPhase', { phaseId: id, phaseName: name })}
     >
       <Text className="text-custom-white flex-1 font-BaiJamjuree-Bold">{name}</Text>
       <View className="w-[35%] flex-row justify-end items-center">
