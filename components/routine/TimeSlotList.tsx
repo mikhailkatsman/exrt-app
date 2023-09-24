@@ -15,20 +15,19 @@ const TimeSlotList: React.FC<Props> = ({ dataArray, selectedDay }) => {
       .filter(data => data.day_id === selectedDay + 1)
       .map(item => {
 	const sessions = item.session_ids.split(',')
-	const times = item.session_times.split(',')
+	const statuses = item.session_statuses.split(',')
 	return sessions.map((sessionId: string, index: number) => ({
 	  id: parseInt(sessionId),
-	  time: times[index]
+	  status: statuses[index]
 	}))
       })
       .flat()
-      .sort((a, b) => a.time.localeCompare(b.time))
 
     setSessionsArray(filteredData)
   }, [dataArray, selectedDay])
 
   return (
-    <View className="w-full h-[92%] rounded-xl bg-custom-dark px-2 pt-2"> 
+    <View className="flex-1"> 
       {sessionsArray.length === 0 ? (
 	<ImageBackground
 	  source={require('../../assets/images/bg/comet.png')}

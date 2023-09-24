@@ -29,8 +29,8 @@ type Instance = {
 const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   const routineId = route.params?.routineId
   const sessionExists = route.params.sessionExists
-  const sessionTime = route.params.sessionTime
   const sessionId = route.params.sessionId
+  const phaseId = route.params.phaseId
   const [instances, setInstances] = useState<any[]>([])
 
   const fetchInstances = () => {
@@ -102,9 +102,9 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
       navigation.pop()
     } else {
       DB.sql(`
-        INSERT INTO phase_session_instances (day_id, session_id)
+        INSERT INTO phase_session_instances (day_id, session_id, phase_id)
         VALUES (?, ?);
-      `, [routineId, sessionId],
+      `, [routineId, sessionId, phaseId],
       () => navigation.pop())
     }
   }

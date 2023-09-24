@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native"
 
 type Props = {
   routineId: number,
-  session: { time: string, id: number },
+  session: { id: number, status: string },
 }
 
 const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
@@ -61,26 +61,12 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
 
   return (
     <View className="flex-row justify-between flex-1 mb-2">
-      <View className="w-[17%] mr-0.5 flex-row justify-center items-center">
-        <Text className="w-1/5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[0]}</Text>
-        <Text className="w-1/5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[1]}</Text>
-        <Text className="w-1/5 -mx-0.5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[2]}</Text>
-        <Text className="w-1/5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[3]}</Text>
-        <Text className="w-1/5 text-custom-blue text-center text-lg font-BaiJamjuree-Regular">{session.time[4]}</Text>
-      </View>
-      <View className="w-[6%] h-1/2 border-b border-custom-white"/>
-      <View
-        className="
-          w-[77%] flex-row overflow-hidden
-          justify-between rounded-lg
-          border border-custom-white
-        "
-      >
+      <View className="w-full flex-row justify-between">
         <View className="w-[80%] flex-col">
           <Text className="mx-2 mt-1 text-custom-white font-BaiJamjuree-RegularItalic text-lg">Upcoming Session</Text>
           <View className="mx-2 border-b border-custom-white" />
           <ScrollView 
-            className="m-2 rounded-xl bg-custom-dark"
+            className="m-2 rounded-xl"
             fadingEdgeLength={100}
           >
             {instances.map((instance, index) => (
@@ -109,7 +95,6 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
               routineId: routineId,
               sessionExists: true,
               sessionId: session.id, 
-              sessionTime: session.time 
             })}
           >
             <Icon name="pencil" size={22} color="#F5F6F3" />

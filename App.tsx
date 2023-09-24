@@ -29,10 +29,10 @@ export type RootStackParamList = {
   },
   Settings: undefined,
   EditSession: { 
-    routineId: number,
+    routineId: number | undefined,
     sessionExists: boolean,
     sessionId: number,
-    sessionTime: string,
+    phaseId: number,
   },
   NewInstance: { 
     sessionId: number | undefined,

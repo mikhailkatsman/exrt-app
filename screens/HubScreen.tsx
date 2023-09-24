@@ -1,14 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Icon } from "@react-native-material/core";
+import { View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Calendar from "@components/calendar/Calendar";
 import Routine from "@components/routine/Routine";
-import SessionTimePicker from "@components/actions/SessionTimePicker";
 import DB from '@modules/DB'
 import type { RootStackParamList } from "App";
 import ScreenWrapper from "@components/common/ScreenWrapper";
-import BottomBarWrapper from "@components/common/BottomBarWrapper";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
@@ -20,23 +17,26 @@ const HubScreen: React.FC<Props> = ({ navigation }) => {
   const fetchRoutineData = () => {
     DB.transaction(tx => {
       tx.executeSql(`
-        SELECT phase_session_instances.day_id AS day_id,
-               GROUP_CONCAT(sessions.id, ',') AS session_ids,
-               GROUP_CONCAT(sessions.time, ',') AS session_times
-        FROM phase_session_instances
-        JOIN sessions ON phase_session_instances.session_id = sessions.id
-        GROUP BY phase_session_instances.day_id;
+        SELECT psi.day_id,
+            GROUP_CONCAT(sessions.id, ',') AS session_ids,
+            GROUP_CONCAT(sessions.status, ',') AS session_statuses,
+            GROUP_CONCAT(phases.id, ',') AS phase_ids,
+            GROUP_CONCAT(phases.name, ',') AS phase_names,
+            GROUP_CONCAT(programs.id, ',') AS program_ids,
+            GROUP_CONCAT(programs.name, ',') AS program_names,
+            GROUP_CONCAT(programs.thumbnail, ',') AS program_thumbnails
+        FROM phase_session_instances psi
+        JOIN sessions ON psi.session_id = sessions.id
+        JOIN phases ON psi.phase_id = phases.id AND phases.status = 'active'
+        JOIN program_phases pp ON phases.id = pp.phase_id
+        JOIN programs ON pp.program_id = programs.id
+        GROUP BY psi.day_id;
       `, [], 
       (_, result) => {
+        console.log(JSON.stringify(result.rows._array, null, 2))
         setDataArray(result.rows._array)
       }) 
     })
-  }
-
-  const getTimes = (selectedDay: number, dataArray: any[]) => {
-    const result = dataArray.find(item => item.day_id === selectedDay)
-
-    return result ? result.session_times.split(',') : []
   }
 
   useMemo(() => {
@@ -66,21 +66,6 @@ const HubScreen: React.FC<Props> = ({ navigation }) => {
           selectedDay={selectedDay}
         />
       </View>
-      <BottomBarWrapper>
-        <TouchableOpacity className="
-          flex-1 border-2 border-custom-white
-          flex-row items-center justify-center 
-          rounded-xl"
-        >
-          <Text className="text-xs text-custom-white mr-2 font-BaiJamjuree-Bold">Move Routine</Text>
-          <Icon name="swap-horizontal" color="#F5F6F3" size={24} /> 
-        </TouchableOpacity>
-        <View className="w-3" />
-        <SessionTimePicker 
-          selectedDay={selectedDay + 1} 
-          sessionTimes={getTimes(selectedDay + 1, dataArray)}
-        />
-      </BottomBarWrapper>
     </ScreenWrapper>
   )
 }
