@@ -2,9 +2,9 @@ import { exerciseBackgrounds, videoFiles } from "@modules/AssetPaths"
 import { Icon } from "@react-native-material/core"
 import { LinearGradient } from "expo-linear-gradient"
 import { Image, Text, View, TouchableOpacity } from "react-native"
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated"
+import Animated, { Easing, FadeOut, useSharedValue, withTiming, withDelay, useAnimatedStyle } from "react-native-reanimated"
 import { Video, ResizeMode } from 'expo-av'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 type Props = {
 	name: string,
@@ -16,6 +16,7 @@ type Props = {
 	description: string,
 	style: string,
 	type: string,
+	screenWidth: number
 }
 
 const CurrentExercise: React.FC<Props> = ({
@@ -28,10 +29,28 @@ const CurrentExercise: React.FC<Props> = ({
 	description,
 	style,
 	type,
+	screenWidth
 }) => {
 	const [isPlayingVideo, setIsPlayingVideo] = useState<boolean>(false)
+
+	const opacity = useSharedValue(0)
+	const translateX = useSharedValue(screenWidth)
+
+	useEffect(() => {
+		opacity.value = withDelay(50, withTiming(1, { duration: 150, easing: Easing.in(Easing.ease) }))
+
+		translateX.value = withTiming(0, { duration: 250, easing: Easing.out(Easing.exp) })
+	}, [])
+
+	const animatedStyle = useAnimatedStyle(() => {
+		return {
+			opacity: opacity.value,
+			transform: [{ translateX: translateX.value }],
+		}
+	})
+
 	return (
-		<Animated.View entering={FadeIn} exiting={FadeOut} className="w-full h-full">
+		<Animated.View style={animatedStyle} exiting={FadeOut} className="w-full h-full">
 			{isPlayingVideo ? 
 				<Video 
 					className="absolute h-full w-full top-0 rounded-xl"

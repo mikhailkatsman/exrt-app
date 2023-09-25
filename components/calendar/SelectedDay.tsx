@@ -1,15 +1,18 @@
 import { View } from "react-native"
 
-const SelectedDay: React.FC = () => {
+type Props = {
+  width: number
+}
+
+const SelectedDay: React.FC<Props> = ({ width }) => {
   return (
     <View 
       className="
-        absolute 
-        bg-custom-white
-        inset-x-1 top-7 -bottom-5
-        border 
-        rounded-t-xl
+        absolute h-20
+        border-x-2 border-custom-white 
+        rounded-xl
       "
+      style={{ width: width }}
     />
   )
 }

@@ -1,17 +1,17 @@
 import { Text, View, TouchableOpacity } from "react-native"
 import { useState, useEffect } from 'react'
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated"
+import Animated, { Easing, FadeOut, useSharedValue, withTiming, withDelay, useAnimatedStyle } from "react-native-reanimated"
 import RemainingTimeIndicator from "./RemainingTimeIndicator"
 import { Audio } from "expo-av"
 import { audioFiles } from "@modules/AssetPaths"
-import { unloadAsync } from "expo-font"
 
 type Props = {
 	duration: number,
-	endRest: () => void
+	endRest: () => void,
+	screenWidth: number,
 }
 
-const CurrentRest: React.FC<Props> = ({ duration, endRest }) => {
+const CurrentRest: React.FC<Props> = ({ duration, endRest, screenWidth }) => {
 	const [total, setTotal] = useState<number>(duration)
 	const [remaining, setRemaining] = useState<number>(duration)
 
@@ -28,6 +28,22 @@ const CurrentRest: React.FC<Props> = ({ duration, endRest }) => {
 		setCountdownSound(sound)
 		await sound.playAsync()
 	}
+
+	const opacity = useSharedValue(0)
+	const translateX = useSharedValue(screenWidth)
+
+	useEffect(() => {
+		opacity.value = withDelay(50, withTiming(1, { duration: 150, easing: Easing.in(Easing.ease) }))
+
+		translateX.value = withTiming(0, { duration: 250, easing: Easing.out(Easing.exp) })
+	}, [])
+
+	const animatedStyle = useAnimatedStyle(() => {
+		return {
+			opacity: opacity.value,
+			transform: [{ translateX: translateX.value }],
+		}
+	})
 
 	useEffect(() => {
 		if ( remaining <= 3 && remaining > 0) {
@@ -52,8 +68,8 @@ const CurrentRest: React.FC<Props> = ({ duration, endRest }) => {
 	return (
 		<Animated.View
 			className="flex-1"
-			entering={FadeIn} 
 			exiting={FadeOut}
+			style={animatedStyle}
 		>
 			<View className="flex-1 justify-center items-center">
 				<RemainingTimeIndicator 

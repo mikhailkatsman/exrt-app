@@ -8,7 +8,7 @@ import ScreenWrapper from "@components/common/ScreenWrapper";
 import BottomBarWrapper from "@components/common/BottomBarWrapper";
 import TimeLine from "@components/activeSession/TimeLine";
 import CurrentActivityContainer from "@components/activeSession/CurrentActivityContainer";
-import { backgrounds, videoFiles } from "@modules/AssetPaths";
+import { exerciseBackgrounds, videoFiles } from "@modules/AssetPaths";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 
@@ -22,7 +22,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     data: {
       name: string,
       reps: number,
-      background: keyof typeof backgrounds,
+      background: keyof typeof exerciseBackgrounds,
       video: keyof typeof videoFiles,
       description: string,
       style: string,

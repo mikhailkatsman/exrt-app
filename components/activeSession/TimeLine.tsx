@@ -7,8 +7,9 @@ type Props = {
 	currentActivityIndex: number
 }
 
+const halfScreenWidth = (Dimensions.get('screen').width - 16) / 2
+
 const TimeLine: React.FC<Props> = ({ instances, currentActivityIndex }) => {
-	const halfScreenWidth = (Dimensions.get('screen').width - 16) / 2
 	const flatListRef = useRef<FlatList>(null)
 	const [isReady, setIsReady] = useState<boolean>(false)
 

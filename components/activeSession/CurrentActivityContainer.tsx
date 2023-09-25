@@ -1,7 +1,7 @@
-import { View } from "react-native"
+import { Dimensions, View } from "react-native"
 import CurrentExercise from "./CurrentExercise"
 import CurrentRest from "./CurrentRest"
-import { backgrounds, videoFiles } from "@modules/AssetPaths"
+import { exerciseBackgrounds, videoFiles } from "@modules/AssetPaths"
 
 type Props = {
 	activity: { 
@@ -9,7 +9,7 @@ type Props = {
 		data: {
 			name: string,
 			reps: number,
-			background: keyof typeof backgrounds,
+			background: keyof typeof exerciseBackgrounds,
 			video: keyof typeof videoFiles,
 			description: string,
 			style: string,
@@ -18,6 +18,8 @@ type Props = {
 	},
 	nextActivity: () => void
 }
+
+const screenWidth = Dimensions.get('screen').width
 
 const CurrentActivityContainer: React.FC<Props> = ({ activity, nextActivity }) => {
 
@@ -34,11 +36,13 @@ const CurrentActivityContainer: React.FC<Props> = ({ activity, nextActivity }) =
 					description={activity.data?.description}
 					style={activity.data?.style}
 					type={activity.data?.type}
+					screenWidth={screenWidth}
 				/>
 			:
 				<CurrentRest 
 					duration={activity.data as number} 
 					endRest={nextActivity}
+					screenWidth={screenWidth}
 				/>
 			}
 		</View>
