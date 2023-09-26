@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { View } from "react-native";
+import { Dimensions, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Calendar from "@components/calendar/Calendar";
 import Routine from "@components/routine/Routine";
@@ -8,6 +8,8 @@ import type { RootStackParamList } from "App";
 import ScreenWrapper from "@components/common/ScreenWrapper";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
+
+const screenWidth = Dimensions.get('screen').width
 
 const HubScreen: React.FC<Props> = ({ navigation }) => {
   const [dayNow, setDayNow] = useState<number>(0)
@@ -60,10 +62,12 @@ const HubScreen: React.FC<Props> = ({ navigation }) => {
           dayNow={dayNow}
           selectedDay={selectedDay}
           setSelectedDay={setSelectedDay}
+          screenWidth={screenWidth}
         /> 
         <Routine 
           dataArray={dataArray}
           selectedDay={selectedDay}
+          screenWidth={screenWidth}
         />
       </View>
     </ScreenWrapper>

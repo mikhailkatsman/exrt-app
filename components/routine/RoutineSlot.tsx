@@ -7,10 +7,25 @@ import { useNavigation } from "@react-navigation/native"
 
 type Props = {
   routineId: number,
-  session: { id: number, status: string },
+  session: {
+    id: number,
+    status: string,
+    phase: string,
+    program: string,
+    thumbnail: string,
+  },
+  index: number,
+  total: number,
+  elementWidth: number,
 }
 
-const RoutineSlot: React.FC<Props> = ({ session, routineId }) => {
+const RoutineSlot: React.FC<Props> = ({
+  session, 
+  routineId, 
+  index, 
+  total, 
+  elementWidth
+}) => {
   const [instances, setInstances] = useState<any[]>([])
 
   const navigation = useNavigation()
@@ -24,12 +39,7 @@ const RoutineSlot: React.FC<Props> = ({ session, routineId }) => {
              exercise_instances.secondDuration AS secondDuration, 
              exercise_instances.weight AS weight,
              exercises.name AS name,
-             exercises.thumbnail AS thumbnail,
-             exercises.background AS background,
-             exercises.style AS style,
-             exercises.video AS video,
-             exercises.description AS description,
-             exercises.type AS type
+             exercises.thumbnail AS thumbnail
       FROM session_exercise_instances
       JOIN exercise_instances
       ON session_exercise_instances.exercise_instance_id = exercise_instances.id
@@ -43,11 +53,6 @@ const RoutineSlot: React.FC<Props> = ({ session, routineId }) => {
         id: row.id,
         name: row.name,
         thumbnail: row.thumbnail,
-        background: row.background,
-        video: row.video,
-        style: row.style,
-        type: row.type,
-        description: row.description,
         sets: row.sets,
         reps: row.reps || null,
         minuteDuration: row.minuteDuration || null,
@@ -60,31 +65,34 @@ const RoutineSlot: React.FC<Props> = ({ session, routineId }) => {
   }, [session])
 
   return (
-    <View className="flex-row justify-between flex-1 mb-2">
-      <View className="w-full flex-row justify-between">
-        <View className="w-[80%] flex-col">
-          <Text className="mx-2 mt-1 text-custom-white font-BaiJamjuree-RegularItalic text-lg">Upcoming Session</Text>
-          <View className="mx-2 border-b border-custom-white" />
-          <ScrollView 
-            className="m-2 rounded-xl"
-            fadingEdgeLength={100}
-          >
-            {instances.map((instance, index) => (
-              <TimeSlotInstanceCard 
-                key={`instance-${index}`}
-                id={instance.id}
-                name={instance.name}
-                thumbnail={instance.thumbnail}
-                sets={instance.sets}
-                reps={instance.reps}
-                minuteDuration={instance.minuteDuration}
-                secondDuration={instance.secondDuration}
-                weight={instance.weight}
-              />
-            ))}
-          </ScrollView>
+    <View 
+      className="h-full flex-col justify-between rounded-xl border border-custom-red"
+      style={{width: elementWidth}}
+    >
+      <View className="h-[30%] w-full flex-row justify-between">
+        <View>
+          <Text className="mx-2 mt-1 text-custom-white font-BaiJamjuree-RegularItalic text-lg">
+            {session.phase}
+          </Text>
         </View>
-        <View className="w-[20%] flex-col">
+      </View>
+      <View className="h-[70%] flex-row p-2">
+        <ScrollView fadingEdgeLength={100}>
+          {instances.map((instance, index) => (
+            <TimeSlotInstanceCard 
+              key={`instance-${index}`}
+              id={instance.id}
+              name={instance.name}
+              thumbnail={instance.thumbnail}
+              sets={instance.sets}
+              reps={instance.reps}
+              minuteDuration={instance.minuteDuration}
+              secondDuration={instance.secondDuration}
+              weight={instance.weight}
+            />
+          ))}
+        </ScrollView>
+        <View className="Flex-col">
           <TouchableOpacity 
             className="
               mt-1 mr-1 mb-0.5 

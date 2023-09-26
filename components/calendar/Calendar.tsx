@@ -8,7 +8,8 @@ type Props = {
   dataArray: any[]
   dayNow: number
   selectedDay: number 
-  setSelectedDay: (dayIndex: number ) => void
+  setSelectedDay: (dayIndex: number ) => void,
+  screenWidth: number,
 }
 
 const indicatorWidth = (Dimensions.get('screen').width - 16) / 7
@@ -17,7 +18,8 @@ const Calendar: React.FC<Props> = ({
   dataArray,
   dayNow,
   selectedDay,
-  setSelectedDay
+  setSelectedDay,
+  screenWidth
 }) => {
   const week: string[] = ["M", "T", "W", "T", "F", "S", "S"]
   const [activeWeekDays, setActiveWeekDays] = useState<any[]>([])
@@ -25,7 +27,7 @@ const Calendar: React.FC<Props> = ({
   const selectedDayAnim = useSharedValue(selectedDay + 1)
 
   const selectedDayStyle = useAnimatedStyle(() => {
-    const x = selectedDayAnim.value * indicatorWidth
+    const x = selectedDayAnim.value * ((screenWidth - 16) / 7)
 
     return { transform: [{ translateX: x }] }
   })
@@ -42,7 +44,7 @@ const Calendar: React.FC<Props> = ({
   return (
     <View className="flex-row w-full h-20 justify-between py-1 mt-1 mb-5">
       <Animated.View style={selectedDayStyle}>
-	<SelectedDay width={indicatorWidth} />
+	<SelectedDay width={(screenWidth - 16) / 7} />
       </Animated.View>
       {week.map((day, index) => (
 	<TouchableOpacity 

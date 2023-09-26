@@ -27,7 +27,7 @@ type Instance = {
 }
 
 const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
-  const routineId = route.params?.routineId
+  const routineId = route.params?.routineId ?? 1
   const sessionExists = route.params.sessionExists
   const sessionId = route.params.sessionId
   const phaseId = route.params.phaseId

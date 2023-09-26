@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react"
-import { Dimensions, ImageBackground, Text } from "react-native"
+import { ImageBackground, Text } from "react-native"
 import Animated, { Easing, withSequence, useAnimatedStyle, useSharedValue, withTiming, withDelay } from "react-native-reanimated"
 import RoutineSlot from "./RoutineSlot"
+import { ScrollView } from "react-native-gesture-handler"
 
 type Props = {
   dataArray: any[],
   selectedDay: number, 
+  screenWidth: number,
 }
 
-const screenWidth = Dimensions.get('screen').width
-
-const Routine: React.FC<Props> = ({ dataArray, selectedDay }) => {
+const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
   const [intState, setIntState] = useState(selectedDay)
   const [sessionsArray, setSessionsArray] = useState<any[]>([])
   const opacity = useSharedValue(0)
@@ -44,20 +44,28 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay }) => {
     const filteredData: any[] = dataArray
       .filter(data => data.day_id === intState + 1)
       .map(item => {
-	const sessions = item.session_ids.split(',')
-	const statuses = item.session_statuses.split(',')
-	return sessions.map((sessionId: string, index: number) => ({
-	  id: parseInt(sessionId),
-	  status: statuses[index]
-	}))
+        const sessions = item.session_ids.split(',')
+        const statuses = item.session_statuses.split(',')
+        const phaseNames = item.phase_names.split(',')
+        const programNames = item.program_names.split(',')
+        const programThumbnails = item.program_thumbnails.split(',')
+
+        return sessions.map((sessionId: string, index: number) => ({
+          id: parseInt(sessionId),
+          status: statuses[index],
+          phase: phaseNames[index],
+          program: programNames[index],
+          thumbnail: programThumbnails[index]
+        }))
       })
       .flat()
+    console.log('Filtered data from Routine: ' + JSON.stringify(filteredData, null, 2))
 
     setSessionsArray(filteredData)
   }, [dataArray, intState])
 
   return (
-    <Animated.View style={animatedStyle} className="flex-1 flex-col p-2">
+    <Animated.View style={animatedStyle} className="flex-1 flex-col p-3">
       {sessionsArray.length === 0 ? (
         <ImageBackground
           source={require('../../assets/images/bg/comet.png')}
@@ -66,10 +74,19 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay }) => {
         >
           <Text className="text-custom-white font-BaiJamjuree-Regular text-4xl">Rest</Text>
         </ImageBackground>
-            ) : (
-        sessionsArray.map((session, index) => (
-          <RoutineSlot key={`timeslot-${index}`} session={session} routineId={selectedDay + 1} />
-        ))
+      ) : (
+        <ScrollView horizontal={true}>
+          {sessionsArray.map((session, index) => 
+            <RoutineSlot 
+              key={index} 
+              session={session} 
+              routineId={selectedDay + 1}
+              index={index}
+              total={sessionsArray.length - 1}
+              elementWidth={screenWidth / 3 * 2}
+            />
+          )}
+        </ScrollView>
       )}
     </Animated.View>
   )
