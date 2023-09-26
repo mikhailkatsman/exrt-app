@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Dimensions, Text, TouchableOpacity, View } from "react-native"
 import SelectedDay from "./SelectedDay"
 import DaySessionIndicator from "@components/calendar/DaySessionIndicator"
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated"
+import Animated, { Easing, withTiming, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated"
 
 type Props = {
   dataArray: any[]
@@ -22,7 +22,7 @@ const Calendar: React.FC<Props> = ({
   const week: string[] = ["M", "T", "W", "T", "F", "S", "S"]
   const [activeWeekDays, setActiveWeekDays] = useState<any[]>([])
 
-  const selectedDayAnim = useSharedValue(selectedDay)
+  const selectedDayAnim = useSharedValue(selectedDay + 1)
 
   const selectedDayStyle = useAnimatedStyle(() => {
     const x = selectedDayAnim.value * indicatorWidth
@@ -31,10 +31,7 @@ const Calendar: React.FC<Props> = ({
   })
 
   const handleDayPress = (dayIndex: number) => {
-    selectedDayAnim.value = withSpring(dayIndex, {
-      damping: 6.7,
-      mass: 0.2,
-    })
+    selectedDayAnim.value = withTiming(dayIndex, { duration: 250, easing: Easing.out(Easing.exp) })
     setSelectedDay(dayIndex)
   }
 
@@ -43,7 +40,7 @@ const Calendar: React.FC<Props> = ({
   }, [dataArray])
 
   return (
-    <View className="flex-row w-full h-20 justify-between py-1 my-1">
+    <View className="flex-row w-full h-20 justify-between py-1 mt-1 mb-5">
       <Animated.View style={selectedDayStyle}>
 	<SelectedDay width={indicatorWidth} />
       </Animated.View>

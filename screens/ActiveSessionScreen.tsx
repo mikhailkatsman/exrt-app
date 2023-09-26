@@ -4,6 +4,7 @@ import type { RootStackParamList } from 'App'
 import { View, Text, TouchableOpacity } from "react-native";
 import { Icon } from "@react-native-material/core";
 import { useKeepAwake } from "expo-keep-awake";
+import DB from "@modules/DB";
 import ScreenWrapper from "@components/common/ScreenWrapper";
 import BottomBarWrapper from "@components/common/BottomBarWrapper";
 import TimeLine from "@components/activeSession/TimeLine";
@@ -14,9 +15,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 
 const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const sessionId: number = route.params.sessionId
-  const instanceData: any[] = route.params.instanceData
-
   const [activities, setActivities] = useState<any[]>([])
+  const [currentActivityIndex, setCurrentActivityIndex] = useState<number>(0)
   const [currentActivity, setCurrentActivity] = useState<{
     type: string, 
     data: {
@@ -28,20 +28,46 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       style: string,
       type: string
     } | number
-  }>({
-    type: 'exercise', 
-    data: activities[0]
-  })
-  const [currentActivityIndex, setCurrentActivityIndex] = useState<number>(0)
-
-  useKeepAwake()
-
-  const switchActivity = () => {
-    setCurrentActivityIndex(currentActivityIndex + 1)
-    setCurrentActivity(activities[currentActivityIndex + 1])
-  }
+  }>()
 
   useEffect(() => {
+    DB.sql(`
+      SELECT exercise_instances.id AS id, 
+             exercise_instances.sets AS sets, 
+             exercise_instances.reps AS reps, 
+             exercise_instances.minuteDuration AS minuteDuration, 
+             exercise_instances.secondDuration AS secondDuration, 
+             exercise_instances.weight AS weight,
+             exercises.name AS name,
+             exercises.background AS background,
+             exercises.style AS style,
+             exercises.video AS video,
+             exercises.description AS description,
+             exercises.type AS type
+      FROM session_exercise_instances
+      JOIN exercise_instances
+      ON session_exercise_instances.exercise_instance_id = exercise_instances.id
+      JOIN exercises
+      ON exercise_instances.exercise_id = exercises.id
+      WHERE session_exercise_instances.session_id = ?
+      ORDER BY instance_order ASC;
+    `, [sessionId],
+    (_: any, result: any) => {
+      const instanceData = result.rows._array.map((row: any) => ({
+        id: row.id,
+        name: row.name,
+        background: row.background,
+        video: row.video,
+        style: row.style,
+        type: row.type,
+        description: row.description,
+        sets: row.sets,
+        reps: row.reps || null,
+        minuteDuration: row.minuteDuration || null,
+        secondDuration: row.secondDuration || null,
+        weight: row.weight || null
+      }))
+
       let activityList: any[] = []
 
       instanceData.forEach((instance: any) => {
@@ -65,11 +91,19 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       activityList.pop()
 
       setActivities(activityList)
-      setCurrentActivity(activityList[currentActivityIndex])
+      setCurrentActivity(activityList[0])
+    })
   }, [])
 
+  useKeepAwake()
+
+  const switchActivity = () => {
+    setCurrentActivityIndex(currentActivityIndex + 1)
+    setCurrentActivity(activities[currentActivityIndex + 1])
+  }
+
   const renderButtons = () => {
-    if (currentActivity.type === 'rest') {
+    if (currentActivity?.type === 'rest') {
       return (
         <TouchableOpacity className="flex-1 flex-row items-center 
           justify-center rounded-xl border-2 border-custom-red"
@@ -104,23 +138,27 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
-  return (
-    <ScreenWrapper>
-      <View className="flex-1 my-3">
-        <TimeLine 
-          instances={activities} 
-          currentActivityIndex={currentActivityIndex} 
-        />
-        <CurrentActivityContainer 
-          activity={currentActivity} 
-          nextActivity={switchActivity}
-        />
-      </View>
-      <BottomBarWrapper>
-        {renderButtons()}
-      </BottomBarWrapper>
-    </ScreenWrapper>
-  )
+  return <>
+    {currentActivity ? (
+      <ScreenWrapper>
+        <View className="flex-1 my-3">
+          <TimeLine 
+            instances={activities} 
+            currentActivityIndex={currentActivityIndex} 
+          />
+          <CurrentActivityContainer 
+            activity={currentActivity} 
+            nextActivity={switchActivity}
+          />
+        </View>
+        <BottomBarWrapper>
+          {renderButtons()}
+        </BottomBarWrapper>
+      </ScreenWrapper>
+    ) : (
+      <View className="bg-custom-dark flex-1" />
+    )}
+  </>
 }
 
 export default ActiveSessionScreen

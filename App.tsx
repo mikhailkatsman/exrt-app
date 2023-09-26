@@ -20,6 +20,7 @@ import { customFonts } from '@modules/AssetPaths'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import DismissModal from '@screens/DismissModal'
+import GetReadyScreen from '@screens/GetReadyScreen'
 
 export type RootStackParamList = {
   Home: undefined,
@@ -44,9 +45,11 @@ export type RootStackParamList = {
     phaseId: number,
     phaseName: string,
   },
+  GetReady: {
+    sessionId: number,
+  },
   ActiveSession: {
     sessionId: number,
-    instanceData: any[],
   },
   ErrorModal: {
     title: string,
@@ -181,6 +184,10 @@ const App: React.FC = () => {
                   headerShown: false
                 }}
               >
+                <Stack.Screen
+                  name='GetReady'
+                  component={GetReadyScreen}
+                />
                 <Stack.Screen
                   name='ActiveSession'
                   component={ActiveSessionScreen}

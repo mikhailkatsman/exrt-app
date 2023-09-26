@@ -10,7 +10,7 @@ type Props = {
   session: { id: number, status: string },
 }
 
-const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
+const RoutineSlot: React.FC<Props> = ({ session, routineId }) => {
   const [instances, setInstances] = useState<any[]>([])
 
   const navigation = useNavigation()
@@ -105,9 +105,8 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
               flex-1 items-center justify-center
               border border-custom-blue rounded
             "
-            onPress={() => navigation.navigate("ActiveSession", {
+            onPress={() => navigation.navigate("GetReady", {
               sessionId: session.id,
-              instanceData: instances
             })}
           >
             <Icon name="dumbbell" size={28} color="#5AABD6" />
@@ -118,4 +117,4 @@ const TimeSlot: React.FC<Props> = ({ session, routineId }) => {
   )
 }
 
-export default TimeSlot
+export default RoutineSlot
