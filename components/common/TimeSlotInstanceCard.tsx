@@ -23,7 +23,7 @@ const TimeSlotInstanceCard: React.FC<Props> = ({
   weight 
 }) => {
   return (
-    <View className="w-full h-12 mb-3 flex-row">
+    <View className="w-full h-12 flex-row">
       <Image
         className="w-[25%] h-full rounded-xl"
         resizeMode="contain" 

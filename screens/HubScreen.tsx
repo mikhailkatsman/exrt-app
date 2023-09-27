@@ -35,7 +35,6 @@ const HubScreen: React.FC<Props> = ({ navigation }) => {
         GROUP BY psi.day_id;
       `, [], 
       (_, result) => {
-        console.log(JSON.stringify(result.rows._array, null, 2))
         setDataArray(result.rows._array)
       }) 
     })

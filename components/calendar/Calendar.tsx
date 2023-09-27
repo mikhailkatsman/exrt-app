@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
-import { Dimensions, Text, TouchableOpacity, View } from "react-native"
+import { Text, TouchableOpacity, View } from "react-native"
 import SelectedDay from "./SelectedDay"
 import DaySessionIndicator from "@components/calendar/DaySessionIndicator"
-import Animated, { Easing, withTiming, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated"
+import Animated, { Easing, withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 
 type Props = {
   dataArray: any[]
@@ -11,8 +11,6 @@ type Props = {
   setSelectedDay: (dayIndex: number ) => void,
   screenWidth: number,
 }
-
-const indicatorWidth = (Dimensions.get('screen').width - 16) / 7
 
 const Calendar: React.FC<Props> = ({
   dataArray,
@@ -24,7 +22,7 @@ const Calendar: React.FC<Props> = ({
   const week: string[] = ["M", "T", "W", "T", "F", "S", "S"]
   const [activeWeekDays, setActiveWeekDays] = useState<any[]>([])
 
-  const selectedDayAnim = useSharedValue(selectedDay + 1)
+  const selectedDayAnim = useSharedValue(dayNow)
 
   const selectedDayStyle = useAnimatedStyle(() => {
     const x = selectedDayAnim.value * ((screenWidth - 16) / 7)
