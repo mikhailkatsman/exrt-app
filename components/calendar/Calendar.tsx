@@ -36,7 +36,16 @@ const Calendar: React.FC<Props> = ({
   }
 
   useEffect(() => {
-    setActiveWeekDays(dataArray.map(item => item.day_id))
+    const filteredData: any[] = dataArray
+      .map(item => {
+	return {
+	  dayId: item.day_id,
+	  statuses: item.session_statuses.split(',')
+	}
+      })
+
+    console.log(JSON.stringify(filteredData, null, 2))
+    setActiveWeekDays(filteredData)
   }, [dataArray])
 
   return (
@@ -60,8 +69,10 @@ const Calendar: React.FC<Props> = ({
 	      {day}
 	    </Text>
 	  </View>
-	  {activeWeekDays && activeWeekDays.some(item => item === index + 1) && 
-	    <DaySessionIndicator />
+	  {activeWeekDays && activeWeekDays.some(item => item.dayId === index + 1) && 
+	    <DaySessionIndicator 
+	      statuses={activeWeekDays.find(item => item.dayId === index + 1).statuses}
+	    />
 	  } 
 	</TouchableOpacity>
       ))}

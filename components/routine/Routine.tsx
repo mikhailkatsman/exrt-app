@@ -14,12 +14,11 @@ type Props = {
 const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
   const [intState, setIntState] = useState(selectedDay)
   const [sessionsArray, setSessionsArray] = useState<any[]>([])
-  const [currentScrollIndex, setCurrentScrollIndex] = useState<number>(0)
   const opacity = useSharedValue(0)
   const translateX = useSharedValue(screenWidth)
 
   const scrollRef = useRef<ScrollView>(null)
-  const elementWidth = screenWidth / 100 * 65
+  const elementWidth = (screenWidth / 100 * 65) 
 
   const animatedStyle = useAnimatedStyle(() => {
     return { opacity: opacity.value, transform: [{ translateX: translateX.value }] }
@@ -27,7 +26,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
 
   useEffect(() => {
     opacity.value = withSequence(
-      withTiming(0, { duration: 150, easing: Easing.out(Easing.ease) }),
+      withTiming(0, { duration: 100, easing: Easing.out(Easing.ease) }),
     )
 
     const timeoutId = setTimeout(() => {
@@ -36,7 +35,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
       setIntState(selectedDay)
 
       opacity.value = withSequence(
-        withDelay(50, withTiming(1, { duration: 150, easing: Easing.in(Easing.ease) }))
+        withDelay(50, withTiming(1, { duration: 100, easing: Easing.in(Easing.ease) }))
       )
 
       translateX.value = withTiming(0, { duration: 250, easing: Easing.out(Easing.exp) })
@@ -76,7 +75,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
   }, [intState])
 
   return (
-    <Animated.View style={animatedStyle} className="flex-1 flex-col p-3">
+    <Animated.View style={animatedStyle} className="flex-1 flex-col py-3">
       {sessionsArray.length === 0 ? (
         <ImageBackground
           source={require('../../assets/images/bg/comet.png')}
@@ -87,10 +86,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
         </ImageBackground>
       ) : (
         <>
-          <View className="h-[10%]">
-            <Text className="text-custom-white font-BaiJamjuree-Bold">
-              Sessions for the day:
-            </Text>
+          <View className="h-[10%] mx-3">
           </View>
           <ScrollView 
             ref={scrollRef}
@@ -100,7 +96,10 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
             disableIntervalMomentum={true}
             showsHorizontalScrollIndicator={false}
             decelerationRate='fast'
-            snapToInterval={(elementWidth - (screenWidth - elementWidth)) * 2}
+            snapToInterval={elementWidth + 16}
+            contentContainerStyle={{
+              paddingHorizontal: ((screenWidth - elementWidth) / 2) - 16
+            }}
             alwaysBounceVertical={false}
             alwaysBounceHorizontal={false}
             overScrollMode="never"
@@ -115,11 +114,11 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
               />
             )}
             <TouchableOpacity
-              className="h-full overflow-hidden border border-custom-grey rounded-xl flex justify-center items-center"
-              style={{ width: elementWidth, backgroundColor: 'rgba(80, 80, 80, 0.15)' }}
+              className="h-full mx-2 overflow-hidden border border-custom-white rounded-2xl flex justify-center items-center"
+              style={{ width: elementWidth, backgroundColor: 'rgba(80, 80, 80, 0.2)' }}
               activeOpacity={0.5}
             >
-              <Icon name="plus" size={50} color="#505050" />
+              <Icon name="plus" size={50} color="#F5F6F3" />
             </TouchableOpacity>
           </ScrollView>
         </>

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"
-import { TouchableOpacity, Text, View, ScrollView, Image } from "react-native"
+import React, { Fragment, useEffect, useState } from "react"
+import { TouchableOpacity, Text, View, ScrollView, ImageBackground } from "react-native"
 import DB from '@modules/DB'
 import TimeSlotInstanceCard from "@components/common/TimeSlotInstanceCard"
 import { Icon } from "@react-native-material/core"
@@ -27,7 +27,6 @@ const RoutineSlot: React.FC<Props> = ({
   const [instances, setInstances] = useState<any[]>([])
 
   const navigation = useNavigation()
-
 
   useEffect(() => {
     DB.sql(`
@@ -64,76 +63,69 @@ const RoutineSlot: React.FC<Props> = ({
   }, [session])
 
   const renderStatus = () => {
-    if (session.status === 'completed') {
-      return (
-        <Text className="text-custom-green font-BaiJamjuree-BoldItalic text-sm">
-          Completed
-        </Text>
-      )
-    } else if (session.status === 'missed') {
-      return (
-        <Text className="text-custom-red font-BaiJamjuree-BoldItalic text-sm">
-          Missed 
-        </Text>
-      )
-    } else {
-      return (
-        <Text className="text-custom-blue font-BaiJamjuree-BoldItalic text-sm">
-          Upcoming
-        </Text>
-      )
+    let text = 'Upcoming'
+    let color = '#5AABD6'
+
+    switch (session.status) {
+      case 'completed':
+        text = 'Completed'
+        color = '#74AC5D'
+        break
+      case 'missed':
+        text = 'Missed'
+        color = '#F4533E'
+        break
+      default:
+        break
     }
+
+    return (
+      <Text className="font-BaiJamjuree-BoldItalic text-sm" style={{color: color}}>
+        {text}
+      </Text>
+    )
   }
 
   const renderGradient = () => {
-    if (session.status === 'completed') {
-      return (
-        <LinearGradient
-          className="absolute w-full h-full"
-          colors={['rgba(18, 18, 18, 0.6)', '#74AC5D', '#121212']}
-          start={{ x: 0.2, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          locations={[0, 0.45, 1]}
-        />
-      )
-    } else if (session.status === 'missed') {
-      return (
-        <LinearGradient
-          className="absolute w-full h-full"
-          colors={['rgba(18, 18, 18, 0.6)', '#F4533E', '#121212']}
-          start={{ x: 0.2, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          locations={[0, 0.45, 1]}
-        />
-      )
-    } else {
-      return (
-        <LinearGradient
-          className="absolute w-full h-full"
-          colors={['rgba(18, 18, 18, 0.6)', '#5AABD6', '#121212']}
-          start={{ x: 0.2, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          locations={[0, 0.45, 1]}
-        />
-      )
+    let color: string = '#5AABD6'
+
+    switch (session.status) {
+      case 'completed':
+        color = '#74AC5D'
+        break
+      case 'missed':
+        color = '#F4533E'
+        break
+      default:
+        break
     }
+
+    return (
+      <LinearGradient
+        className="absolute w-full h-full"
+        colors={['rgba(18, 18, 18, 0.6)', color, '#121212']}
+        start={{ x: 0.2, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        locations={[0, 0.45, 1]}
+      />
+    )
   }
 
   return (
     <View 
-      className="h-full mr-6"
+      className="h-full mx-2"
       style={{ width: elementWidth }}
     >
       <View className="h-[85%] flex-col overflow-hidden rounded-t-2xl rounded-b border border-custom-blue">
-        {renderGradient()}
-        <Image 
-          className="absolute w-full h-1/2 -z-10"
+        <ImageBackground 
+          className="absolute w-full h-2/3"
           resizeMode="cover"
           source={
             programThumbnails[session.thumbnail as keyof typeof programThumbnails] || 
             {uri: session.thumbnail}
           }
         />
+        {renderGradient()}
         <View className="h-[8%] mt-3 mx-3 flex-row justify-between">
           {renderStatus()}
           <TouchableOpacity 
@@ -169,9 +161,8 @@ const RoutineSlot: React.FC<Props> = ({
             fadingEdgeLength={100}
           >
             {instances.map((instance, index) => (
-              <>
+              <Fragment key={`instance-${index}`}>
                 <TimeSlotInstanceCard 
-                  key={`instance-${index}`}
                   id={instance.id}
                   name={instance.name}
                   thumbnail={instance.thumbnail}
@@ -181,8 +172,8 @@ const RoutineSlot: React.FC<Props> = ({
                   secondDuration={instance.secondDuration}
                   weight={instance.weight}
                 />
-                {index < instances.length - 1 && <View key={`spacer-${index}`} className="h-3" />}
-              </>
+                {index < instances.length - 1 && <View className="h-3" />}
+              </Fragment>
             ))}
           </ScrollView>
         </View>
