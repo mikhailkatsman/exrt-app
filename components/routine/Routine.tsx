@@ -1,6 +1,13 @@
 import { useEffect, useState, useRef } from "react"
-import { ImageBackground, Text, TouchableOpacity, View } from "react-native"
-import Animated, { Easing, withSequence, useAnimatedStyle, useSharedValue, withTiming, withDelay } from "react-native-reanimated"
+import { Text, TouchableOpacity, View } from "react-native"
+import Animated, { 
+  Easing, 
+  withSequence,
+  useAnimatedStyle,
+  useSharedValue, 
+  withTiming, 
+  withDelay 
+} from "react-native-reanimated"
 import RoutineSlot from "./RoutineSlot"
 import { ScrollView } from "react-native-gesture-handler"
 import { Icon } from "@react-native-material/core"
@@ -14,6 +21,7 @@ type Props = {
 const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
   const [intState, setIntState] = useState(selectedDay)
   const [sessionsArray, setSessionsArray] = useState<any[]>([])
+
   const opacity = useSharedValue(0)
   const translateX = useSharedValue(screenWidth)
 
@@ -77,13 +85,9 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
   return (
     <Animated.View style={animatedStyle} className="flex-1 flex-col py-3">
       {sessionsArray.length === 0 ? (
-        <ImageBackground
-          source={require('../../assets/images/bg/comet.png')}
-          className="flex-1 justify-center items-center"
-          resizeMode="stretch"
-        >
-          <Text className="text-custom-white font-BaiJamjuree-Regular text-4xl">Rest</Text>
-        </ImageBackground>
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-custom-white font-BaiJamjuree-Bold text-4xl">Rest</Text>
+        </View>
       ) : (
         <>
           <View className="h-[10%] mx-3">
