@@ -102,6 +102,15 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     setCurrentActivity(activities[currentActivityIndex + 1])
   }
 
+  const finishSession = () => {
+    DB.sql(`
+      UPDATE sessions
+      SET status = 'completed'
+      WHERE id = ?;
+    `, [sessionId], 
+    () => navigation.pop())
+  }
+
   const renderButtons = () => {
     if (currentActivity?.type === 'rest') {
       return (
@@ -119,7 +128,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       return ( 
         <TouchableOpacity className="flex-1 flex-row items-center 
           justify-center rounded-xl border-2 border-custom-green"
-          onPress={() => {}}
+          onPress={finishSession}
         >
           <Text className="mr-2 text-custom-green font-BaiJamjuree-Bold">Finish Session</Text>
           <Icon name="flag-checkered" color="#74AC5D" size={24} /> 

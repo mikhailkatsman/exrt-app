@@ -26,6 +26,29 @@ const RoutineSlot: React.FC<Props> = ({
 }) => {
   const [instances, setInstances] = useState<any[]>([])
 
+  let statusContext = { 
+    statusText: 'Upcoming', 
+    color: '#5AABD6',
+    buttonText: 'Start Session',
+    icon: 'dumbbell',
+  }
+
+  if (session.status === 'completed') {
+    statusContext = { 
+      statusText: 'Completed', 
+      color: '#74AC5D',
+      buttonText: 'Repeat Session',
+      icon: 'repeat-variant',
+    }
+  } else if (session.status === 'missed') {
+    statusContext = { 
+      statusText: 'Missed', 
+      color: '#F4533E',
+      buttonText: 'Move Session',
+      icon: 'swap-horizontal',
+    }
+  }
+
   const navigation = useNavigation()
 
   useEffect(() => {
@@ -62,61 +85,15 @@ const RoutineSlot: React.FC<Props> = ({
     })
   }, [session])
 
-  const renderStatus = () => {
-    let text = 'Upcoming'
-    let color = '#5AABD6'
-
-    switch (session.status) {
-      case 'completed':
-        text = 'Completed'
-        color = '#74AC5D'
-        break
-      case 'missed':
-        text = 'Missed'
-        color = '#F4533E'
-        break
-      default:
-        break
-    }
-
-    return (
-      <Text className="font-BaiJamjuree-BoldItalic text-sm" style={{color: color}}>
-        {text}
-      </Text>
-    )
-  }
-
-  const renderGradient = () => {
-    let color: string = '#5AABD6'
-
-    switch (session.status) {
-      case 'completed':
-        color = '#74AC5D'
-        break
-      case 'missed':
-        color = '#F4533E'
-        break
-      default:
-        break
-    }
-
-    return (
-      <LinearGradient
-        className="absolute w-full h-full"
-        colors={['rgba(18, 18, 18, 0.6)', color, '#121212']}
-        start={{ x: 0.2, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        locations={[0, 0.45, 1]}
-      />
-    )
-  }
-
   return (
     <View 
       className="h-full mx-2"
       style={{ width: elementWidth }}
     >
-      <View className="h-[85%] flex-col overflow-hidden rounded-t-2xl rounded-b border border-custom-blue">
+      <View 
+        className="h-[85%] flex-col overflow-hidden rounded-t-2xl rounded-b border"
+        style={{ borderColor: statusContext.color }}
+      >
         <ImageBackground 
           className="absolute w-full h-2/3"
           resizeMode="cover"
@@ -125,9 +102,17 @@ const RoutineSlot: React.FC<Props> = ({
             {uri: session.thumbnail}
           }
         />
-        {renderGradient()}
+        <LinearGradient
+          className="absolute w-full h-full"
+          colors={['rgba(18, 18, 18, 0.6)', statusContext.color, '#121212']}
+          start={{ x: 0.2, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          locations={[0, 0.45, 1]}
+        />
         <View className="h-[8%] mt-3 mx-3 flex-row justify-between">
-          {renderStatus()}
+          <Text className="font-BaiJamjuree-BoldItalic text-sm" style={{color: statusContext.color}}>
+            {statusContext.statusText}
+          </Text>
           <TouchableOpacity 
             className="w-[25%] items-end justify-start mt-1"
             onPress={() => navigation.navigate("EditSession", { 
@@ -180,15 +165,25 @@ const RoutineSlot: React.FC<Props> = ({
       </View>
       <TouchableOpacity 
         className="
-          mt-1 flex-1 flex-row items-center justify-center
-          rounded-b-2xl rounded-t border border-custom-blue
+          mt-1 flex-1 flex-row items-center border
+          justify-center rounded-b-2xl rounded-t
         "
-        onPress={() => navigation.navigate("GetReady", {
-          sessionId: session.id,
-        })}
+        style={{ borderColor: statusContext.color }}
+        onPress={() => {
+          if (session.status === "missed") {
+
+          } else {
+            navigation.navigate("GetReady", { sessionId: session.id })
+          }
+        }}
       >
-        <Text className="mr-4 mt-1 text-custom-blue font-BaiJamjuree-Bold text-lg">Start Session</Text>
-        <Icon name="dumbbell" size={24} color="#5AABD6" />
+        <Text 
+          className="mr-4 font-BaiJamjuree-Bold text"
+          style={{ color: statusContext.color }}
+        >
+          {statusContext.buttonText}
+        </Text>
+        <Icon name={statusContext.icon} size={24} color={statusContext.color} />
       </TouchableOpacity>
     </View>
   )

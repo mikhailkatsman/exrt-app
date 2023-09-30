@@ -21,7 +21,7 @@ const DaySessionIndicator: React.FC<Props> = ({ statuses }) => {
     return ( 
       <View 
         key={index}
-        className="h-full w-2 rounded border" 
+        className="h-full w-2 rounded border-2" 
         style={{ borderColor: color, marginHorizontal: 1 }}
       />
     )
@@ -29,7 +29,7 @@ const DaySessionIndicator: React.FC<Props> = ({ statuses }) => {
 
   return (
     <View className="h-2/3 pt-3 pb-2 px-1 flex-row justify-center items-center">
-      {statuses.map((item, index) => setBorderColor(item[index], index) )}
+      {statuses.map((item, index) => setBorderColor(item, index) )}
     </View>
   )
 }
