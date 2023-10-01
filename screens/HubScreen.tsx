@@ -12,39 +12,52 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 const screenWidth = Dimensions.get('screen').width
 
 const HubScreen: React.FC<Props> = ({ navigation }) => {
-  const [dayNow, setDayNow] = useState<number>(0)
   const [dataArray, setDataArray] = useState<any[]>([])
   const [selectedDay, setSelectedDay] = useState<number>(0)
 
+  const dayNow = useMemo(() => {
+    const dateNow: Date = new Date()
+    const dayIndex = (dateNow.getDay() + 6) % 7
+
+    return dayIndex
+  }, [])
+
   const fetchRoutineData = () => {
-    DB.transaction(tx => {
-      tx.executeSql(`
-        SELECT psi.day_id,
-            GROUP_CONCAT(sessions.id, ',') AS session_ids,
-            GROUP_CONCAT(sessions.status, ',') AS session_statuses,
-            GROUP_CONCAT(phases.id, ',') AS phase_ids,
-            GROUP_CONCAT(phases.name, ',') AS phase_names,
-            GROUP_CONCAT(programs.id, ',') AS program_ids,
-            GROUP_CONCAT(programs.name, ',') AS program_names,
-            GROUP_CONCAT(programs.thumbnail, ',') AS program_thumbnails
-        FROM phase_session_instances psi
-        JOIN sessions ON psi.session_id = sessions.id
-        JOIN phases ON psi.phase_id = phases.id AND phases.status = 'active'
-        JOIN program_phases pp ON phases.id = pp.phase_id
-        JOIN programs ON pp.program_id = programs.id
-        GROUP BY psi.day_id;
-      `, [], 
-      (_, result) => {
-        setDataArray(result.rows._array)
-      }) 
-    })
+    DB.sql(`
+      SELECT psi.day_id,
+          GROUP_CONCAT(sessions.id, ',') AS session_ids,
+          GROUP_CONCAT(sessions.status, ',') AS session_statuses,
+          GROUP_CONCAT(phases.id, ',') AS phase_ids,
+          GROUP_CONCAT(phases.name, ',') AS phase_names,
+          GROUP_CONCAT(programs.id, ',') AS program_ids,
+          GROUP_CONCAT(programs.name, ',') AS program_names,
+          GROUP_CONCAT(programs.thumbnail, ',') AS program_thumbnails
+      FROM phase_session_instances psi
+      JOIN sessions ON psi.session_id = sessions.id
+      JOIN phases ON psi.phase_id = phases.id AND phases.status = 'active'
+      JOIN program_phases pp ON phases.id = pp.phase_id
+      JOIN programs ON pp.program_id = programs.id
+      GROUP BY psi.day_id;
+    `, [], 
+    (_, result) => {
+      let resultArray = result.rows._array
+
+      resultArray.forEach((item, itemIndex) => {
+        const sessionStatuses = item.session_statuses.split(',')
+
+        if (item.day_id < dayNow) {
+          sessionStatuses.forEach((status: string, statusIndex: number) => {
+            if (status === 'upcoming') sessionStatuses[statusIndex] = 'missed'
+          })
+        }
+
+        resultArray[itemIndex].session_statuses = sessionStatuses.join(',')
+      })
+
+      setDataArray(resultArray)
+    }) 
   }
 
-  useMemo(() => {
-    const dateData: Date = new Date()
-    const dayNowData: number = (dateData.getDay() + 6) % 7 
-    setDayNow(dayNowData)
-  }, [])
 
   useEffect(() => {
     setSelectedDay(dayNow)

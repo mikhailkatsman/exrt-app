@@ -82,6 +82,10 @@ const App: React.FC = () => {
       return await DB.logAllDataAsJson()
     }
 
+    const setResetDate = async () => {
+      return await DB.setResetDate()
+    }
+
     const loadAllAppAssets = async () => {
       try {
         await Promise.all([
@@ -91,7 +95,8 @@ const App: React.FC = () => {
 
         await logAllData()
 
-        console.log('App Initialized!')
+        await setResetDate()
+
         setIsInitialized(true)
       } catch (error) {
         console.log('Error Initializing: ' + error)

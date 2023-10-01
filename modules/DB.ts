@@ -41,9 +41,87 @@ class DB {
 
       this.db = SQLite.openDatabase(internalDbName)
       this.initialized = true
-    } catch (error) {1
+    } catch (error) {
       console.error('Error initializing database:', error)
     }
+  }
+
+  public async setResetDate(): Promise<void> {
+    if (!this.initialized || !this.db) {
+      console.error('Database not initialized')
+      return
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      this.db!.transaction(tx => {
+        tx.executeSql(
+          `SELECT value FROM metadata WHERE key = 'last_reset';`, [],
+          (_, result) => {
+            const lastResetISO: string | null = result.rows.item(0).value
+            const dateNow: Date = new Date()
+            const dayNow: number = dateNow.getDay()
+
+            if (!lastResetISO) {
+              console.log('CREATING NEW RESET DATE')
+
+              const prevMonday = new Date(dateNow) 
+
+              if(dayNow === 0) {
+                prevMonday.setDate(dateNow.getDate() - 6)
+              } else if(dayNow > 1) {
+                prevMonday.setDate(dateNow.getDate() - (dayNow - 1))
+              } else if(dayNow === 1) {
+                prevMonday.setDate(dateNow.getDate() - 7)
+              }
+              
+              prevMonday.setHours(0, 0, 0, 0)
+              const prevMondayISO: string = prevMonday.toISOString()
+
+              tx.executeSql(`
+                UPDATE metadata 
+                SET value = ?
+                WHERE key = 'last_reset';`, 
+              [prevMondayISO])
+            } else {
+              const lastResetDate = new Date(lastResetISO)
+              const daysSinceReset = Math.floor((dateNow.getTime() - lastResetDate.getTime()) / (1000 * 60 * 60 * 24))
+
+              if (daysSinceReset >= 7) {
+                const thisMonday = new Date(dateNow)
+                thisMonday.setHours(0, 0, 0, 0)
+                const thisMondayISO: string = thisMonday.toISOString()
+
+                console.log('UPDATING RESET DATE TO: ' + thisMondayISO)
+
+                tx.executeSql(`
+                  UPDATE metadata 
+                  SET value = ?
+                  WHERE key = 'last_reset';`, 
+                [thisMondayISO])
+
+                tx.executeSql(`
+                  UPDATE sessions
+                  SET status = 'upcoming'
+                  WHERE id IN (
+                    SELECT psi.session_id
+                    FROM phase_session_instances psi
+                    JOIN phases p ON psi.phase_id = p.id
+                    WHERE p.status = 'active'
+                  );`, 
+                [])
+              }
+            }
+
+            resolve()
+          },
+          (_, error) => {
+            console.error(`Error fetching metadata:`, error)
+            reject(error)
+            return true
+          }
+        )
+      })
+    })
   }
 
   public sql(
@@ -105,8 +183,7 @@ class DB {
       await new Promise<void>((resolve, reject) => {
         this.db!.transaction(tx => {
           tx.executeSql(
-            `SELECT * FROM ${tableName}`, 
-            [], 
+            `SELECT * FROM ${tableName}`, [], 
             (_, resultSet) => {
               allData[tableName] = []
               for (let i = 0; i < resultSet.rows.length; i++) {

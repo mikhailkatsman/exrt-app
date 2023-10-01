@@ -44,8 +44,8 @@ const RoutineSlot: React.FC<Props> = ({
     statusContext = { 
       statusText: 'Missed', 
       color: '#F4533E',
-      buttonText: 'Move Session',
-      icon: 'swap-horizontal',
+      buttonText: 'Retry Session',
+      icon: 'repeat-variant',
     }
   }
 
@@ -169,13 +169,7 @@ const RoutineSlot: React.FC<Props> = ({
           justify-center rounded-b-2xl rounded-t
         "
         style={{ borderColor: statusContext.color }}
-        onPress={() => {
-          if (session.status === "missed") {
-
-          } else {
-            navigation.navigate("GetReady", { sessionId: session.id })
-          }
-        }}
+        onPress={() => navigation.navigate("GetReady", { sessionId: session.id })}
       >
         <Text 
           className="mr-4 font-BaiJamjuree-Bold text"

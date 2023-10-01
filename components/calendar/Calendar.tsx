@@ -44,7 +44,6 @@ const Calendar: React.FC<Props> = ({
 	}
       })
 
-    console.log(JSON.stringify(filteredData, null, 2))
     setActiveWeekDays(filteredData)
   }, [dataArray])
 
