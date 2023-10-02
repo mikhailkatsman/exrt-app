@@ -49,11 +49,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       })
 
       setThumbnail(tempFileUri)
-
-      console.log('New Thumbnail chosen and saved to cache')
-      const cacheDir = await FileSystem.readDirectoryAsync(cachePath)
-      console.log('Cache contents: ' + cacheDir)
-      console.log('New temp Thumbnail set to: ' + tempFileUri)
     }
   }
 
@@ -67,15 +62,8 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     })
 
     if (ogThumbnailPath !== 'program_thumbnail_placeholder') {
-      console.log('To be deleted: ' + ogThumbnailPath)
       await FileSystem.deleteAsync(ogThumbnailPath, { idempotent: true })
     }
-    
-    const dirArray = await FileSystem.readDirectoryAsync(dirPath)
-    
-    console.log('-------------------------------------------------------------')
-    console.log(`New thumbnail saved as: ${newThumbnailPath}`)
-    console.log('images/programs content: ' + dirArray)
     
     return newThumbnailPath
   }
@@ -88,10 +76,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     }
 
     cache = await FileSystem.readDirectoryAsync(cachePath)
-
-    console.log('Image cache cleared')
-    console.log('Cache contents: ' + cache)
-    console.log('-------------------------------------------------------------')
   }
 
   const registerProgram = async() => {
@@ -287,7 +271,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         </ImageBackground>
-        <View className="px-3 mb-3 flex-1">
+        <View className="px-3 mb-3 h-[25%]">
           <View className="w-full flex-row justify-between">
             <Text className="flex-1 text-custom-white font-BaiJamjuree-Bold">Description:</Text>
             {!isEditingDescription &&
