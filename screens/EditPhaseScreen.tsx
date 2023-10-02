@@ -74,12 +74,10 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     if (item.type === 'session') {
       return (
         <OpacityDecorator activeOpacity={0.6}>
-          <View 
-            key={index}
-            className="flex-row items-center"
-          >
+          <View className="flex-row items-center">
             <View 
-              className="ml-1.5 border-l border-custom-grey h-24" />
+              className="ml-1.5 border-l border-custom-grey h-24" 
+            />
             <View 
               className="p-3 ml-4 h-20 flex-1 flex-row rounded-xl border border-custom-white"
             >
@@ -87,7 +85,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
                 Index: {index}, Day Id: {item.dayId}, Session Id: {item.sessionId}, Total exercises: {item.totalExercises}
               </Text>
               <TouchableOpacity 
-                className="w-[8%] flex items-center justify-center"
+                className="w-[10%] flex items-center justify-center"
                 onPress={() => {}}
                 activeOpacity={1}
                 disabled={isActive}
@@ -95,7 +93,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
                 <Icon name="pencil" size={24} color='#F5F6F3' />
               </TouchableOpacity>
               <TouchableOpacity 
-                className="w-[13%] h-full flex items-end justify-center"
+                className="w-[15%] h-full flex items-end justify-center"
                 onPressIn={drag}
                 activeOpacity={1}
                 disabled={isActive}
@@ -109,14 +107,17 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     }
 
     let nextItem
-
     if (typeof index === 'number' && index < listData.length - 1) {
       nextItem = listData[index + 1]
     }
-    
-    const bdColor = nextItem?.type === 'weekday' || index === listData.length - 1 ? '#505050' : '#F5F6F3'
-    const bgColor = nextItem?.type === 'weekday' || index === listData.length - 1 ? 'transparent' : '#F5F6F3'
 
+    let bdColor: string = '#F5F6F3'
+    let bgColor: string = '#F5F6F3'
+    if (nextItem?.type === 'weekday' || index === listData.length - 1) {
+      bdColor = '#505050'
+      bgColor = 'transparent'
+    }
+    
     return (
       <View className="flex-row items-center">
         <View 
@@ -136,6 +137,39 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
+  const updateSessionDay = (data: any, from: number, to: number) => {
+    if (from === to) return
+
+    let adjustedTo = to
+    let adjustedData = data
+
+    if (to === 0) {
+      adjustedTo = 1
+      const [moved] = adjustedData.splice(0, 1)
+      adjustedData.splice(adjustedTo, 0, moved)
+    }
+    
+    setListData(adjustedData)
+
+    const draggedItem = adjustedData[adjustedTo]
+    let newDayId = draggedItem.dayId
+
+    for (let i = adjustedTo - 1; i >= 0; i--) {
+      if (adjustedData[i].type === 'weekday') {
+        newDayId = adjustedData[i].dayId
+        break
+      }
+    }
+
+    if (newDayId !== draggedItem.dayId) {
+      DB.sql(`
+        UPDATE phase_session_instances
+        SET day_id = ?
+        WHERE session_id = ?;
+      `, [newDayId, draggedItem.sessionId])
+    }
+  }
+
   return (
     <ScreenWrapper>
       <View className="h-[10%]">
@@ -146,11 +180,9 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
       <DraggableFlatList
         className="h-[90%]"
         data={listData}
-        keyExtractor={(item: any) => item.key}
+        onDragEnd={({ data, from, to }) => updateSessionDay(data, from, to)}
+        keyExtractor={(_, index) => index.toString()}
         renderItem={renderItem}
-        renderPlaceholder={() => (
-         <View className="ml-1 border-l border-custom-grey h-20 w-full" />
-        )}
       />
       <BottomBarWrapper>
 
