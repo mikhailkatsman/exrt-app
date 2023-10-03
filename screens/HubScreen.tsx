@@ -45,7 +45,7 @@ const HubScreen: React.FC<Props> = ({ navigation }) => {
       resultArray.forEach((item, itemIndex) => {
         const sessionStatuses = item.session_statuses.split(',')
 
-        if (item.day_id < dayNow) {
+        if (item.day_id < dayNow + 1) {
           sessionStatuses.forEach((status: string, statusIndex: number) => {
             if (status === 'upcoming') sessionStatuses[statusIndex] = 'missed'
           })
