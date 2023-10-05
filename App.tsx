@@ -21,6 +21,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import DismissModal from '@screens/DismissModal'
 import GetReadyScreen from '@screens/GetReadyScreen'
+import SelectDayModal from '@screens/SelectDayModal'
 
 export type RootStackParamList = {
   Home: undefined,
@@ -30,13 +31,14 @@ export type RootStackParamList = {
   },
   Settings: undefined,
   EditSession: { 
-    routineId: number | undefined,
+    dayId: number,
     sessionExists: boolean,
     sessionId: number,
+    sessionName: string | undefined,
     phaseId: number,
   },
   NewInstance: { 
-    sessionId: number | undefined,
+    sessionId: number,
   },
   EditProgram: {
     programId: number,
@@ -61,6 +63,9 @@ export type RootStackParamList = {
   },
   DismissModal: {
     onConfirm: () => void,
+  },
+  SelectDayModal: {
+    phaseId: number,
   }
 }
 
@@ -153,6 +158,7 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='EditSession'
                   component={EditSessionScreen}
+                  options={{title: 'Edit Session'}}
                 />
                 <Stack.Screen
                   name='EditProgram'
@@ -182,6 +188,10 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='DismissModal'
                   component={DismissModal}
+                />
+                <Stack.Screen
+                  name='SelectDayModal'
+                  component={SelectDayModal}
                 />
               </Stack.Group>
               <Stack.Group 

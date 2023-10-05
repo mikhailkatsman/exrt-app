@@ -253,15 +253,18 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
               />
             : 
               <TouchableOpacity
-                className="w-full flex-row justify-between items-center"
+                className="w-full"
                 onPress={() => setIsEditingName(true)}
               >
-                <Text className="w-5/6 text-custom-white text-xl font-BaiJamjuree-Bold">
-                  {name}
-                </Text>
-                <View className="w-1/6 h-full flex-row items-start justify-end">
-                  <Icon name="pencil" color="#F5F6F3" size={22} /> 
+                <View className='w-full mb-1 flex-row justify-between items-center'>
+                  <View className='w-5/6 -mt-1'>
+                    <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Program Name:</Text>
+                  </View>
+                  <View className="w-1/6 h-full flex-row items-start justify-end">
+                    <Icon name="pencil" color="#F5F6F3" size={22} /> 
+                  </View>
                 </View>
+                <Text className="text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
               </TouchableOpacity>
             }
             <TouchableOpacity 
@@ -271,9 +274,9 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         </ImageBackground>
-        <View className="px-3 mb-3 h-[25%]">
+        <View className="px-3 mb-5 h-[25%]">
           <View className="w-full flex-row justify-between">
-            <Text className="flex-1 text-custom-white font-BaiJamjuree-Bold">Description:</Text>
+            <Text className="flex-1 text-custom-white font-BaiJamjuree-MediumItalic">Description:</Text>
             {!isEditingDescription &&
               <TouchableOpacity
                 className="w-1/6 flex-row items-start justify-end"
@@ -298,7 +301,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           }
         </View>
         <View className="px-3 flex-1">
-          <Text className="mb-3 text-custom-white font-BaiJamjuree-Bold">Phases:</Text>
+          <Text className="mb-3 text-custom-white font-BaiJamjuree-MediumItalic">Phases:</Text>
           <FlatList 
             data={phases}
             keyExtractor={(item: any) => item.phaseId}

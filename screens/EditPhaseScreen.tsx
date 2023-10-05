@@ -6,7 +6,7 @@ import { type NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import { useEffect, useState } from "react"
 import DB from "@modules/DB"
-import DraggableFlatList, { OpacityDecorator, RenderItemParams } from "react-native-draggable-flatlist"
+import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flatlist"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditPhase'>
 
@@ -15,6 +15,7 @@ type ListItem = {
   dayId: number,
   dayName?: string,
   sessionId?: number,
+  sessionName?: string,
   totalExercises?: number
 }
 
@@ -23,14 +24,17 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const [listData, setListData] = useState<ListItem[]>([])
 
-  useEffect(() => {
+  const fetchSessions = () => {
     DB.sql(`
-      SELECT sei.session_id AS sessionId, 
+      SELECT s.name AS sessionName,
+             sei.session_id AS sessionId, 
              psi.day_id AS dayId,
              COUNT(sei.exercise_instance_id) AS totalExercises
       FROM phase_session_instances psi
-      INNER JOIN session_exercise_instances sei 
+      INNER JOIN session_exercise_instances sei
       ON psi.session_id = sei.session_id
+      INNER JOIN sessions s
+      ON s.id = psi.session_id
       WHERE psi.phase_id = ?
       GROUP BY psi.day_id,
                sei.session_id;
@@ -52,6 +56,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
           dataArray.unshift({
             type: 'session',
             sessionId: item.sessionId,
+            sessionName: item.sessionName,
             dayId: item.dayId,
             totalExercises: item.totalExercises,
           })
@@ -61,6 +66,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
           dataArray.splice(dayIndex + 1, 0, {
             type: 'session',
             sessionId: item.sessionId,
+            sessionName: item.sessionName,
             dayId: item.dayId,
             totalExercises: item.totalExercises,
           })
@@ -69,7 +75,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
 
       setListData(dataArray)
     })
-  }, [])
+  }
 
   const renderItem = ({ 
     item, 
@@ -87,24 +93,28 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
             className="ml-1.5 border-l border-custom-grey h-24" 
           />
           <View 
-            className="p-3 ml-4 h-20 flex-1 flex-row rounded-xl border border-custom-blue bg-custom-dark"
+            className="p-3 ml-4 h-20 flex-1 flex-row rounded-xl bg-custom-dark border-x-2 border-custom-white"
           >
             <TouchableOpacity
-              className="flex-1"
+              className="flex-1 justify-center"
               onPress={() => navigation.navigate('EditSession', { 
                 sessionExists: true, 
                 sessionId: item.sessionId, 
+                sessionName: item.sessionName ?? null,
                 phaseId: phaseId 
               })}
               activeOpacity={0.6}
               disabled={isActive}
             >
-              <Text className="text-custom-white">
-                Index: {index}, Day Id: {item.dayId}, Session Id: {item.sessionId}, Total exercises: {item.totalExercises}
+              <Text className="text-2xl text-custom-white font-BaiJamjuree-Bold">
+                {item.sessionName}
+              </Text>
+              <Text className="text-xl text-custom-white font-BaiJamjuree-LightItalic">
+                {item.totalExercises} {item.totalExercises! > 1 ? 'exercises': 'exercise'}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity 
-              className="w-[15%] h-full flex items-end justify-center"
+              className="w-[13%] h-full flex items-end justify-center"
               onPressIn={drag}
               activeOpacity={1}
               disabled={isActive}
@@ -121,8 +131,8 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
       nextItem = listData[index + 1]
     }
 
-    let bdColor: string = '#F5F6F3'
-    let bgColor: string = '#F5F6F3'
+    let bdColor: string = '#5AABD6'
+    let bgColor: string = '#5AABD6'
     if (nextItem?.type === 'weekday' || index === listData.length - 1) {
       bdColor = '#505050'
       bgColor = 'transparent'
@@ -170,9 +180,17 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }
 
+  useEffect(() => {
+    const unsubscribeFocus = navigation.addListener('focus', fetchSessions)
+
+    return () => {
+      unsubscribeFocus()
+    }
+  }, [])
+
   return (
     <ScreenWrapper>
-      <View className="flex-1 mb-3">
+      <View className="flex-1 px-3 mb-3">
         <Text className="h-[20%] text-custom-white text-lg font-BaiJamjuree-Medium">
           Phase Breakdown:
         </Text>
@@ -181,13 +199,13 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
             <View 
               className="mr-3 w-3 h-3 rounded border"
               style={{
-                backgroundColor: listData[0]?.type === 'session' ? '#F5F6F3' : 'transparent',
-                borderColor: listData[0]?.type === 'session' ? '#F5F6F3' : '#505050',
+                backgroundColor: listData[0]?.type === 'session' ? '#5AABD6' : 'transparent',
+                borderColor: listData[0]?.type === 'session' ? '#5AABD6' : '#505050',
               }}
             />
             <Text 
               className="mt-1 font-BaiJamjuree-Bold text-lg"
-              style={{ color: listData[0]?.type === 'session' ? '#F5F6F3' : '#505050' }}
+              style={{ color: listData[0]?.type === 'session' ? '#5AABD6' : '#505050' }}
             >
               Monday
             </Text>
@@ -205,6 +223,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
         <TouchableOpacity 
           className="flex-1 border-2 border-custom-blue rounded-xl flex-row justify-center items-center"
           activeOpacity={1}
+          onPress={() => navigation.navigate('SelectDayModal', { phaseId: phaseId })}
         >
           <Text className="mr-2 text-custom-blue font-BaiJamjuree-Bold">Add New Session</Text>
           <Icon name="plus" size={24} color="#5AABD6" />

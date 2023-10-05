@@ -13,23 +13,24 @@ const PhaseCard: React.FC<Props> = ({ id, name, status }) => {
 
   const renderStatus = () => {
     if (status === 'active') {
-      return <Text className="mr-3 text-custom-blue text-sm font-BaiJamjuree-LightItalic">In Progress</Text>
+      return <Text className="mr-2 text-custom-blue text-sm font-BaiJamjuree-LightItalic">In Progress</Text>
     } else if (status === 'completed') {
-      return <Text className="mr-3 text-custom-green text-sm font-BaiJamjuree-LightItalic">Completed</Text>
+      return <Text className="mr-2 text-custom-green text-sm font-BaiJamjuree-LightItalic">Completed</Text>
     }
     return
   }
 
   return (
-    <TouchableOpacity className="w-full h-20 p-3 mb-3 
+    <TouchableOpacity className="w-full h-20 p-3 mb-5 
       flex-row justify-between items-center
-      rounded-xl border border-custom-white"
+      rounded-xl border-x-2 border-custom-white"
       onPress={() => navigation.navigate('EditPhase', { phaseId: id, phaseName: name })}
+      activeOpacity={0.6}
     >
-      <Text className="text-custom-white flex-1 font-BaiJamjuree-Bold">{name}</Text>
-      <View className="w-[35%] flex-row justify-end items-center">
+      <Text className="w-[70%] text-custom-white text-lg font-BaiJamjuree-Bold">{name}</Text>
+      <View className="w-[30%] flex-row justify-end items-center">
         {renderStatus()}
-        <Icon name="chevron-right" color="#F5F6F3" size={28} /> 
+        <Icon name="chevron-right" color="#F5F6F3" size={32} /> 
       </View>
     </TouchableOpacity>
   )

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, BackHandler } from "react-native"
+import { View, Text, TextInput, TouchableOpacity, BackHandler } from "react-native"
 import { useEffect, useState, useCallback } from "react"
 import { useFocusEffect } from "@react-navigation/native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
@@ -27,15 +27,19 @@ type Instance = {
 }
 
 const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
-  const routineId = route.params?.routineId ?? 1
+  const dayId = route.params.dayId
   const sessionExists = route.params.sessionExists
   const sessionId = route.params.sessionId
+  const sessionName = route.params.sessionName ?? null
   const phaseId = route.params.phaseId
   const [instances, setInstances] = useState<any[]>([])
+  const [name, setName] = useState<string>(sessionName ?? 'New Session')
+  const [isEditingName, setIsEditingName] = useState<boolean>(false)
 
   const fetchInstances = () => {
     DB.sql(`
-      SELECT exercise_instances.id AS id, 
+      SELECT sessions.name as sessionName,
+             exercise_instances.id AS id, 
              exercise_instances.sets AS sets, 
              exercise_instances.reps AS reps, 
              exercise_instances.minuteDuration AS minuteDuration, 
@@ -44,13 +48,15 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
              exercises.name as name,
              exercises.thumbnail AS thumbnail
       FROM session_exercise_instances
+      JOIN sessions
+      ON sessions.id = ?
       JOIN exercise_instances
       ON session_exercise_instances.exercise_instance_id = exercise_instances.id
       JOIN exercises
       ON exercise_instances.exercise_id = exercises.id
       WHERE session_exercise_instances.session_id = ?
       ORDER BY instance_order ASC;
-    `, [sessionId],
+    `, [sessionId, sessionId],
     (_, result) => {
       const instanceData = result.rows._array.map((row, index) => ({
         key: index.toString(),
@@ -63,6 +69,10 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
         secondDuration: row.secondDuration,
         weight: row.weight
       }))
+
+      if (sessionExists) {
+        setName(result.rows.item(0).sessionName)
+      }
 
       setInstances(instanceData)
     })
@@ -101,11 +111,21 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
     if (sessionExists) {
       navigation.pop()
     } else {
-      DB.sql(`
-        INSERT INTO phase_session_instances (day_id, session_id, phase_id)
-        VALUES (?, ?);
-      `, [routineId, sessionId, phaseId],
-      () => navigation.pop())
+      DB.transaction(tx => {
+        tx.executeSql(`
+          INSERT INTO phase_session_instances (day_id, session_id, phase_id)
+          VALUES (?, ?, ?);
+        `, [dayId, sessionId, phaseId])
+
+        tx.executeSql(`
+          UPDATE sessions
+          SET name = ?
+          WHERE id = ?;
+        `, [name, sessionId])
+      },
+      error => console.error(error),
+      () => navigation.pop()
+      )
     }
   }
 
@@ -198,12 +218,34 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <ScreenWrapper>
-      <View className="flex-1 mb-3 rounded-xl
-        border border-custom-white flex-col justify-between"
-      >
-        <View className="p-3 h-32 flex-col justify-between">
-          <Text className="text-custom-white text-lg font-BaiJamjuree-RegularItalic">Upcoming Session</Text>
-          <View className="border-b border-custom-white" />
+      <View className="flex-1 mb-3 flex-col justify-between">
+        <View className="p-3 h-36 flex-col justify-between">
+          {isEditingName ? 
+            <TextInput 
+              onChangeText={setName}
+              onSubmitEditing={() => setIsEditingName(false)}
+              className="w-full text-custom-white text-xl font-BaiJamjuree-Bold"
+              autoCapitalize="words"
+              defaultValue={name}
+              autoFocus={true}
+            />
+          :
+            <TouchableOpacity
+              className="w-full"
+              onPress={() => setIsEditingName(true)}
+            >
+              <View className='w-full mb-1 flex-row justify-between items-center'>
+                <View className='w-5/6 -mt-1'>
+                  <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Session Name:</Text>
+                </View>
+                <View className="w-1/6 h-full flex-row items-start justify-end">
+                  <Icon name="pencil" color="#F5F6F3" size={22} /> 
+                </View>
+              </View>
+              <Text className="text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
+            </TouchableOpacity>
+          }
+          <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Exercises:</Text>
         </View>
         <View className="flex-1">
           <DraggableFlatList 
@@ -216,9 +258,9 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
             fadingEdgeLength={200}
           />
         </View>
-        <View className="h-20 p-2">
+        <View className="h-16">
           <TouchableOpacity className="
-            flex-1 border-2 border-custom-white rounded-lg 
+            flex-1 border-2 border-custom-white rounded-xl 
             flex-row justify-center items-center"
             onPress={() => navigation.navigate("NewInstance", { sessionId: sessionId })}
           >

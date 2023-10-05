@@ -51,13 +51,13 @@ const InstanceCard: React.FC<Props> = ({
   }
 
   return (
-    <View className="w-full h-16 mb-3 flex-row">
+    <View className="w-full h-20 mb-5 flex-row pl-2 py-2 rounded-xl border-x-2 border-custom-white">
       <Image
-        className="w-[20%] h-full rounded-xl"
+        className="w-[20%] h-full rounded-lg"
         resizeMode="contain" 
         source={exerciseThumbnails[thumbnail]} 
       />
-      <View className="w-[60%] pl-3 flex-col justify-center">
+      <View className="w-[56%] pl-3 flex-col justify-center">
         <Text className="text-custom-white mb-1 mr-2 text-sm font-BaiJamjuree-Bold">
           {name.charAt(0).toUpperCase() + name.slice(1)}
         </Text>
@@ -71,7 +71,7 @@ const InstanceCard: React.FC<Props> = ({
         </Text>
       </View>
       <TouchableOpacity 
-        className="w-[8%] flex items-center justify-center"
+        className="w-[10%] flex items-center justify-center"
         onPress={() => {
           navigation.navigate('ConfirmModal', {
             text: 'Are you sure you want to delete this exercise?',
@@ -81,15 +81,15 @@ const InstanceCard: React.FC<Props> = ({
         activeOpacity={1}
         disabled={isActive}
       >
-        <Icon name="delete-outline" size={26} color='#F4533E' />
+        <Icon name="delete-outline" size={28} color='#F4533E' />
       </TouchableOpacity>
       <TouchableOpacity 
-        className="w-[13%] h-full flex items-end justify-center"
+        className="w-[14%] h-full flex items-center justify-center"
         onPressIn={drag}
         activeOpacity={1}
         disabled={isActive}
       >
-        <Icon name="unfold-more-horizontal" size={26} color='#F5F6F3' />
+        <Icon name="unfold-more-horizontal" size={30} color='#F5F6F3' />
       </TouchableOpacity>
     </View>
   )
