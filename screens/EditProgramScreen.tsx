@@ -13,6 +13,7 @@ import ScreenWrapper from "@components/common/ScreenWrapper"
 import BottomBarWrapper from "@components/common/BottomBarWrapper"
 import PhaseCard from "@components/common/PhaseCard"
 import { programThumbnails } from "@modules/AssetPaths"
+import { ScrollView } from 'react-native-gesture-handler'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditProgram'>
 
@@ -23,6 +24,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   
   const [isEditingName, setIsEditingName] = useState<boolean>(false)
   const [isEditingDescription, setIsEditingDescription] = useState<boolean>(false)
+  const [expandText, setExpandText] = useState<boolean>(false)
   const [dirPath, setDirPath] = useState<string>('')
   const [cachePath, setCachePath] = useState<string>('')
   const [name, setName] = useState<string>('My Custom Program 1')
@@ -151,7 +153,35 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     }, [])
   )
 
+  const fetchPhases = () => {
+    if (programId) {
+      DB.sql(`
+        SELECT phases.id AS phaseId,
+               phases.name AS phaseName,
+               phases.status AS phaseStatus
+        FROM program_phases
+        JOIN phases ON program_phases.phase_id = phases.id
+        WHERE program_phases.program_id = ?
+        ORDER BY program_phases.phase_order ASC;
+      `, [programId],
+      (_, result) => {
+        const phaseDetails: any[] = []
+        result.rows._array.forEach(item => {
+          phaseDetails.push({
+            phaseId: item.phaseId,
+            phaseName: item.phaseName,
+            phaseStatus: item.phaseStatus,
+          })
+        })
+
+        setPhases(phaseDetails)
+      })
+    }
+  }
+
   useEffect(()=> {
+    const unsubscribeFocus = navigation.addListener('focus', fetchPhases)
+
     navigation.setOptions({
       headerLeft: (props) => (
         <HeaderBackButton
@@ -182,46 +212,26 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         }
       })
     } else {
-      DB.transaction(tx => {
-        tx.executeSql(`
-          SELECT name AS name,
-                 description AS description,
-                 thumbnail AS thumbnail,
-                 status AS status
-          FROM programs
-          WHERE id = ?;
-        `, [programId], 
-        (_, result) => {
-          const item = result.rows.item(0)
-          setName(item.name)
-          setDescription(item.description)
-          setThumbnail(item.thumbnail)
-          setOgThumbnailPath(item.thumbnail)
-          setStatus(item.status)
-        })
-
-        tx.executeSql(`
-          SELECT phases.id AS phaseId,
-                 phases.name AS phaseName,
-                 phases.status AS phaseStatus
-          FROM program_phases
-          JOIN phases ON program_phases.phase_id = phases.id
-          WHERE program_phases.program_id = ?
-          ORDER BY program_phases.phase_order ASC;
-        `, [programId],
-        (_, result) => {
-          const phaseDetails: any[] = []
-          result.rows._array.forEach(item => {
-            phaseDetails.push({
-              phaseId: item.phaseId,
-              phaseName: item.phaseName,
-              phaseStatus: item.phaseStatus,
-            })
-          })
-
-          setPhases(phaseDetails)
-        })
+      DB.sql(`
+        SELECT name AS name,
+               description AS description,
+               thumbnail AS thumbnail,
+               status AS status
+        FROM programs
+        WHERE id = ?;
+      `, [programId], 
+      (_, result) => {
+        const item = result.rows.item(0)
+        setName(item.name)
+        setDescription(item.description)
+        setThumbnail(item.thumbnail)
+        setOgThumbnailPath(item.thumbnail)
+        setStatus(item.status)
       })
+    }
+
+    return () => {
+      unsubscribeFocus()
     }
   }, [])
 
@@ -274,8 +284,11 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         </ImageBackground>
-        <View className="px-3 mb-5 h-[25%]">
-          <View className="w-full flex-row justify-between">
+        <ScrollView 
+          className='mb-3 px-3'
+          fadingEdgeLength={100}
+        >
+          <View className=" w-full flex-row justify-between">
             <Text className="flex-1 text-custom-white font-BaiJamjuree-MediumItalic">Description:</Text>
             {!isEditingDescription &&
               <TouchableOpacity
@@ -297,24 +310,56 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
               multiline={true}
             />
           :
-            <Text className="text-custom-white font-BaiJamjuree-Light">{description}</Text>
+            <TouchableOpacity
+              activeOpacity={1}
+              className='mb-5'
+              onPress={() => setExpandText(prev => !prev)}
+            >
+              <Text className={`
+                mb-1 text-custom-white font-BaiJamjuree-Light
+                ${expandText ? 'flex-1' : 'h-20'}
+              `}>
+                {description}
+              </Text>
+              {expandText ? (
+                <View className='flex-row justify-center items-center'>
+                  <Text className='mr-2 font-BaiJamjuree-BoldItalic text-custom-white text-xs'>Less</Text>
+                  <Icon name='chevron-up' size={22} color='#F5F6F3' />
+                </View>
+              ) : (
+                <View className='flex-row justify-center items-center'>
+                  <Text className='mr-2 font-BaiJamjuree-BoldItalic text-custom-white text-xs'>More</Text>
+                  <Icon name='chevron-down' size={22} color='#F5F6F3' />
+                </View>
+              )}
+            </TouchableOpacity>
           }
-        </View>
-        <View className="px-3 flex-1">
-          <Text className="mb-3 text-custom-white font-BaiJamjuree-MediumItalic">Phases:</Text>
-          <FlatList 
-            data={phases}
-            keyExtractor={(item: any) => item.phaseId}
-            renderItem={({item}) => 
+          <View className="flex-1">
+            <Text className="mb-3 text-custom-white font-BaiJamjuree-MediumItalic">
+              {phases.length} {phases.length !== 1 ? 'Phases' : 'Phase'}:
+            </Text>
+            {phases.map((item, index) => (
               <PhaseCard
+                key={`card-${index}`}
                 id={item.phaseId}
                 name={item.phaseName}
                 status={item.phaseStatus}
               />
-            }
-            fadingEdgeLength={200}
-          />
-        </View>
+            ))}
+          </View>
+        </ScrollView>
+        {(!isEditingName && !isEditingDescription) &&
+          <View className="h-16">
+            <TouchableOpacity className="
+              flex-1 border-2 border-custom-white rounded-xl 
+              flex-row justify-center items-center"
+              onPress={() => navigation.navigate("SetNameModal", { programId: programId })}
+            >
+              <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Phase</Text>
+              <Icon name="plus" size={24} color="#F5F6F3" />
+            </TouchableOpacity>
+          </View>
+        }
       </View>
       {(!isEditingName && !isEditingDescription) &&
         <BottomBarWrapper>
