@@ -13,7 +13,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       <View className="h-2" />
       <Button title="Browse Programs" onPress={() => navigation.navigate('Programs')} />
       <View className="h-2" />
-      <Button title="Create a New Program" onPress={() => navigation.navigate('EditProgram')} />
+      <Button title="Create a New Program" onPress={() => navigation.navigate('SetProgramNameModal')} />
     </View>
   )
 }

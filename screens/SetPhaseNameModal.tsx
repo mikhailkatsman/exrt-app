@@ -9,9 +9,9 @@ LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ])
 
-type Props = NativeStackScreenProps<RootStackParamList, 'SetNameModal'>
+type Props = NativeStackScreenProps<RootStackParamList, 'SetPhaseNameModal'>
 
-const SetNameModal: React.FC<Props> = ({ navigation, route }) => {
+const SetPhaseNameModal: React.FC<Props> = ({ navigation, route }) => {
   const programId: number = route.params.programId
 
   const [name, setName] = useState<string>('New Phase')
@@ -49,7 +49,7 @@ const SetNameModal: React.FC<Props> = ({ navigation, route }) => {
     <View className="flex-1 bg-custom-dark/60 justify-center items-center">
       <View className="w-2/3 h-52 bg-custom-dark flex-col justify-between rounded-xl border border-custom-white">
         <View className="h-[70%] pb-2 px-6 flex justify-center items-center">
-          <Text className='mb-5 text-custom-white font-BaiJamjuree-Regular'>Set Phase Name:</Text>
+          <Text className='mb-5 text-custom-white font-BaiJamjuree-Regular'>Phase Name:</Text>
           <TextInput 
             onChangeText={setName}
             className="w-[80%] text-custom-white text-xl font-BaiJamjuree-Bold"
@@ -77,4 +77,4 @@ const SetNameModal: React.FC<Props> = ({ navigation, route }) => {
   )
 }
 
-export default SetNameModal 
+export default SetPhaseNameModal 

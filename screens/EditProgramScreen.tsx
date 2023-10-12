@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Text, TextInput, Dimensions, ImageBackground, FlatList, BackHandler } from 'react-native'
+import { View, TouchableOpacity, Text, TextInput, Dimensions, ImageBackground, BackHandler } from 'react-native'
 import { useState, useEffect, useCallback } from "react"
 import { useFocusEffect } from "@react-navigation/native"
 import { LinearGradient } from "expo-linear-gradient"
@@ -20,7 +20,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'EditProgram'>
 const windowWidth = Dimensions.get('window').width - 16
 
 const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
-  const programId: number | undefined = route.params?.programId
+  const programId: number | undefined = route.params.programId
   
   const [isEditingName, setIsEditingName] = useState<boolean>(false)
   const [isEditingDescription, setIsEditingDescription] = useState<boolean>(false)
@@ -89,31 +89,72 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       await clearImageCache()
     }
 
-    if (!programId) {
-      DB.sql(`
-        INSERT INTO programs (name, description, thumbnail, status)
-        VALUES (?, ?, ?, ?);
-      `, [name, description, newThumbnailPath, 'active'],
-      () => navigation.pop())
-    } else {
-      DB.sql(`
-        UPDATE programs
-        SET name = ?,
-            description = ?,
-            thumbnail = ?
-        WHERE id = ?;
-      `, [name, description, newThumbnailPath, programId], 
-      () => navigation.pop())
-    }
+    DB.sql(`
+      UPDATE programs
+      SET name = ?,
+          description = ?,
+          thumbnail = ?
+      WHERE id = ?;
+    `, [name, description, newThumbnailPath, programId], 
+    () => navigation.pop())
   }
 
   const deleteProgram = async() => {
     DB.transaction(tx => {
+      // Delete exercise_instances
+      tx.executeSql(`
+        DELETE FROM exercise_instances
+        WHERE id IN (
+          SELECT sei.exercise_instance_id
+          FROM session_exercise_instances sei
+          JOIN sessions s ON s.id = sei.session_id
+          JOIN phase_session_instances psi ON psi.session_id = s.id
+          JOIN program_phases pp ON pp.phase_id = psi.phase_id
+          WHERE pp.program_id = ?
+        );
+      `, [programId])
+
+      // Delete session_exercise_instances
+      tx.executeSql(`
+        DELETE FROM session_exercise_instances
+        WHERE session_id IN (
+          SELECT s.id 
+          FROM sessions s
+          JOIN phase_session_instances psi ON psi.session_id = s.id
+          JOIN program_phases pp ON pp.phase_id = psi.phase_id
+          WHERE pp.program_id = ?
+        );
+      `, [programId])
+
+      // Delete sessions
+      tx.executeSql(`
+        DELETE FROM sessions
+        WHERE id IN (
+          SELECT s.id 
+          FROM sessions s
+          JOIN phase_session_instances psi ON psi.session_id = s.id
+          JOIN program_phases pp ON pp.phase_id = psi.phase_id
+          WHERE pp.program_id = ?
+        );
+      `, [programId])
+
+      // Delete phase_session_instances
+      tx.executeSql(`
+        DELETE FROM phase_session_instances
+        WHERE phase_id IN (
+          SELECT phase_id
+          FROM program_phases
+          WHERE program_id = ?
+        );
+      `, [programId])
+
+      // Delete program_phases
       tx.executeSql(`
         DELETE FROM program_phases
         WHERE program_id = ?;
       `, [programId])
 
+      // Delete the program
       tx.executeSql(`
         DELETE FROM programs
         WHERE id = ?;
@@ -154,32 +195,30 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   )
 
   const fetchPhases = () => {
-    if (programId) {
-      DB.sql(`
-        SELECT phases.id AS phaseId,
-               phases.name AS phaseName,
-               phases.status AS phaseStatus
-        FROM program_phases
-        JOIN phases ON program_phases.phase_id = phases.id
-        WHERE program_phases.program_id = ?
-        ORDER BY program_phases.phase_order ASC;
-      `, [programId],
-      (_, result) => {
-        const phaseDetails: any[] = []
-        result.rows._array.forEach(item => {
-          phaseDetails.push({
-            phaseId: item.phaseId,
-            phaseName: item.phaseName,
-            phaseStatus: item.phaseStatus,
-          })
+    DB.sql(`
+      SELECT phases.id AS phaseId,
+             phases.name AS phaseName,
+             phases.status AS phaseStatus
+      FROM program_phases
+      JOIN phases ON program_phases.phase_id = phases.id
+      WHERE program_phases.program_id = ?
+      ORDER BY program_phases.phase_order ASC;
+    `, [programId],
+    (_, result) => {
+      const phaseDetails: any[] = []
+      result.rows._array.forEach(item => {
+        phaseDetails.push({
+          phaseId: item.phaseId,
+          phaseName: item.phaseName,
+          phaseStatus: item.phaseStatus,
         })
-
-        setPhases(phaseDetails)
       })
-    }
+
+      setPhases(phaseDetails)
+    })
   }
 
-  useEffect(()=> {
+  useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchPhases)
 
     navigation.setOptions({
@@ -195,40 +234,22 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     setDirPath(FileSystem.documentDirectory + 'images/programs/')
     setCachePath(FileSystem.cacheDirectory + 'thumbnails/')
 
-    if (!programId) {
-      DB.sql(`
-        SELECT name
-        FROM programs
-        WHERE name LIKE 'My Custom Program %'
-        ORDER BY CAST(SUBSTR(name, LENGTH('My Custom Program ') + 1) AS INTEGER) DESC
-        LIMIT 1;
-      `, [],
-      (_, result) => {
-        if (result.rows.length !== 0) {
-          const currentName = result.rows.item(0).name
-          const currentNumber = parseInt(currentName.replace('My Custom Program ', ''))
-          const newName = 'My Custom Program ' + (currentNumber + 1)
-          setName(newName)
-        }
-      })
-    } else {
-      DB.sql(`
-        SELECT name AS name,
-               description AS description,
-               thumbnail AS thumbnail,
-               status AS status
-        FROM programs
-        WHERE id = ?;
-      `, [programId], 
-      (_, result) => {
-        const item = result.rows.item(0)
-        setName(item.name)
-        setDescription(item.description)
-        setThumbnail(item.thumbnail)
-        setOgThumbnailPath(item.thumbnail)
-        setStatus(item.status)
-      })
-    }
+    DB.sql(`
+      SELECT name AS name,
+             description AS description,
+             thumbnail AS thumbnail,
+             status AS status
+      FROM programs
+      WHERE id = ?;
+    `, [programId], 
+    (_, result) => {
+      const item = result.rows.item(0)
+      setName(item.name)
+      setDescription(item.description)
+      setThumbnail(item.thumbnail)
+      setOgThumbnailPath(item.thumbnail)
+      setStatus(item.status)
+    })
 
     return () => {
       unsubscribeFocus()
@@ -353,7 +374,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             <TouchableOpacity className="
               flex-1 border-2 border-custom-white rounded-xl 
               flex-row justify-center items-center"
-              onPress={() => navigation.navigate("SetNameModal", { programId: programId })}
+              onPress={() => navigation.navigate("SetPhaseNameModal", { programId: programId })}
             >
               <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Phase</Text>
               <Icon name="plus" size={24} color="#F5F6F3" />

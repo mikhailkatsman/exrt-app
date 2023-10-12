@@ -77,6 +77,58 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     })
   }
 
+  const deletePhase = () => {
+    DB.transaction(tx => {
+      // Delete exercise_instances
+      tx.executeSql(`
+        DELETE FROM exercise_instances
+        WHERE id IN (
+          SELECT sei.exercise_instance_id
+          FROM session_exercise_instances sei
+          JOIN sessions s ON s.id = sei.session_id
+          JOIN phase_session_instances psi ON psi.session_id = s.id
+          WHERE psi.phase_id = ?
+        );
+      `, [phaseId])
+
+      // Delete session_exercise_instances
+      tx.executeSql(`
+        DELETE FROM session_exercise_instances
+        WHERE session_id IN (
+          SELECT s.id 
+          FROM sessions s
+          JOIN phase_session_instances psi ON psi.session_id = s.id
+          WHERE psi.phase_id = ?
+        );
+      `, [phaseId])
+
+      // Delete sessions
+      tx.executeSql(`
+        DELETE FROM sessions
+        WHERE id IN (
+          SELECT s.id 
+          FROM sessions s
+          JOIN phase_session_instances psi ON psi.session_id = s.id
+          WHERE psi.phase_id = ?
+        );
+      `, [phaseId])
+
+      // Delete phase_session_instances
+      tx.executeSql(`
+        DELETE FROM phase_session_instances
+        WHERE phase_id = ?;
+      `, [phaseId])
+
+      // Delete the phase
+      tx.executeSql(`
+        DELETE FROM phases
+        WHERE id = ?;
+      `, [phaseId])
+    }, 
+      error => console.error('Error deleting phase from DB: ' + error),
+      () => navigation.pop())
+  }
+
   const renderItem = ({ 
     item, 
     getIndex, 
@@ -218,15 +270,42 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
             renderItem={renderItem}
           />
         </View>
+        <View className="h-16">
+          <TouchableOpacity className="
+            flex-1 border-2 border-custom-white rounded-xl 
+            flex-row justify-center items-center"
+            onPress={() => navigation.navigate('SelectDayModal', { phaseId: phaseId })}
+          >
+            <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Session</Text>
+            <Icon name="plus" size={24} color="#F5F6F3" />
+          </TouchableOpacity>
+        </View>
       </View>
       <BottomBarWrapper>
         <TouchableOpacity 
-          className="flex-1 border-2 border-custom-blue rounded-xl flex-row justify-center items-center"
+          className="w-[30%] rounded-xl border-2 border-custom-red flex-row justify-center items-center"
+          onPress={() => {
+            navigation.navigate('ConfirmModal', {
+              text: 'Are you sure you want to delete this phase?',
+              onConfirm: deletePhase
+            })
+          }}
           activeOpacity={1}
-          onPress={() => navigation.navigate('SelectDayModal', { phaseId: phaseId })}
         >
-          <Text className="mr-2 text-custom-blue font-BaiJamjuree-Bold">Add New Session</Text>
-          <Icon name="plus" size={24} color="#5AABD6" />
+          <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
+          <Icon name="delete-outline" size={20} color="#F4533E" />
+        </TouchableOpacity>
+        <View className="w-3" />
+        <TouchableOpacity className="
+          flex-1 border-2 border-custom-blue
+          flex-row items-center justify-center 
+          rounded-xl"
+          onPress={() => navigation.pop()}
+        >
+          <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">
+            Confirm Phase
+          </Text>
+          <Icon name="check" color="#5AABD6" size={22} /> 
         </TouchableOpacity>
       </BottomBarWrapper>
     </ScreenWrapper>

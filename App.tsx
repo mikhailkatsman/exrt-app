@@ -22,7 +22,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import DismissModal from '@screens/DismissModal'
 import GetReadyScreen from '@screens/GetReadyScreen'
 import SelectDayModal from '@screens/SelectDayModal'
-import SetNameModal from '@screens/SetNameModal'
+import SetPhaseNameModal from '@screens/SetPhaseNameModal'
+import SetProgramNameModal from '@screens/SetProgramNameModal'
 
 export type RootStackParamList = {
   Home: undefined,
@@ -68,9 +69,10 @@ export type RootStackParamList = {
   SelectDayModal: {
     phaseId: number,
   },
-  SetNameModal: {
+  SetPhaseNameModal: {
     programId: number,
-  }
+  },
+  SetProgramNameModal: undefined,
 }
 
 const App: React.FC = () => {
@@ -198,8 +200,12 @@ const App: React.FC = () => {
                   component={SelectDayModal}
                 />
                 <Stack.Screen
-                  name='SetNameModal'
-                  component={SetNameModal}
+                  name='SetPhaseNameModal'
+                  component={SetPhaseNameModal}
+                />
+                <Stack.Screen
+                  name='SetProgramNameModal'
+                  component={SetProgramNameModal}
                 />
               </Stack.Group>
               <Stack.Group 
