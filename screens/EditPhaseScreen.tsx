@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity } from "react-native"
+import { Text, View, TouchableOpacity, TextInput } from "react-native"
 import { Icon } from "@react-native-material/core"
 import BottomBarWrapper from "@components/common/BottomBarWrapper"
 import ScreenWrapper from "@components/common/ScreenWrapper"
@@ -21,8 +21,12 @@ type ListItem = {
 
 const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   const phaseId: number = route.params.phaseId
+  const phaseName: string = route.params.phaseName
+  const phaseStatus: string = route.params.phaseStatus
 
   const [listData, setListData] = useState<ListItem[]>([])
+  const [name, setName] = useState<string>(phaseName)
+  const [isEditingName, setIsEditingName] = useState<boolean>(false)
 
   const fetchSessions = () => {
     DB.sql(`
@@ -79,7 +83,6 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const deletePhase = () => {
     DB.transaction(tx => {
-      // Delete exercise_instances
       tx.executeSql(`
         DELETE FROM exercise_instances
         WHERE id IN (
@@ -91,7 +94,6 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
         );
       `, [phaseId])
 
-      // Delete session_exercise_instances
       tx.executeSql(`
         DELETE FROM session_exercise_instances
         WHERE session_id IN (
@@ -102,7 +104,6 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
         );
       `, [phaseId])
 
-      // Delete sessions
       tx.executeSql(`
         DELETE FROM sessions
         WHERE id IN (
@@ -113,13 +114,11 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
         );
       `, [phaseId])
 
-      // Delete phase_session_instances
       tx.executeSql(`
         DELETE FROM phase_session_instances
         WHERE phase_id = ?;
       `, [phaseId])
 
-      // Delete the phase
       tx.executeSql(`
         DELETE FROM phases
         WHERE id = ?;
@@ -243,10 +242,35 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <ScreenWrapper>
       <View className="flex-1 px-3 mb-3">
-        <Text className="h-[20%] text-custom-white text-lg font-BaiJamjuree-Medium">
-          Phase Breakdown:
-        </Text>
-        <View className="flex-1">
+        <View className="py-3 h-36 flex-col justify-between">
+          {isEditingName ? 
+            <TextInput 
+              onChangeText={setName}
+              onSubmitEditing={() => setIsEditingName(false)}
+              className="w-full text-custom-white text-xl font-BaiJamjuree-Bold"
+              autoCapitalize="words"
+              defaultValue={name}
+              autoFocus={true}
+            />
+          :
+            <TouchableOpacity
+              className="w-full"
+              onPress={() => setIsEditingName(true)}
+            >
+              <View className='w-full mb-1 flex-row justify-between items-center'>
+                <View className='w-5/6 -mt-1'>
+                  <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Phase Name:</Text>
+                </View>
+                <View className="w-1/6 h-full flex-row items-start justify-end">
+                  <Icon name="pencil" color="#F5F6F3" size={22} /> 
+                </View>
+              </View>
+              <Text className="text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
+            </TouchableOpacity>
+          }
+          <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Exercises:</Text>
+        </View>
+        <View className="flex-1 mb-7">
           <View className="flex-row items-center">
             <View 
               className="mr-3 w-3 h-3 rounded border"
@@ -263,23 +287,22 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
             </Text>
           </View>
           <DraggableFlatList
-            className="h-fit"
             data={listData}
             onDragEnd={({ data, from, to }) => updateSessionDay(data, from, to)}
             keyExtractor={(_, index) => index.toString()}
             renderItem={renderItem}
           />
         </View>
-        <View className="h-16">
-          <TouchableOpacity className="
-            flex-1 border-2 border-custom-white rounded-xl 
-            flex-row justify-center items-center"
-            onPress={() => navigation.navigate('SelectDayModal', { phaseId: phaseId })}
-          >
-            <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Session</Text>
-            <Icon name="plus" size={24} color="#F5F6F3" />
-          </TouchableOpacity>
-        </View>
+      </View>
+      <View className="h-16 mb-3">
+        <TouchableOpacity className="
+          flex-1 border-2 border-custom-white rounded-xl 
+          flex-row justify-center items-center"
+          onPress={() => navigation.navigate('SelectDayModal', { phaseId: phaseId })}
+        >
+          <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Session</Text>
+          <Icon name="plus" size={24} color="#F5F6F3" />
+        </TouchableOpacity>
       </View>
       <BottomBarWrapper>
         <TouchableOpacity 

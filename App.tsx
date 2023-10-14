@@ -24,6 +24,7 @@ import GetReadyScreen from '@screens/GetReadyScreen'
 import SelectDayModal from '@screens/SelectDayModal'
 import SetPhaseNameModal from '@screens/SetPhaseNameModal'
 import SetProgramNameModal from '@screens/SetProgramNameModal'
+import ChangeProgramStatusModal from '@screens/ChangeProgramStatusModal'
 
 export type RootStackParamList = {
   Home: undefined,
@@ -48,6 +49,7 @@ export type RootStackParamList = {
   EditPhase: {
     phaseId: number,
     phaseName: string,
+    phaseStatus: string,
   },
   GetReady: {
     sessionId: number,
@@ -73,6 +75,10 @@ export type RootStackParamList = {
     programId: number,
   },
   SetProgramNameModal: undefined,
+  ChangeProgramStatusModal: {
+    status: string,
+    programId: number,
+  },
 }
 
 const App: React.FC = () => {
@@ -174,7 +180,7 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='EditPhase'
                   component={EditPhaseScreen}
-                  options={({ route }) => ({ title: route.params.phaseName ?? 'Phase Details' })}
+                  options={{ title: 'Edit Phase' }}
                 />
               </Stack.Group>
               <Stack.Group 
@@ -206,6 +212,10 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='SetProgramNameModal'
                   component={SetProgramNameModal}
+                />
+                <Stack.Screen
+                  name='ChangeProgramStatusModal'
+                  component={ChangeProgramStatusModal}
                 />
               </Stack.Group>
               <Stack.Group 

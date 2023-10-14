@@ -24,14 +24,14 @@ const ConfirmModal: React.FC<Props> = ({ navigation, route }) => {
             className="h-full w-1/2 flex justify-center items-center rounded-lg border border-custom-red" 
             onPress={() => {
               onConfirm()
-              navigation.goBack()
+              navigation.pop()
             }}
           >
             <Text className="text-custom-red font-BaiJamjuree-Bold">Delete</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             className="h-full w-1/2 flex justify-center items-center" 
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.pop()}
           >
             <Text className="text-custom-white font-BaiJamjuree-Bold">Cancel</Text>
           </TouchableOpacity>

@@ -101,7 +101,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const deleteProgram = async() => {
     DB.transaction(tx => {
-      // Delete exercise_instances
       tx.executeSql(`
         DELETE FROM exercise_instances
         WHERE id IN (
@@ -114,7 +113,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         );
       `, [programId])
 
-      // Delete session_exercise_instances
       tx.executeSql(`
         DELETE FROM session_exercise_instances
         WHERE session_id IN (
@@ -126,7 +124,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         );
       `, [programId])
 
-      // Delete sessions
       tx.executeSql(`
         DELETE FROM sessions
         WHERE id IN (
@@ -138,7 +135,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         );
       `, [programId])
 
-      // Delete phase_session_instances
       tx.executeSql(`
         DELETE FROM phase_session_instances
         WHERE phase_id IN (
@@ -148,13 +144,11 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         );
       `, [programId])
 
-      // Delete program_phases
       tx.executeSql(`
         DELETE FROM program_phases
         WHERE program_id = ?;
       `, [programId])
 
-      // Delete the program
       tx.executeSql(`
         DELETE FROM programs
         WHERE id = ?;

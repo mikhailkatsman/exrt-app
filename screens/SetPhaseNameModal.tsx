@@ -18,20 +18,21 @@ const SetPhaseNameModal: React.FC<Props> = ({ navigation, route }) => {
   
   const createPhase = () => {
     DB.sql(`
-      INSERT INTO phases (name, status) 
-      VALUES (?, ?);
-    `, [name, 'uncoming'],
+      SELECT MAX(phase_order) AS maxOrder
+      FROM program_phases
+      WHERE program_id = ?;
+    `, [programId],
     (_, result) => {
-      const phaseId = result.insertId!
+      const currentOrder = result.rows.item(0).maxOrder
+      const newOrder = (currentOrder + 1) || 1
+      const status = newOrder === 1 ? 'active' : 'upcoming'
 
       DB.sql(`
-        SELECT MAX(phase_order) AS maxOrder
-        FROM program_phases
-        WHERE program_id = ?;
-      `, [programId],
+        INSERT INTO phases (name, status) 
+        VALUES (?, ?);
+      `, [name, status],
       (_, result) => {
-        const currentOrder = result.rows.item(0).maxOrder
-        const newOrder = (currentOrder + 1) || 1
+        const phaseId = result.insertId!
 
         DB.sql(`
           INSERT INTO program_phases (program_id, phase_id, phase_order)
