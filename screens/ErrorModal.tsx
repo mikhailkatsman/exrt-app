@@ -23,7 +23,7 @@ const ErrorModal: React.FC<Props> = ({ navigation, route }) => {
         <View className="h-[30%] p-2">
           <TouchableOpacity 
             className="h-full w-full flex justify-center items-center rounded-lg border border-custom-white" 
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.pop()}
           >
             <Text className="text-custom-white font-BaiJamjuree-Bold">OK</Text>
           </TouchableOpacity>

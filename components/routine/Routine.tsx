@@ -57,6 +57,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
       .filter(data => data.day_id === intState + 1)
       .map(item => {
         const sessions = item.session_ids.split(',')
+        const names = item.session_names.split(',')
         const statuses = item.session_statuses.split(',')
         const phaseNames = item.phase_names.split(',')
         const programNames = item.program_names.split(',')
@@ -64,6 +65,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
 
         return sessions.map((sessionId: string, index: number) => ({
           id: parseInt(sessionId),
+          name: names[index],
           status: statuses[index],
           phase: phaseNames[index],
           program: programNames[index],

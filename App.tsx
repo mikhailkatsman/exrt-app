@@ -35,9 +35,8 @@ export type RootStackParamList = {
   Settings: undefined,
   EditSession: { 
     dayId: number,
-    sessionExists: boolean,
     sessionId: number,
-    sessionName: string | undefined,
+    sessionName: string,
     phaseId: number,
   },
   NewInstance: { 
@@ -67,6 +66,7 @@ export type RootStackParamList = {
   },
   DismissModal: {
     onConfirm: () => void,
+    instancesLength: number | undefined,
   },
   SelectDayModal: {
     phaseId: number,

@@ -28,12 +28,11 @@ type Instance = {
 
 const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   const dayId = route.params.dayId
-  const sessionExists = route.params.sessionExists
   const sessionId = route.params.sessionId
-  const sessionName = route.params.sessionName ?? null
+  const sessionName = route.params.sessionName
   const phaseId = route.params.phaseId
   const [instances, setInstances] = useState<any[]>([])
-  const [name, setName] = useState<string>(sessionName ?? 'New Session')
+  const [name, setName] = useState<string>(sessionName)
   const [isEditingName, setIsEditingName] = useState<boolean>(false)
 
   const fetchInstances = () => {
@@ -48,15 +47,13 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
              exercises.name as name,
              exercises.thumbnail AS thumbnail
       FROM session_exercise_instances
-      JOIN sessions
-      ON sessions.id = ?
+      JOIN sessions ON sessions.id = session_exercise_instances.session_id
       JOIN exercise_instances
-      ON session_exercise_instances.exercise_instance_id = exercise_instances.id
-      JOIN exercises
-      ON exercise_instances.exercise_id = exercises.id
+        ON session_exercise_instances.exercise_instance_id = exercise_instances.id
+      JOIN exercises ON exercise_instances.exercise_id = exercises.id
       WHERE session_exercise_instances.session_id = ?
       ORDER BY instance_order ASC;
-    `, [sessionId, sessionId],
+    `, [sessionId],
     (_, result) => {
       const instanceData = result.rows._array.map((row, index) => ({
         key: index.toString(),
@@ -70,10 +67,8 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
         weight: row.weight
       }))
 
-      if (sessionExists) {
-        setName(result.rows.item(0).sessionName)
-      }
-
+      console.log('POPULATING INSTANCES')
+      console.log('NEW LENGTH: ' + instanceData.length)
       setInstances(instanceData)
     })
   }
@@ -108,25 +103,21 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
       return
     }
 
-    if (sessionExists) {
-      navigation.pop()
-    } else {
-      DB.transaction(tx => {
-        tx.executeSql(`
-          INSERT INTO phase_session_instances (day_id, session_id, phase_id)
-          VALUES (?, ?, ?);
-        `, [dayId, sessionId, phaseId])
+    DB.transaction(tx => {
+      tx.executeSql(`
+        INSERT OR IGNORE 
+          INTO phase_session_instances (day_id, session_id, phase_id)
+        VALUES (?, ?, ?);
+      `, [dayId, sessionId, phaseId])
 
-        tx.executeSql(`
-          UPDATE sessions
-          SET name = ?
-          WHERE id = ?;
-        `, [name, sessionId])
-      },
-      error => console.error(error),
-      () => navigation.pop()
-      )
-    }
+      tx.executeSql(`
+        UPDATE sessions
+        SET name = ?
+        WHERE id = ?;
+      `, [name, sessionId])
+    },
+    error => console.error(error),
+    () => navigation.pop())
   }
 
   const deleteSession = () => {
@@ -179,13 +170,8 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const onBackPressed = () => {
     navigation.navigate('DismissModal', {
-      onConfirm: () => {
-        if (instances.length === 0 && !sessionExists) {
-          deleteSession()
-        } else {
-          navigation.pop()
-        }
-      }
+      onConfirm: () => handleConfirm(instances.length),
+      instancesLength: instances.length
     })
   }
 

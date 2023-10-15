@@ -150,6 +150,15 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       `, [programId])
 
       tx.executeSql(`
+        DELETE FROM phases
+        WHERE id IN (
+          SELECT phase_id
+          FROM program_phases
+          WHERE program_id = ?
+        );
+      `, [programId])
+
+      tx.executeSql(`
         DELETE FROM programs
         WHERE id = ?;
       `, [programId])

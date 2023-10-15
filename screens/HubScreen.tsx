@@ -26,6 +26,7 @@ const HubScreen: React.FC<Props> = ({ navigation }) => {
     DB.sql(`
       SELECT psi.day_id,
           GROUP_CONCAT(sessions.id, ',') AS session_ids,
+          GROUP_CONCAT(sessions.name, ',') AS session_names,
           GROUP_CONCAT(sessions.status, ',') AS session_statuses,
           GROUP_CONCAT(phases.id, ',') AS phase_ids,
           GROUP_CONCAT(phases.name, ',') AS phase_names,

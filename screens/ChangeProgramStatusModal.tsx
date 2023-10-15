@@ -60,6 +60,33 @@ All progress will be lost!`
     })
   }
 
+  const renderButton = () => {
+    let colors = {
+      border: 'border-custom-green',
+      text: 'text-custom-green',
+      title: 'Subscribe'
+    }
+
+    if (programStatus === 'active') {
+      colors = {
+        border: 'border-custom-red',
+        text: 'text-custom-red',
+        title: 'Unsubscribe'
+      }
+    }
+
+    return (
+      <TouchableOpacity 
+        className={`h-full w-1/2 justify-center items-center rounded-lg border ${colors.border}`}
+        onPress={changeProgramStatus}
+      >
+        <Text className={`font-BaiJamjuree-Bold ${colors.text}`}>
+          {colors.title}
+        </Text>
+      </TouchableOpacity>
+    )
+  }
+
   return (
     <View className="flex-1 bg-custom-dark/60 justify-center items-center">
       <View className="w-2/3 h-1/4 bg-custom-dark flex-col justify-between rounded-xl border border-custom-white">
@@ -69,17 +96,7 @@ All progress will be lost!`
           </Text>
         </View>
         <View className="h-[30%] p-2 flex-row justify-between items-center">
-          <TouchableOpacity 
-            className={`h-full w-1/2 justify-center items-center rounded-lg border
-            ${programStatus === 'active' ? 'border-custom-red' : 'border-custom-green'}`}
-            onPress={changeProgramStatus}
-          >
-            <Text className={`font-BaiJamjuree-Bold 
-              ${programStatus === 'active' ? 'text-custom-red' : 'text-custom-green'}`}
-            >
-              {programStatus === 'active' ? 'Unsubscribe' : 'Subscribe'}
-            </Text>
-          </TouchableOpacity>
+          {renderButton()}
           <TouchableOpacity 
             className="h-full w-1/2 flex justify-center items-center" 
             onPress={() => navigation.pop()}

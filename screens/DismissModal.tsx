@@ -18,6 +18,8 @@ const DismissModal: React.FC<Props> = ({ navigation, route }) => {
         <View className="h-[70%] pb-2 px-6 flex justify-center items-center">
           <Text className="text-custom-white font-BaiJamjuree-Regular">
             Are you sure you want to go back? 
+          </Text>
+          <Text className="text-custom-white font-BaiJamjuree-Regular">
             Any unsaved changes will be lost.
           </Text>
         </View>
@@ -26,14 +28,14 @@ const DismissModal: React.FC<Props> = ({ navigation, route }) => {
             className="h-full w-1/2 flex justify-center items-center rounded-lg border border-custom-red" 
             onPress={() => {
               onConfirm()
-              navigation.goBack()
+              navigation.pop()
             }}
           >
             <Text className="text-custom-red font-BaiJamjuree-Bold">Go back</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             className="h-full w-1/2 flex justify-center items-center" 
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.pop()}
           >
             <Text className="text-custom-white font-BaiJamjuree-Bold">Cancel</Text>
           </TouchableOpacity>

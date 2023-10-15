@@ -151,7 +151,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
               onPress={() => navigation.navigate('EditSession', { 
                 sessionExists: true, 
                 sessionId: item.sessionId, 
-                sessionName: item.sessionName ?? null,
+                sessionName: item.sessionName,
                 phaseId: phaseId 
               })}
               activeOpacity={0.6}
@@ -229,6 +229,15 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
         WHERE session_id = ?;
       `, [newDayId, draggedItem.sessionId])
     }
+  }
+
+  const registerPhase = () => {
+    DB.sql(`
+      UPDATE phases 
+      SET name = ?
+      WHERE id = ?;
+    `, [name, phaseId],
+    () => navigation.pop())
   }
 
   useEffect(() => {
@@ -323,7 +332,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
           flex-1 border-2 border-custom-blue
           flex-row items-center justify-center 
           rounded-xl"
-          onPress={() => navigation.pop()}
+          onPress={registerPhase}
         >
           <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">
             Confirm Phase

@@ -100,7 +100,6 @@ const NewInstanceScreen: React.FC<Props> = ({ navigation, route }) => {
         || pendingInstanceData.secondDuration !== null)) {
       pendingInstanceData = {...pendingInstanceData, reps: null}
     }
-            className="text-custom-white text-2xl font-BaiJamjuree-Bold"
 
     DB.sql(`
       SELECT MAX(instance_order) as maxOrder 
