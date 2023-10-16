@@ -119,6 +119,7 @@ const RoutineSlot: React.FC<Props> = ({
             onPress={() => navigation.navigate("EditSession", { 
               routineId: routineId,
               sessionId: session.id, 
+              newSession: false,
             })}
           >
             <Icon name="pencil" size={18} color="#F5F6F3" />

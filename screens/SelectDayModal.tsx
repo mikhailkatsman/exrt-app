@@ -43,6 +43,7 @@ const SelectDayModal: React.FC<Props> = ({ navigation, route }) => {
           dayId: dayId,
           sessionId: sessionId,
           sessionName: sessionName,
+          newSession: true,
           phaseId: phaseId
         })
       })

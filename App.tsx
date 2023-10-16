@@ -37,6 +37,7 @@ export type RootStackParamList = {
     dayId: number,
     sessionId: number,
     sessionName: string,
+    newSession: boolean,
     phaseId: number,
   },
   NewInstance: { 
@@ -66,7 +67,6 @@ export type RootStackParamList = {
   },
   DismissModal: {
     onConfirm: () => void,
-    instancesLength: number | undefined,
   },
   SelectDayModal: {
     phaseId: number,
@@ -151,6 +151,7 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='Home'
                   component={HomeScreen}
+                  options={{title: 'EXRT'}}
                 />
                 <Stack.Screen
                   name='Programs'
@@ -170,7 +171,7 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='EditSession'
                   component={EditSessionScreen}
-                  options={{title: 'Edit Session'}}
+                  options={{title: 'Edit Session' }}
                 />
                 <Stack.Screen
                   name='EditProgram'

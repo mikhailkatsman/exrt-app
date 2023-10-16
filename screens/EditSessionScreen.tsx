@@ -30,6 +30,7 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   const dayId = route.params.dayId
   const sessionId = route.params.sessionId
   const sessionName = route.params.sessionName
+  const newSession = route.params.newSession
   const phaseId = route.params.phaseId
   const [instances, setInstances] = useState<any[]>([])
   const [name, setName] = useState<string>(sessionName)
@@ -67,8 +68,6 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
         weight: row.weight
       }))
 
-      console.log('POPULATING INSTANCES')
-      console.log('NEW LENGTH: ' + instanceData.length)
       setInstances(instanceData)
     })
   }
@@ -170,8 +169,13 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const onBackPressed = () => {
     navigation.navigate('DismissModal', {
-      onConfirm: () => handleConfirm(instances.length),
-      instancesLength: instances.length
+      onConfirm: () => {
+        if (newSession) {
+          deleteSession()
+        } else {
+          navigation.pop()
+        }
+      }
     })
   }
 

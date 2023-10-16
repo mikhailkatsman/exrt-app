@@ -35,9 +35,9 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
              psi.day_id AS dayId,
              COUNT(sei.exercise_instance_id) AS totalExercises
       FROM phase_session_instances psi
-      INNER JOIN session_exercise_instances sei
+      LEFT JOIN session_exercise_instances sei
       ON psi.session_id = sei.session_id
-      INNER JOIN sessions s
+      LEFT JOIN sessions s
       ON s.id = psi.session_id
       WHERE psi.phase_id = ?
       GROUP BY psi.day_id,
@@ -161,7 +161,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
                 {item.sessionName}
               </Text>
               <Text className="text-xl text-custom-white font-BaiJamjuree-LightItalic">
-                {item.totalExercises} {item.totalExercises! > 1 ? 'exercises': 'exercise'}
+                {item.totalExercises} {item.totalExercises! !== 1 ? 'exercises': 'exercise'}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity 
