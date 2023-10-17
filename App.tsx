@@ -25,10 +25,12 @@ import SelectDayModal from '@screens/SelectDayModal'
 import SetPhaseNameModal from '@screens/SetPhaseNameModal'
 import SetProgramNameModal from '@screens/SetProgramNameModal'
 import ChangeProgramStatusModal from '@screens/ChangeProgramStatusModal'
+import ExerciseListScreen from '@screens/ExercisesListScreen'
 
 export type RootStackParamList = {
   Home: undefined,
-  Programs: undefined,
+  ProgramsList: undefined,
+  ExerciseList: undefined,
   Hub: {
     phaseId: number,
   },
@@ -110,7 +112,7 @@ const App: React.FC = () => {
           loadFonts(),
         ])
 
-        await logAllData()
+        //await logAllData()
 
         await setResetDate()
 
@@ -154,8 +156,13 @@ const App: React.FC = () => {
                   options={{title: 'EXRT'}}
                 />
                 <Stack.Screen
-                  name='Programs'
+                  name='ProgramsList'
                   component={ProgramsListScreen}
+                  options={{title: 'Programs'}}
+                />
+                <Stack.Screen
+                  name='ExerciseList'
+                  component={ExerciseListScreen}
                   options={{title: 'Programs'}}
                 />
                 <Stack.Screen
