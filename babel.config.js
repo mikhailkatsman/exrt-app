@@ -16,6 +16,7 @@ module.exports = function(api) {
           '@components': './components',
           '@modules': './modules',
           '@screens': './screens',
+          '@icons': './assets/icons',
         },
       }],
     ],

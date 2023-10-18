@@ -6,6 +6,7 @@ import DB from '@modules/DB'
 import ScreenWrapper from "@components/common/ScreenWrapper"
 import Progress from "@components/home/Progress"
 import ActivePrograms from "@components/home/ActivePrograms"
+import AnimatedNavigationButton from "@components/home/AnimatedNavigationButton"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
@@ -14,16 +15,16 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [activePrograms, setActivePrograms] = useState<any[]>([])
 
   const fetchData = () => {
-		DB.sql(`
-			SELECT DISTINCT psi.day_id
-			FROM phase_session_instances psi
-			JOIN phases p ON psi.phase_id = p.id
-			JOIN program_phases pp ON p.id = pp.phase_id
-			JOIN programs pr ON pp.program_id = pr.id
-			WHERE pr.status = 'active' AND p.status = 'active';
-		`, [], 
-		(_, result) => {
-			const dayIdsData = result.rows._array.map(item => item.day_id)
+    DB.sql(`
+      SELECT DISTINCT psi.day_id
+      FROM phase_session_instances psi
+      JOIN phases p ON psi.phase_id = p.id
+      JOIN program_phases pp ON p.id = pp.phase_id
+      JOIN programs pr ON pp.program_id = pr.id
+      WHERE pr.status = 'active' AND p.status = 'active';
+    `, [], 
+    (_, result) => {
+      const dayIdsData = result.rows._array.map(item => item.day_id)
 
       DB.sql(`
         SELECT id, name, status, thumbnail FROM programs
@@ -33,7 +34,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         setDayIds(dayIdsData)
         setActivePrograms(result.rows._array)
       })
-		})
+    })
   }
 
   useEffect(() => {
@@ -45,20 +46,22 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     <ScreenWrapper>
       <Progress dayIds={dayIds} />
       <ActivePrograms activePrograms={activePrograms} />
-      <TouchableOpacity 
-        className="mx-2 mb-7 h-[18%] rounded-xl border border-custom-white justify-center items-center"
-        onPress={() => navigation.navigate('ProgramsList')}
-        activeOpacity={0.6}
-      >
-        <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Browse Programs</Text>
-      </TouchableOpacity>
-      <TouchableOpacity 
-        className="mx-2 mb-5 h-[18%] rounded-xl border border-custom-white justify-center items-center"
-        onPress={() => navigation.navigate('ExerciseList')}
-        activeOpacity={0.6}
-      >
-        <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Browse Exercises</Text>
-      </TouchableOpacity>
+      <AnimatedNavigationButton
+        image="///"
+        color="custom-purple"
+        textLine1="Browse"
+        textLine2="Programs"
+        route="ProgramsList"
+        params={undefined}
+      />
+      <AnimatedNavigationButton
+        image="///"
+        color="custom-yellow"
+        textLine1="Browse"
+        textLine2="Exercises"
+        route="ExercisesList"
+        params={undefined}
+      />
     </ScreenWrapper>
   )
 }

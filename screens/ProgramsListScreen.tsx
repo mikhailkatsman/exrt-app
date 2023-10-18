@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import DB from "@modules/DB"
 import ProgramCard from "@components/common/ProgramCard"
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Programs'>
+type Props = NativeStackScreenProps<RootStackParamList, 'ProgramsList'>
 
 const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
   const [programsList, setProgramsList] = useState<any[]>([])

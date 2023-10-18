@@ -14,6 +14,7 @@ const extraNodeModules = {
   '@components': __dirname + '/components',
   '@modules': __dirname + '/modules',
   '@screens': __dirname + '/screens',
+  '@icons': __dirname + '/assets/icons',
 };
 
 defaultConfig.resolver.extraNodeModules = extraNodeModules;

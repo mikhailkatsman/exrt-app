@@ -11,7 +11,8 @@
       "@fonts/*": ["assets/fonts/*"],
       "@components/*": ["components/*"],
       "@modules/*": ["modules/*"],
-      "@screens/*": ["screens/*"]
+      "@screens/*": ["screens/*"],
+      "@icons/*": ["assets/icons/*"]
     }
   },
   "extends": "expo/tsconfig.base"

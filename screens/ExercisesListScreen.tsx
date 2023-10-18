@@ -5,7 +5,7 @@ import type { RootStackParamList } from 'App'
 import DB from '@modules/DB'
 import ScreenWrapper from "@components/common/ScreenWrapper"
 
-type Props = NativeStackScreenProps<RootStackParamList, 'ExerciseList'>
+type Props = NativeStackScreenProps<RootStackParamList, 'ExercisesList'>
 
 const ExerciseListScreen: React.FC<Props> = ({ navigation }) => {
   return (

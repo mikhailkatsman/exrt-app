@@ -6,6 +6,7 @@ import EditSessionScreen from '@screens/EditSessionScreen'
 import ActiveSessionScreen from '@screens/ActiveSessionScreen'
 import NewInstanceScreen from '@screens/NewInstanceScreen'
 import ProgramsListScreen from '@screens/ProgramsListScreen'
+import ExercisesListScreen from '@screens/ExercisesListScreen'
 import EditProgramScreen from '@screens/EditProgramScreen'
 import EditPhaseScreen from '@screens/EditPhaseScreen'
 import ErrorModal from '@screens/ErrorModal'
@@ -25,12 +26,11 @@ import SelectDayModal from '@screens/SelectDayModal'
 import SetPhaseNameModal from '@screens/SetPhaseNameModal'
 import SetProgramNameModal from '@screens/SetProgramNameModal'
 import ChangeProgramStatusModal from '@screens/ChangeProgramStatusModal'
-import ExerciseListScreen from '@screens/ExercisesListScreen'
 
 export type RootStackParamList = {
   Home: undefined,
   ProgramsList: undefined,
-  ExerciseList: undefined,
+  ExercisesList: undefined,
   Hub: {
     phaseId: number,
   },
@@ -130,7 +130,9 @@ const App: React.FC = () => {
       <SafeAreaProvider>
         <NavigationContainer>
           <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-            <Stack.Navigator initialRouteName='Home'>
+            <Stack.Navigator
+              initialRouteName='Home'
+            >
               <Stack.Group
                 screenOptions={{
                   presentation: 'card',
@@ -161,9 +163,9 @@ const App: React.FC = () => {
                   options={{title: 'Programs'}}
                 />
                 <Stack.Screen
-                  name='ExerciseList'
-                  component={ExerciseListScreen}
-                  options={{title: 'Programs'}}
+                  name='ExercisesList'
+                  component={ExercisesListScreen}
+                  options={{title: 'Exercises'}}
                 />
                 <Stack.Screen
                   name='Hub'
