@@ -1,3 +1,8 @@
+export const icons = {
+  ProgramsIcon: require('@icons/ProgramsIcon.png'),
+  ExercisesIcon: require('@icons/ExercisesIcon.png')
+}
+
 export const exerciseThumbnails = {
   thumbnail_placeholder: require('@exerciseThumbnails/thumbnail_placeholder.webp'),
   pushup: require('@exerciseThumbnails/pushup.webp'),

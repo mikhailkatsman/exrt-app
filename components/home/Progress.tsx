@@ -6,13 +6,11 @@ type Props = {
 }
 
 const Progress: React.FC<Props> = ({ dayIds }) => {
-	console.log('Progress data: ' + dayIds)
-
 	const navigation = useNavigation()
 
 	return (
 		<TouchableOpacity 
-			className="mx-2 mb-7 h-[18%]"
+			className="mx-2 mb-7 h-[13%]"
 			onPress={() => navigation.navigate('Hub')}
 			activeOpacity={0.6}
 		>

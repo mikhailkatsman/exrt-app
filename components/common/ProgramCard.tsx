@@ -50,7 +50,7 @@ const ProgramCard: React.FC<Props> = ({
         </View>
         <View className="flex-row h-[35%]">
           <View className="flex-1 p-3">
-            <View className="flex-1 flex-row bg-2/3-transparent rounded-lg overflow-hidden">
+            <View className="flex-1 flex-row bg-twothird-transparent rounded-lg overflow-hidden">
               <View className="absolute z-10 w-full h-full justify-center items-center">
                 <Text className="text-custom-white text-xs font-BaiJamjuree-Bold">
                   Progress: {((completed_phases / total_phases) * 100).toFixed(0)}%
@@ -75,7 +75,7 @@ const ProgramCard: React.FC<Props> = ({
             }}
             activeOpacity={0.6}
           >
-            <View className={`flex-1 justify-center items-center bg-2/3-transparent rounded-lg border 
+            <View className={`flex-1 justify-center items-center bg-twothird-transparent rounded-lg border 
               ${status === 'active' ? 'border-custom-red' : 'border-custom-green'}
             `}>
               <Text className={`font-BaiJamjuree-Bold ${status === 'active' ? 'text-custom-red' : 'text-custom-green'}`}>

@@ -7,8 +7,6 @@ type Props = {
 }
 
 const ActivePrograms: React.FC<Props> = ({ activePrograms }) => {
-	console.log('Active Programs data: ' + JSON.stringify(activePrograms, null, 2))
-
 	const navigation = useNavigation()
 
 	return (

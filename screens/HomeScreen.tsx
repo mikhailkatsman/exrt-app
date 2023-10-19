@@ -1,8 +1,9 @@
-import { View, Text, Button, TouchableOpacity } from "react-native"
+import { View } from "react-native"
 import { useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import DB from '@modules/DB'
+import { icons } from "@modules/AssetPaths"
 import ScreenWrapper from "@components/common/ScreenWrapper"
 import Progress from "@components/home/Progress"
 import ActivePrograms from "@components/home/ActivePrograms"
@@ -13,6 +14,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [dayIds, setDayIds] = useState<number[]>([])
   const [activePrograms, setActivePrograms] = useState<any[]>([])
+  const [animationTrigger, setAnimationTrigger] = useState<boolean>(false)
 
   const fetchData = () => {
     DB.sql(`
@@ -38,7 +40,11 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   }
 
   useEffect(() => {
-    const unsubscribeFocus = navigation.addListener('focus', fetchData)
+    const unsubscribeFocus = navigation.addListener('focus', () => {
+      fetchData()
+      setAnimationTrigger(prev => !prev)
+      console.log('FOCUSED')
+    })
     return () => { unsubscribeFocus() }
   }, [])
 
@@ -47,21 +53,29 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       <Progress dayIds={dayIds} />
       <ActivePrograms activePrograms={activePrograms} />
       <AnimatedNavigationButton
-        image="///"
-        color="custom-purple"
+        key={'button1'}
+        trigger={animationTrigger}
+        image={icons.ProgramsIcon}
+        colorName="custom-purple"
+        colorCode="#7D34A7"
         textLine1="Browse"
         textLine2="Programs"
         route="ProgramsList"
-        params={undefined}
+        delay={100}
       />
+      <View className="h-10" />
       <AnimatedNavigationButton
-        image="///"
-        color="custom-yellow"
+        key={'button2'}
+        trigger={animationTrigger}
+        image={icons.ExercisesIcon}
+        colorName="custom-yellow"
+        colorCode="#F7EA40"
         textLine1="Browse"
         textLine2="Exercises"
         route="ExercisesList"
-        params={undefined}
+        delay={200}
       />
+      <View className="h-5" />
     </ScreenWrapper>
   )
 }
