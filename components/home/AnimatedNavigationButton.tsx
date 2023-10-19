@@ -38,33 +38,41 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 	const textTranslateX = useSharedValue(-50)
 	const textOpacity = useSharedValue(0)
 
+	function pause(ms: number) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	const animationSequence = async() => {
+		await pause(delay || 0)
+
+		imageTranslateX.value = withTiming(0, {
+			duration: 250,
+			easing: Easing.out(Easing.exp)
+		})
+		imageOpacity.value = withTiming(1, {
+			duration: 150,
+			easing: Easing.out(Easing.exp)
+		})
+
+		await pause(100)
+
+		textTranslateX.value = withTiming(0, {
+			duration: 250,
+			easing: Easing.out(Easing.exp)
+		})
+		textOpacity.value = withTiming(1, {
+			duration: 150,
+			easing: Easing.out(Easing.exp)
+		})
+	}
+
 	useEffect(() => {
 		imageTranslateX.value = -100
 		imageOpacity.value = 0
 		textTranslateX.value = -50
 		textOpacity.value = 0
 
-		setTimeout(() => {
-			imageTranslateX.value = withTiming(0, {
-				duration: 250,
-				easing: Easing.out(Easing.exp)
-			})
-			imageOpacity.value = withTiming(1, {
-				duration: 150,
-				easing: Easing.out(Easing.exp)
-			})
-
-			setTimeout(() => {
-				textTranslateX.value = withTiming(0, {
-					duration: 250,
-					easing: Easing.out(Easing.exp)
-				})
-				textOpacity.value = withTiming(1, {
-					duration: 150,
-					easing: Easing.out(Easing.exp)
-				})
-			}, 100)
-		}, delay || 0)
+		animationSequence()
 	}, [trigger])
 
 	const animatedImageStyle = useAnimatedStyle(() => {
