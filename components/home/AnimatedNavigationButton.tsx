@@ -110,8 +110,8 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 				<LinearGradient 
 					className='absolute h-full w-full'
 					colors={[colorValues.code, 'transparent']}
-					start={{ x: 0, y: 0.6 }}
-					end={{ x: 0.3, y: 0 }}
+					start={{ x: 0, y: 1 }}
+					end={{ x: 1, y: 0 }}
 				/>
 				<View className='w-1/2' />
 				<Animated.View className="w-1/2" style={animatedTextStyle}>
@@ -119,7 +119,6 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 					<Text className="text-custom-white text-2xl font-BaiJamjuree-BoldItalic">{textLine2}</Text>
 				</Animated.View>
 			</View>
-			
 		</TouchableOpacity>
 	)
 }

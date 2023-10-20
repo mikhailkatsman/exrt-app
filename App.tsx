@@ -33,6 +33,7 @@ export type RootStackParamList = {
   ExercisesList: undefined,
   Hub: {
     phaseId: number,
+    screenWidth: number,
   },
   Settings: undefined,
   EditSession: { 

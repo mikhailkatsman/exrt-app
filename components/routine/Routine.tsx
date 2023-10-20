@@ -26,7 +26,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
   const translateX = useSharedValue(screenWidth)
 
   const scrollRef = useRef<ScrollView>(null)
-  const elementWidth = (screenWidth / 100 * 65) 
+  const elementWidth = (screenWidth / 100 * 70) 
 
   const animatedStyle = useAnimatedStyle(() => {
     return { opacity: opacity.value, transform: [{ translateX: translateX.value }] }
@@ -103,9 +103,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
             showsHorizontalScrollIndicator={false}
             decelerationRate='fast'
             snapToInterval={elementWidth + 16}
-            contentContainerStyle={{
-              paddingHorizontal: ((screenWidth - elementWidth) / 2) - 16
-            }}
+            snapToAlignment="center"
             alwaysBounceVertical={false}
             alwaysBounceHorizontal={false}
             overScrollMode="never"
@@ -122,7 +120,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
             <TouchableOpacity
               className="h-full mx-2 overflow-hidden border border-custom-white rounded-2xl flex justify-center items-center"
               style={{ width: elementWidth, backgroundColor: 'rgba(80, 80, 80, 0.2)' }}
-              activeOpacity={0.5}
+              activeOpacity={0.6}
             >
               <Icon name="plus" size={50} color="#F5F6F3" />
             </TouchableOpacity>

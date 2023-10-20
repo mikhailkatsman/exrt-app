@@ -1,4 +1,4 @@
-import { View } from "react-native"
+import { View, Dimensions } from "react-native"
 import { useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
@@ -10,6 +10,8 @@ import ActivePrograms from "@components/home/ActivePrograms"
 import AnimatedNavigationButton from "@components/home/AnimatedNavigationButton"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
+
+const screenWidth = Dimensions.get('screen').width
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [dayIds, setDayIds] = useState<number[]>([])
@@ -29,8 +31,15 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       const dayIdsData = result.rows._array.map(item => item.day_id)
 
       DB.sql(`
-        SELECT id, name, status, thumbnail FROM programs
-        WHERE status = 'active';
+        SELECT p.id, p.name, p.description,
+               p.thumbnail, p.status,
+               COUNT(pp.phase_id) AS total_phases,
+               COUNT(CASE WHEN ph.status = 'completed' THEN 1 ELSE NULL END) AS completed_phases
+        FROM programs p
+        LEFT JOIN program_phases pp ON p.id = pp.program_id
+        LEFT JOIN phases ph ON pp.phase_id = ph.id
+        WHERE p.status = 'active'
+        GROUP BY p.id;
       `, [],
       (_, result) => {
         setDayIds(dayIdsData)
@@ -43,15 +52,22 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     const unsubscribeFocus = navigation.addListener('focus', () => {
       fetchData()
       setAnimationTrigger(prev => !prev)
-      console.log('FOCUSED')
     })
     return () => { unsubscribeFocus() }
   }, [])
 
   return (
     <ScreenWrapper>
-      <Progress dayIds={dayIds} />
-      <ActivePrograms activePrograms={activePrograms} />
+      <Progress 
+        dayIds={dayIds} 
+        screenWidth={screenWidth} 
+      />
+      <View className="h-10" />
+      <ActivePrograms 
+        activePrograms={activePrograms}
+        screenWidth={screenWidth} 
+      />
+      <View className="h-16" />
       <AnimatedNavigationButton
         key={'button1'}
         trigger={animationTrigger}

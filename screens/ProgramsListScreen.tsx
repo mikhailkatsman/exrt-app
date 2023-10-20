@@ -13,22 +13,8 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
 
   const fetchPrograms = () => {
     DB.sql(`
-      SELECT
-        p.id,
-        p.name,
-        p.description,
-        p.thumbnail,
-        p.status,
-        COUNT(pp.phase_id) AS total_phases,
-        COUNT(CASE WHEN ph.status = 'completed' THEN 1 ELSE NULL END) AS completed_phases
-      FROM
-        programs p
-      LEFT JOIN
-        program_phases pp ON p.id = pp.program_id
-      LEFT JOIN
-        phases ph ON pp.phase_id = ph.id
-      GROUP BY
-        p.id;
+      SELECT * FROM programs
+      GROUP BY name;
     `, [], 
     (_, result) => {
       const programDetails = result.rows._array.map(item => ({
@@ -37,8 +23,6 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
         description: item.description,
         thumbnail: item.thumbnail,
         status: item.status,
-        total_phases: item.total_phases,
-        completed_phases: item.completed_phases
       }))
 
       setProgramsList(programDetails)
@@ -64,8 +48,6 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
               name={item.name}
               thumbnail={item.thumbnail}
               status={item.status}
-              total_phases={item.total_phases}
-              completed_phases={item.completed_phases}
             />
           ))}
         </ScrollView>

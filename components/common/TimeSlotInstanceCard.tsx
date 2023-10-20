@@ -25,7 +25,7 @@ const TimeSlotInstanceCard: React.FC<Props> = ({
   return (
     <View className="w-full h-12 flex-row">
       <Image
-        className="w-[25%] h-full rounded-xl"
+        className="w-[22%] h-full rounded-xl"
         resizeMode="contain" 
         source={exerciseThumbnails[thumbnail]} 
       />
