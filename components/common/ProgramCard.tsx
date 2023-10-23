@@ -26,7 +26,7 @@ const ProgramCard: React.FC<Props> = ({
 
   return (
     <TouchableOpacity
-      className="w-full mb-4 rounded-2xl overflow-hidden"
+      className="w-full mb-5 rounded-2xl border-x-2 border-custom-white overflow-hidden"
       style={{ height: (windowWidth * 9) / 16 }}
       onPress={() => navigation.navigate('EditProgram', { programId: id })}
       activeOpacity={0.5}

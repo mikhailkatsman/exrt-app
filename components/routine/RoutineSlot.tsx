@@ -29,7 +29,7 @@ const RoutineSlot: React.FC<Props> = ({
 
   let statusContext = { 
     statusText: 'Upcoming', 
-    color: '#5AABD6',
+    color: '#F5F6F3',
     buttonText: 'Start Session',
     icon: 'dumbbell',
   }
@@ -92,7 +92,7 @@ const RoutineSlot: React.FC<Props> = ({
       style={{ width: elementWidth }}
     >
       <View 
-        className="h-[85%] flex-col overflow-hidden rounded-t-2xl rounded-b border"
+        className="h-[85%] flex-col overflow-hidden rounded-2xl border-x-2"
         style={{ borderColor: statusContext.color }}
       >
         <ImageBackground 
@@ -105,7 +105,7 @@ const RoutineSlot: React.FC<Props> = ({
         />
         <LinearGradient
           className="absolute w-full h-full"
-          colors={['rgba(18, 18, 18, 0.6)', statusContext.color, '#121212']}
+          colors={['rgba(18, 18, 18, 0.6)', '#121212', '#121212']}
           start={{ x: 0.2, y: 0 }}
           end={{ x: 1, y: 1 }}
           locations={[0, 0.45, 1]}

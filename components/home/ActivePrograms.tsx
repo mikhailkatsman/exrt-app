@@ -13,7 +13,7 @@ type Props = {
 
 const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth }) => {
 	const elementWidth = useMemo(() => {
-		return screenWidth * 65 / 100
+		return screenWidth * 70 / 100
 	}, [screenWidth])
 
 	const navigation = useNavigation()
@@ -49,7 +49,7 @@ const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth }) => {
 					/>
 				))}
 				<TouchableOpacity
-					className="h-full overflow-hidden border border-custom-white rounded-2xl flex justify-center items-center"
+					className="h-full overflow-hidden border-x-2 border-custom-white rounded-2xl flex justify-center items-center"
 					style={{ width: elementWidth, backgroundColor: 'rgba(80, 80, 80, 0.2)' }}
 					onPress={() => navigation.navigate('SetProgramNameModal')}
 					activeOpacity={0.6}

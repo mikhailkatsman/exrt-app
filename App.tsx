@@ -32,8 +32,8 @@ export type RootStackParamList = {
   ProgramsList: undefined,
   ExercisesList: undefined,
   Hub: {
-    phaseId: number,
     screenWidth: number,
+    dayNow: number,
   },
   Settings: undefined,
   EditSession: { 

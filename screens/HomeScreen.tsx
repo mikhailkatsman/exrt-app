@@ -1,5 +1,5 @@
 import { View, Dimensions } from "react-native"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import DB from '@modules/DB'
@@ -12,6 +12,8 @@ import AnimatedNavigationButton from "@components/home/AnimatedNavigationButton"
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
 const screenWidth = Dimensions.get('screen').width
+const dateNow: Date = new Date()
+const dayNow = (dateNow.getDay() + 6) % 7
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [dayIds, setDayIds] = useState<number[]>([])
@@ -60,14 +62,15 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     <ScreenWrapper>
       <Progress 
         dayIds={dayIds} 
+        dayNow={dayNow}
         screenWidth={screenWidth} 
       />
-      <View className="h-10" />
+      <View className="h-8" />
       <ActivePrograms 
         activePrograms={activePrograms}
         screenWidth={screenWidth} 
       />
-      <View className="h-16" />
+      <View className="h-14" />
       <AnimatedNavigationButton
         key={'button1'}
         trigger={animationTrigger}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Calendar from "@components/calendar/Calendar";
@@ -11,16 +11,10 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Hub'>
 
 const HubScreen: React.FC<Props> = ({ navigation, route }) => {
   const screenWidth: number = route.params.screenWidth
+  const dayNow: number = route.params.dayNow
 
   const [dataArray, setDataArray] = useState<any[]>([])
   const [selectedDay, setSelectedDay] = useState<number>(0)
-
-  const dayNow = useMemo(() => {
-    const dateNow: Date = new Date()
-    const dayIndex = (dateNow.getDay() + 6) % 7
-
-    return dayIndex
-  }, [])
 
   const fetchRoutineData = () => {
     DB.sql(`

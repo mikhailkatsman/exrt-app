@@ -27,7 +27,7 @@ const ActiveProgramsCard: React.FC<Props> = ({
 
 	return (
 		<TouchableOpacity 
-			className='mr-4 rounded-2xl overflow-hidden'
+			className='mr-4 rounded-2xl overflow-hidden border-x-2 border-custom-white'
 			style={{ width: width }}
 			onPress={() => navigation.navigate('EditProgram', { programId: id })}
 			activeOpacity={0.6}
@@ -42,7 +42,9 @@ const ActiveProgramsCard: React.FC<Props> = ({
       >
         <LinearGradient 
           className="absolute h-full w-full"
-          colors={['rgba(0,0,0,0.6)', 'transparent']}
+          colors={['rgba(0,0,0,1)', 'transparent']}
+	  start={{ x: 0, y: 0 }}
+	  end={{ x: 0.8, y: 1 }}
         />
         <View className="flex-1 p-3">
           <Text className="text-custom-white text-xl font-BaiJamjuree-Bold">

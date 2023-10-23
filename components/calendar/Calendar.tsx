@@ -60,8 +60,7 @@ const Calendar: React.FC<Props> = ({
 	  onPress={() => handleDayPress(index)}
 	>
 	  <View className="h-1/3 flex justify-center items-center">
-	    <Text className={`
-	      ${index === selectedDay ? 'font-BaiJamjuree-Bold text-lg' : 'text-xs font-BaiJamjuree-Light'} 
+	    <Text className={`font-BaiJamjuree-Bold
               ${index === dayNow ? 'text-custom-red' : 'text-custom-white'}
 	      `}
 	    >

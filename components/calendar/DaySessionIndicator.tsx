@@ -6,7 +6,7 @@ type Props = {
 
 const DaySessionIndicator: React.FC<Props> = ({ statuses }) => {
   const setBorderColor = (status: string, index: number) => {
-    let color = '#5AABD6'
+    let color = '#F5F6F3'
     switch (status) {
       case 'completed':
         color = '#74AC5D'
@@ -22,7 +22,11 @@ const DaySessionIndicator: React.FC<Props> = ({ statuses }) => {
       <View 
         key={index}
         className="h-full w-2 rounded border-2" 
-        style={{ borderColor: color, marginHorizontal: 1 }}
+        style={{ 
+          borderColor: color, 
+          marginHorizontal: 1, 
+          backgroundColor: status === 'upcoming' ? undefined : color
+        }}
       />
     )
   }

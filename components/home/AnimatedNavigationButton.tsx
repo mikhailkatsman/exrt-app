@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { LinearGradient } from 'expo-linear-gradient'
+import { Icon } from "@react-native-material/core"
 import { TouchableOpacity, Text, View } from 'react-native'
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 
@@ -91,7 +91,7 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 
 	return (
 		<TouchableOpacity 
-			className="mx-2 h-[18%]"
+			className="mx-2 h-[16%]"
 			onPress={() => navigation.navigate(route, params)}
 			activeOpacity={0.6}
 		>
@@ -102,21 +102,16 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 				source={image}
 			/>
 			<View
-				className={`w-full h-full rounded-2xl border
-					flex-row items-center overflow-hidden
-					${colorValues.border}
-				`}
+				className={`w-full h-full rounded-2xl border-x-2 border-custom-white
+					flex-row items-center overflow-hidden`}
 			>
-				<LinearGradient 
-					className='absolute h-full w-full'
-					colors={[colorValues.code, 'transparent']}
-					start={{ x: 0, y: 1 }}
-					end={{ x: 1, y: 0 }}
-				/>
-				<View className='w-1/2' />
-				<Animated.View className="w-1/2" style={animatedTextStyle}>
-					<Text className="text-custom-white text-2xl font-BaiJamjuree-BoldItalic">{textLine1}</Text>
-					<Text className="text-custom-white text-2xl font-BaiJamjuree-BoldItalic">{textLine2}</Text>
+				<View className='w-[40%]' />
+				<Animated.View className="w-[60%] flex-row justify-center items-center" style={animatedTextStyle}>
+					<View className='mr-5'>
+						<Text className="text-custom-white text-xl font-BaiJamjuree-BoldItalic">{textLine1}</Text>
+						<Text className="text-custom-white text-xl font-BaiJamjuree-BoldItalic">{textLine2}</Text>
+					</View>
+					<Icon name="chevron-right" color="#F5F6F3" size={40} /> 
 				</Animated.View>
 			</View>
 		</TouchableOpacity>
