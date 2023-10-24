@@ -92,7 +92,7 @@ const RoutineSlot: React.FC<Props> = ({
       style={{ width: elementWidth }}
     >
       <View 
-        className="h-[85%] flex-col overflow-hidden rounded-2xl border-x-2"
+        className="flex-1 flex-col overflow-hidden rounded-2xl border-x-2"
         style={{ borderColor: statusContext.color }}
       >
         <ImageBackground 
@@ -152,7 +152,7 @@ const RoutineSlot: React.FC<Props> = ({
             Exercises:
           </Text>
           <ScrollView 
-            className="flex-1"
+            className="flex-1 mb-3"
             fadingEdgeLength={100}
           >
             {instances.map((instance, index) => (
@@ -171,24 +171,24 @@ const RoutineSlot: React.FC<Props> = ({
               </Fragment>
             ))}
           </ScrollView>
+          <TouchableOpacity 
+            className="
+              h-14 flex-row items-center border-2
+              justify-center rounded-xl
+            "
+            style={{ borderColor: statusContext.color }}
+            onPress={() => navigation.navigate("GetReady", { sessionId: session.id })}
+          >
+            <Text 
+              className="mr-4 font-BaiJamjuree-Bold text"
+              style={{ color: statusContext.color }}
+            >
+              {statusContext.buttonText}
+            </Text>
+            <Icon name={statusContext.icon} size={24} color={statusContext.color} />
+          </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity 
-        className="
-          mt-1 flex-1 flex-row items-center border
-          justify-center rounded-b-2xl rounded-t
-        "
-        style={{ borderColor: statusContext.color }}
-        onPress={() => navigation.navigate("GetReady", { sessionId: session.id })}
-      >
-        <Text 
-          className="mr-4 font-BaiJamjuree-Bold text"
-          style={{ color: statusContext.color }}
-        >
-          {statusContext.buttonText}
-        </Text>
-        <Icon name={statusContext.icon} size={24} color={statusContext.color} />
-      </TouchableOpacity>
     </View>
   )
 }

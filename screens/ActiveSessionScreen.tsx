@@ -150,7 +150,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   return <>
     {currentActivity ? (
       <ScreenWrapper>
-        <View className="flex-1 my-3">
+        <View className="flex-1 mt-5 mb-3">
           <TimeLine 
             instances={activities} 
             currentActivityIndex={currentActivityIndex} 

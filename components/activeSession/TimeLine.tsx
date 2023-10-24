@@ -25,7 +25,7 @@ const TimeLine: React.FC<Props> = ({ instances, currentActivityIndex }) => {
 	}, [currentActivityIndex, isReady])
 
 	return (
-		<View className="h-28 w-full mb-3">
+		<View className="h-28 w-full mb-5">
 			<View 
 				className="w-24 border-x-2 rounded-2xl border-custom-red" 
 				style={{

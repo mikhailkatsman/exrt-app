@@ -25,6 +25,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   const phaseStatus: string = route.params.phaseStatus
 
   const [listData, setListData] = useState<ListItem[]>([])
+  const [status, setStatus] = useState<string>(phaseStatus)
   const [name, setName] = useState<string>(phaseName)
   const [isEditingName, setIsEditingName] = useState<boolean>(false)
 
@@ -79,6 +80,10 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
 
       setListData(dataArray)
     })
+  }
+
+  const changePhaseStatus = () => {
+
   }
 
   const deletePhase = () => {
@@ -144,7 +149,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
             className="ml-1.5 border-l border-custom-grey h-24" 
           />
           <View 
-            className="p-3 ml-4 h-20 flex-1 flex-row rounded-xl bg-custom-dark border-x-2 border-custom-white"
+            className="p-3 ml-4 h-20 flex-1 flex-row rounded-2xl bg-custom-dark border-x-2 border-custom-white"
           >
             <TouchableOpacity
               className="flex-1 justify-center"
@@ -192,14 +197,14 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     return (
       <View className="flex-row items-center">
         <View 
-          className="mr-3 w-3 h-3 rounded border"
+          className="mr-3 w-3 h-3 rounded border-2"
           style={{
             backgroundColor: bgColor,
             borderColor: bdColor,
           }}
         />
         <Text 
-          className="mt-1 font-BaiJamjuree-Bold text-lg"
+          className="mt-1 font-BaiJamjuree-Regular text-lg"
           style={{ color: bdColor }}
         >
           {item.dayName}
@@ -251,19 +256,18 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <ScreenWrapper>
       <View className="flex-1 px-3 mb-3">
-        <View className="py-3 h-36 flex-col justify-between">
+        <View className="pt-3 pb-8 h-fit flex-col justify-between">
           {isEditingName ? 
             <TextInput 
               onChangeText={setName}
               onSubmitEditing={() => setIsEditingName(false)}
-              className="w-full text-custom-white text-xl font-BaiJamjuree-Bold"
+              className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold"
               autoCapitalize="words"
               defaultValue={name}
               autoFocus={true}
             />
           :
             <TouchableOpacity
-              className="w-full"
               onPress={() => setIsEditingName(true)}
             >
               <View className='w-full mb-1 flex-row justify-between items-center'>
@@ -274,22 +278,30 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
                   <Icon name="pencil" color="#F5F6F3" size={22} /> 
                 </View>
               </View>
-              <Text className="text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
+              <Text className="w-[90%] text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
             </TouchableOpacity>
           }
-          <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Exercises:</Text>
         </View>
+        <TouchableOpacity 
+          className="mb-8 border-2 border-custom-white rounded-2xl h-16 flex-row justify-center items-center"
+          onPress={changePhaseStatus}
+          activeOpacity={0.6}
+        >
+          <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Mark As Complete</Text>
+          <Icon name="check" size={24} color="#F5F6F3" />
+        </TouchableOpacity>
+        <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Exercises:</Text>
         <View className="flex-1 mb-7">
           <View className="flex-row items-center">
             <View 
-              className="mr-3 w-3 h-3 rounded border"
+              className="mr-3 w-3 h-3 rounded border-2"
               style={{
                 backgroundColor: listData[0]?.type === 'session' ? '#5AABD6' : 'transparent',
                 borderColor: listData[0]?.type === 'session' ? '#5AABD6' : '#505050',
               }}
             />
             <Text 
-              className="mt-1 font-BaiJamjuree-Bold text-lg"
+              className="mt-1 font-BaiJamjuree-Regular text-lg"
               style={{ color: listData[0]?.type === 'session' ? '#5AABD6' : '#505050' }}
             >
               Monday
@@ -305,9 +317,10 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
       </View>
       <View className="h-16 mb-3">
         <TouchableOpacity className="
-          flex-1 border-2 border-custom-white rounded-xl 
+          flex-1 border-2 border-custom-white rounded-2xl 
           flex-row justify-center items-center"
           onPress={() => navigation.navigate('SelectDayModal', { phaseId: phaseId })}
+          activeOpacity={0.6}
         >
           <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Session</Text>
           <Icon name="plus" size={24} color="#F5F6F3" />
@@ -315,14 +328,14 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
       </View>
       <BottomBarWrapper>
         <TouchableOpacity 
-          className="w-[30%] rounded-xl border-2 border-custom-red flex-row justify-center items-center"
+          className="w-[30%] rounded-2xl border-2 border-custom-red flex-row justify-center items-center"
           onPress={() => {
             navigation.navigate('ConfirmModal', {
               text: 'Are you sure you want to delete this phase?',
               onConfirm: deletePhase
             })
           }}
-          activeOpacity={1}
+          activeOpacity={0.6}
         >
           <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
           <Icon name="delete-outline" size={20} color="#F4533E" />
@@ -331,8 +344,9 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
         <TouchableOpacity className="
           flex-1 border-2 border-custom-blue
           flex-row items-center justify-center 
-          rounded-xl"
+          rounded-2xl"
           onPress={registerPhase}
+          activeOpacity={0.6}
         >
           <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">
             Confirm Phase

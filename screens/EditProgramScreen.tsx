@@ -263,7 +263,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     <ScreenWrapper>
       <View className="flex-1 mb-3">
         <ImageBackground
-          className="w-full mb-5 rounded-xl overflow-hidden"
+          className="w-full mb-5 rounded-2xl overflow-hidden"
           style={{ height: (windowWidth * 9) / 16 }}
           resizeMode="center" 
           source={
@@ -273,14 +273,16 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         >
           <LinearGradient 
             className="absolute h-full w-full"
-            colors={['rgba(0,0,0,0.7)', 'transparent']}
+            colors={['rgba(18, 18, 18, 1)', 'transparent']}
+            start={{ x: 0.3, y: 0 }}
+            end={{ x: 0.7, y: 1 }}
           />
           <View className="h-full w-full p-3 flex-col justify-between items-end">
             {isEditingName ? 
               <TextInput 
                 onChangeText={setName}
                 onSubmitEditing={() => setIsEditingName(false)}
-                className="w-full text-custom-white text-xl font-BaiJamjuree-Bold"
+                className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold"
                 autoCapitalize="words"
                 defaultValue={name}
                 autoFocus={true}
@@ -298,7 +300,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
                     <Icon name="pencil" color="#F5F6F3" size={22} /> 
                   </View>
                 </View>
-                <Text className="text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
+                <Text className="w-[90%] text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
               </TouchableOpacity>
             }
             <TouchableOpacity 
@@ -341,7 +343,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             >
               <Text className={`
                 mb-1 text-custom-white font-BaiJamjuree-Light
-                ${expandText ? 'flex-1' : 'h-20'}
+                ${expandText ? 'h-min' : 'h-20'}
               `}>
                 {description}
               </Text>
@@ -375,7 +377,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         {(!isEditingName && !isEditingDescription) &&
           <View className="h-16">
             <TouchableOpacity className="
-              flex-1 border-2 border-custom-white rounded-xl 
+              flex-1 border-2 border-custom-white rounded-2xl 
               flex-row justify-center items-center"
               onPress={() => navigation.navigate("SetPhaseNameModal", { programId: programId })}
             >
@@ -388,7 +390,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       {(!isEditingName && !isEditingDescription) &&
         <BottomBarWrapper>
           <TouchableOpacity 
-            className="w-[30%] rounded-xl border-2 border-custom-red flex-row justify-center items-center"
+            className="w-[30%] rounded-2xl border-2 border-custom-red flex-row justify-center items-center"
             onPress={() => {
               navigation.navigate('ConfirmModal', {
                 text: 'Are you sure you want to delete this program?',
@@ -404,7 +406,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           <TouchableOpacity className="
             flex-1 border-2 border-custom-blue
             flex-row items-center justify-center 
-            rounded-xl"
+            rounded-2xl"
             onPress={registerProgram}
           >
             <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">

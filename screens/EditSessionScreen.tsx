@@ -68,6 +68,7 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
         weight: row.weight
       }))
 
+      setName(result.rows.item(0).sessionName)
       setInstances(instanceData)
     })
   }
@@ -209,12 +210,12 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <ScreenWrapper>
       <View className="flex-1 mb-3 flex-col justify-between">
-        <View className="p-3 h-36 flex-col justify-between">
+        <View className="p-3 h-fit flex-col justify-between">
           {isEditingName ? 
             <TextInput 
               onChangeText={setName}
               onSubmitEditing={() => setIsEditingName(false)}
-              className="w-full text-custom-white text-xl font-BaiJamjuree-Bold"
+              className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold"
               autoCapitalize="words"
               defaultValue={name}
               autoFocus={true}
@@ -232,11 +233,11 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
                   <Icon name="pencil" color="#F5F6F3" size={22} /> 
                 </View>
               </View>
-              <Text className="text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
+              <Text className="w-[90%] text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
             </TouchableOpacity>
           }
-          <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Exercises:</Text>
         </View>
+        <Text className="p-3 text-custom-white font-BaiJamjuree-MediumItalic">Exercises:</Text>
         <View className="flex-1">
           <DraggableFlatList 
             className="p-3 rounded-xl"
@@ -253,6 +254,7 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
             flex-1 border-2 border-custom-white rounded-xl 
             flex-row justify-center items-center"
             onPress={() => navigation.navigate("NewInstance", { sessionId: sessionId })}
+            activeOpacity={0.6}
           >
             <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Exercise</Text>
             <Icon name="plus" size={24} color="#F5F6F3" />
@@ -268,7 +270,7 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
               onConfirm: deleteSession
             })
           }}
-          activeOpacity={1}
+          activeOpacity={0.6}
         >
           <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
           <Icon name="delete-outline" size={20} color="#F4533E" />
@@ -277,7 +279,7 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
         <TouchableOpacity 
           className="flex-1 border-2 border-custom-blue rounded-xl flex-row justify-center items-center"
           onPress={registerSession}
-          activeOpacity={1}
+          activeOpacity={0.6}
         >
           <Text className="mr-2 text-custom-blue font-BaiJamjuree-Bold">Confirm Session</Text>
           <Icon name="check" size={22} color="#5AABD6" />

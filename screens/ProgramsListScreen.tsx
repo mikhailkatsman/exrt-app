@@ -1,5 +1,6 @@
 import ScreenWrapper from "@components/common/ScreenWrapper"
-import { View, ScrollView } from "react-native"
+import { View, ScrollView, Text, TouchableOpacity } from "react-native"
+import { Icon } from "@react-native-material/core"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import { useEffect, useState } from "react"
@@ -39,8 +40,23 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <ScreenWrapper>
+      <View className="h-28 mx-3 mb-5">
+        <TouchableOpacity 
+          className="w-full h-1/2 mb-3 p-2 rounded-2xl border-2 border-custom-white justify-end flex-row items-center"
+          onPress={() => {}}
+          activeOpacity={1}
+        >
+					<Icon name="magnify" size={30} color="#F5F6F3" />
+        </TouchableOpacity>
+        <View className="h-1/2">
+
+        </View>
+      </View>
       <View className="flex-1 mb-3">
-        <ScrollView className="h-fit w-full">
+        <ScrollView 
+          className="h-fit w-full"
+          fadingEdgeLength={200}
+        >
           {programsList.map((item, index) => (
             <ProgramCard
               key={index} 

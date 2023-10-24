@@ -41,7 +41,9 @@ const ProgramCard: React.FC<Props> = ({
       >
         <LinearGradient 
           className="absolute h-full w-full"
-          colors={['rgba(0,0,0,0.6)', 'transparent']}
+          colors={['rgba(18, 18, 18, 1)', 'transparent']}
+          start={{ x: 0.3, y: 0 }}
+          end={{ x: 0.7, y: 1 }}
         />
         <View className="h-[60%] p-3">
           <Text className="text-custom-white text-xl font-BaiJamjuree-Bold">
@@ -60,7 +62,7 @@ const ProgramCard: React.FC<Props> = ({
             }}
             activeOpacity={0.6}
           >
-            <View className={`flex-1 justify-center items-center bg-twothird-transparent rounded-lg border 
+            <View className={`flex-1 justify-center items-center bg-twothird-transparent rounded-xl border 
               ${status === 'active' ? 'border-custom-red' : 'border-custom-green'}
             `}>
               <Text className={`font-BaiJamjuree-Bold ${status === 'active' ? 'text-custom-red' : 'text-custom-green'}`}>

@@ -68,7 +68,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       <View className="h-8" />
       <ActivePrograms 
         activePrograms={activePrograms}
-        screenWidth={screenWidth} 
+        screenWidth={screenWidth}
       />
       <View className="h-14" />
       <AnimatedNavigationButton
