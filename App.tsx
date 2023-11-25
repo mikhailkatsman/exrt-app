@@ -7,6 +7,7 @@ import ActiveSessionScreen from '@screens/ActiveSessionScreen'
 import NewInstanceScreen from '@screens/NewInstanceScreen'
 import ProgramsListScreen from '@screens/ProgramsListScreen'
 import ExercisesListScreen from '@screens/ExercisesListScreen'
+import ExerciseDetailsScreen from '@screens/ExerciseDetailsScreen'
 import EditProgramScreen from '@screens/EditProgramScreen'
 import EditPhaseScreen from '@screens/EditPhaseScreen'
 import ErrorModal from '@screens/ErrorModal'
@@ -31,6 +32,9 @@ export type RootStackParamList = {
   Home: undefined,
   ProgramsList: undefined,
   ExercisesList: undefined,
+  ExerciseDetails : {
+    exerciseId: number,
+  },
   Hub: {
     screenWidth: number,
     dayNow: number,
@@ -161,12 +165,17 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='ProgramsList'
                   component={ProgramsListScreen}
-                  options={{title: 'Programs'}}
+                  options={{title: 'Browse Programs'}}
                 />
                 <Stack.Screen
                   name='ExercisesList'
                   component={ExercisesListScreen}
-                  options={{title: 'Exercises'}}
+                  options={{title: 'Browse Exercises'}}
+                />
+                <Stack.Screen
+                  name='ExerciseDetails'
+                  component={ExerciseDetailsScreen}
+                  options={{title: 'Exercise Details'}}
                 />
                 <Stack.Screen
                   name='Hub'

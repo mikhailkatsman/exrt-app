@@ -42,11 +42,11 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
     <ScreenWrapper>
       <View className="h-28 mx-3 mb-5">
         <TouchableOpacity 
-          className="w-full h-1/2 mb-3 p-2 rounded-2xl border-2 border-custom-white justify-end flex-row items-center"
+          className="w-full h-1/2 mb-3 p-2 rounded-2xl border border-custom-white justify-end flex-row items-center"
           onPress={() => {}}
           activeOpacity={1}
         >
-					<Icon name="magnify" size={30} color="#F5F6F3" />
+          <Icon name="magnify" size={30} color="#F5F6F3" />
         </TouchableOpacity>
         <View className="h-1/2">
 

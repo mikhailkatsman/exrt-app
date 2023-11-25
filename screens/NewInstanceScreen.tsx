@@ -146,7 +146,7 @@ const NewInstanceScreen: React.FC<Props> = ({ navigation, route }) => {
         <View className="flex-1 mb-3 flex-row overflow-hidden justify-between">
           <View className="w-full flex-col">
             <View className="h-[15%] p-2 flex-row items-center justify-between">
-              <Text className="text-custom-white mb-1 font-BaiJamjuree-Bold">Sort by</Text>
+              <Text className="text-custom-white mb-1 font-">Sort by</Text>
               <DropDown 
                 placeholder='Muscle Group'
                 listItems={muscleGroupList}
