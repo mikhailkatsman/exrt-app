@@ -29,7 +29,7 @@ class DB {
       }
     }
 
-    //await debugClearData()
+    // await debugClearData()
 
     try {
       const { exists } = await FileSystem.getInfoAsync(dbPath)

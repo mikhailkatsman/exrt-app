@@ -4,6 +4,7 @@ import type { RootStackParamList } from "App";
 import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import { LogBox } from "react-native";
 import DB from '@modules/DB';
+import ModalContainer from '@components/common/ModalContainer';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -50,34 +51,36 @@ const SetProgramNameModal: React.FC<Props> = ({ navigation }) => {
   }, [])
 
   return (
-    <View className="flex-1 bg-custom-dark/60 justify-center items-center">
-      <View className="w-2/3 h-52 bg-custom-dark flex-col justify-between rounded-xl border border-custom-white">
-        <View className="h-[70%] pb-2 px-6 flex justify-center items-center">
-          <Text className='mb-5 text-custom-white font-BaiJamjuree-Regular'>Program Name:</Text>
-          <TextInput 
-            onChangeText={setName}
-            className="w-[80%] text-custom-white text-xl font-BaiJamjuree-Bold"
-            autoCapitalize="words"
-            defaultValue={name}
-            autoFocus={true}
-          />
-        </View>
-        <View className="h-[30%] p-2 flex-row justify-between items-center">
-          <TouchableOpacity 
-            className="h-full w-1/2 flex justify-center items-center rounded-lg border border-custom-blue" 
-            onPress={createProgram}
-          >
-            <Text className="text-custom-blue font-BaiJamjuree-Bold">Confirm</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            className="h-full w-1/2 flex justify-center items-center" 
-            onPress={() => navigation.pop()}
-          >
-            <Text className="text-custom-white font-BaiJamjuree-Bold">Cancel</Text>
-          </TouchableOpacity>
-        </View>
+    <ModalContainer>
+      <View className="h-[70%] pb-2 px-6 flex justify-between items-center">
+        <Text className='my-3 text-custom-white font-BaiJamjuree-Regular'>Program Name:</Text>
+        <TextInput 
+          onChangeText={setName}
+          className="w-full mb-3 text-custom-white text-xl font-BaiJamjuree-Bold"
+          autoCapitalize="words"
+          defaultValue={name}
+          selectionColor="#F5F6F3"
+          autoFocus={true}
+          multiline
+          numberOfLines={2}
+          maxLength={30}
+        />
       </View>
-    </View>
+      <View className="h-[30%] p-2 flex-row justify-between items-center">
+        <TouchableOpacity 
+          className="h-full w-1/2 flex justify-center items-center rounded-lg border border-custom-blue" 
+          onPress={createProgram}
+        >
+          <Text className="text-custom-blue font-BaiJamjuree-Bold">Confirm</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          className="h-full w-1/2 flex justify-center items-center" 
+          onPress={() => navigation.pop()}
+        >
+          <Text className="text-custom-white font-BaiJamjuree-Bold">Cancel</Text>
+        </TouchableOpacity>
+      </View>
+    </ModalContainer>
   )
 }
 

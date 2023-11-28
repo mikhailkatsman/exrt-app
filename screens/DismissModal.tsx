@@ -1,3 +1,4 @@
+import ModalContainer from "@components/common/ModalContainer";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "App";
 import { View, Text, TouchableOpacity } from "react-native";
@@ -13,35 +14,33 @@ const DismissModal: React.FC<Props> = ({ navigation, route }) => {
   const onConfirm = route.params.onConfirm
 
   return (
-    <View className="flex-1 bg-custom-dark/60 justify-center items-center">
-      <View className="w-2/3 h-1/4 bg-custom-dark flex-col justify-between rounded-xl border border-custom-white">
-        <View className="h-[70%] pb-2 px-6 flex justify-center items-center">
-          <Text className="text-custom-white font-BaiJamjuree-Regular">
-            Are you sure you want to go back? 
-          </Text>
-          <Text className="text-custom-white font-BaiJamjuree-Regular">
-            Any unsaved changes will be lost.
-          </Text>
-        </View>
-        <View className="h-[30%] p-2 flex-row justify-between items-center">
-          <TouchableOpacity 
-            className="h-full w-1/2 flex justify-center items-center rounded-lg border border-custom-red" 
-            onPress={() => {
-              onConfirm()
-              navigation.pop()
-            }}
-          >
-            <Text className="text-custom-red font-BaiJamjuree-Bold">Go back</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            className="h-full w-1/2 flex justify-center items-center" 
-            onPress={() => navigation.pop()}
-          >
-            <Text className="text-custom-white font-BaiJamjuree-Bold">Cancel</Text>
-          </TouchableOpacity>
-        </View>
+    <ModalContainer>
+      <View className="h-[70%] pb-2 px-6 flex justify-center items-center">
+        <Text className="text-custom-white font-BaiJamjuree-Regular">
+          Are you sure you want to go back? 
+        </Text>
+        <Text className="text-custom-white font-BaiJamjuree-Regular">
+          Any unsaved changes will be lost.
+        </Text>
       </View>
-    </View>
+      <View className="h-[30%] p-2 flex-row justify-between items-center">
+        <TouchableOpacity 
+          className="h-full w-1/2 flex justify-center items-center rounded-lg border border-custom-red" 
+          onPress={() => {
+            onConfirm()
+            navigation.pop()
+          }}
+        >
+          <Text className="text-custom-red font-BaiJamjuree-Bold">Go back</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          className="h-full w-1/2 flex justify-center items-center" 
+          onPress={() => navigation.pop()}
+        >
+          <Text className="text-custom-white font-BaiJamjuree-Bold">Cancel</Text>
+        </TouchableOpacity>
+      </View>
+    </ModalContainer>
   )
 }
 

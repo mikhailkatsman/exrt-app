@@ -11,6 +11,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ProgramsList'>
 
 const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
   const [programsList, setProgramsList] = useState<any[]>([])
+  const [searchString, setSearchString] = useState<string | null>(null)
 
   const fetchPrograms = () => {
     DB.sql(`

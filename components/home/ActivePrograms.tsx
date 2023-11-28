@@ -54,7 +54,7 @@ const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth }) => {
 					onPress={() => navigation.navigate('SetProgramNameModal')}
 					activeOpacity={0.6}
 				>
-					<Text className='text-custom-white font-BaiJamjuree-Bold'>Add Program</Text>
+					<Text className='text-custom-white font-BaiJamjuree-Bold w-28 text-center mb-4'>Create Custom Program</Text>
 					<Icon name="plus" size={30} color="#F5F6F3" />
 				</TouchableOpacity>
 			</ScrollView>

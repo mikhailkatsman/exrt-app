@@ -27,6 +27,7 @@ import SelectDayModal from '@screens/SelectDayModal'
 import SetPhaseNameModal from '@screens/SetPhaseNameModal'
 import SetProgramNameModal from '@screens/SetProgramNameModal'
 import ChangeProgramStatusModal from '@screens/ChangeProgramStatusModal'
+import SessionResultsModal from '@screens/SessionResultsModal'
 
 export type RootStackParamList = {
   Home: undefined,
@@ -62,6 +63,9 @@ export type RootStackParamList = {
     sessionId: number,
   },
   ActiveSession: {
+    sessionId: number,
+  },
+  SessionResultsModal: {
     sessionId: number,
   },
   ErrorModal: {
@@ -236,6 +240,10 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='ChangeProgramStatusModal'
                   component={ChangeProgramStatusModal}
+                />
+                <Stack.Screen
+                  name='SessionResultsModal'
+                  component={SessionResultsModal}
                 />
               </Stack.Group>
               <Stack.Group 
