@@ -154,9 +154,10 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
             <TouchableOpacity
               className="flex-1 justify-center"
               onPress={() => navigation.navigate('EditSession', { 
-                sessionExists: true, 
+                dayId: item.dayId,
                 sessionId: item.sessionId, 
                 sessionName: item.sessionName,
+                newSession: false,
                 phaseId: phaseId 
               })}
               activeOpacity={0.6}

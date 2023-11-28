@@ -121,7 +121,7 @@ const App: React.FC = () => {
           loadFonts(),
         ])
 
-        //await logAllData()
+        await logAllData()
 
         await setResetDate()
 

@@ -67,8 +67,10 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
         secondDuration: row.secondDuration,
         weight: row.weight
       }))
-
-      setName(result.rows.item(0).sessionName)
+      
+      if (result.rows.length > 0) {
+        setName(result.rows.item(0).sessionName)
+      }
       setInstances(instanceData)
     })
   }

@@ -24,7 +24,7 @@ const Progress: React.FC<Props> = ({ dayIds, dayNow, screenWidth }) => {
 					<View 
 						key={index}
 						className='h-full flex-col items-center'
-						>
+					>
 						<Text 
 							className={`mt-2 mb-3 text-xs font-BaiJamjuree-Bold 
 							${index === dayNow ? 'text-custom-red' : 'text-custom-white'}`}

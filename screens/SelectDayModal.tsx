@@ -15,7 +15,6 @@ type Props = NativeStackScreenProps<RootStackParamList, 'SelectDayModal'>
 
 const SelectDayModal: React.FC<Props> = ({ navigation, route }) => {
   const phaseId: number = route.params.phaseId
-  const sessionName: string = 'New Session'
   
   const [dayId, setDayId] = useState<number>(1)
   const dayNames = [
@@ -29,6 +28,8 @@ const SelectDayModal: React.FC<Props> = ({ navigation, route }) => {
   ]
 
   const createSession = () => {
+    const sessionName: string = 'New Session'
+
     DB.sql(`
       INSERT INTO sessions (name, status) VALUES (?, ?);
     `, [sessionName, 'upcoming'],
