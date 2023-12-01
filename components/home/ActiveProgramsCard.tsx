@@ -29,7 +29,12 @@ const ActiveProgramsCard: React.FC<Props> = ({
 		<TouchableOpacity 
 			className='mr-4 rounded-2xl overflow-hidden border-x-2 border-custom-white'
 			style={{ width: width }}
-			onPress={() => navigation.navigate('EditProgram', { programId: id })}
+			onPress={() => 
+				navigation.navigate('EditProgram', { 
+					programId: id, 
+					newProgram: false
+				}
+			)}
 			activeOpacity={0.6}
 		>
 			<ImageBackground

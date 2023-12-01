@@ -41,7 +41,9 @@ const SetPhaseNameModal: React.FC<Props> = ({ navigation, route }) => {
         `, [programId, phaseId, newOrder],
         () => navigation.replace('EditPhase', {
           phaseId: phaseId,
-          phaseName: name
+          phaseName: name,
+          phaseStatus: status,
+          newPhase: true,
         }))
       })
     })
@@ -50,13 +52,17 @@ const SetPhaseNameModal: React.FC<Props> = ({ navigation, route }) => {
   return (
     <ModalContainer>
       <View className="h-[70%] pb-2 px-6 flex justify-center items-center">
-        <Text className='mb-5 text-custom-white font-BaiJamjuree-Regular'>Phase Name:</Text>
+        <Text className='my-3 text-custom-white font-BaiJamjuree-Regular'>Program Name:</Text>
         <TextInput 
           onChangeText={setName}
-          className="w-[80%] text-custom-white text-xl font-BaiJamjuree-Bold"
+          className="w-full mb-3 text-custom-white text-xl font-BaiJamjuree-Bold"
           autoCapitalize="words"
           defaultValue={name}
+          selectionColor="#F5F6F3"
           autoFocus={true}
+          multiline
+          numberOfLines={2}
+          maxLength={30}
         />
       </View>
       <View className="h-[30%] p-2 flex-row justify-between items-center">

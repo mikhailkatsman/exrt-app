@@ -1,5 +1,5 @@
 import { View, Text, TextInput, TouchableOpacity, BackHandler } from "react-native"
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { useFocusEffect } from "@react-navigation/native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
@@ -34,7 +34,9 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   const phaseId = route.params.phaseId
   const [instances, setInstances] = useState<any[]>([])
   const [name, setName] = useState<string>(sessionName)
-  const [isEditingName, setIsEditingName] = useState<boolean>(false)
+  const [isEditableSessionName, setIsEditableSessionName] = useState<boolean>(false)
+
+  const sessionNameInputRef = useRef<TextInput>(null)
 
   const fetchInstances = () => {
     DB.sql(`
@@ -100,7 +102,7 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
     if (instances.length === 0) {
       navigation.navigate('ErrorModal', { 
         title: 'No Exercises Added', 
-        message: 'Please add at least one exercise to this session.'
+        message: 'Please add at least one exercise to this session or delete this session.'
       })
       return
     }
@@ -170,16 +172,34 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
+  const handlePress = () => {
+    setIsEditableSessionName(true)
+  }
+
+  useEffect(() => {
+    if (isEditableSessionName && sessionNameInputRef.current) {
+      sessionNameInputRef.current?.focus()
+    }
+  }, [isEditableSessionName])
+
   const onBackPressed = () => {
-    navigation.navigate('DismissModal', {
-      onConfirm: () => {
-        if (newSession) {
-          deleteSession()
-        } else {
-          navigation.pop()
+    if (instances.length === 0) {
+      navigation.navigate('ErrorModal', { 
+        title: 'No Exercises Added', 
+        message: 'Please add at least one exercise to this session or delete this session.'
+      })
+      return
+    } else {
+      navigation.navigate('DismissModal', {
+        onConfirm: () => {
+          if (newSession) {
+            deleteSession()
+          } else {
+            navigation.pop()
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   useFocusEffect(
@@ -192,8 +212,6 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   )
 
   useEffect(() => {
-    const unsubscribeFocus = navigation.addListener('focus', fetchInstances)
-
     navigation.setOptions({
       headerLeft: (props) => (
         <HeaderBackButton
@@ -203,6 +221,10 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
         />      
       )
     })
+  }, [instances])
+
+  useEffect(() => {
+    const unsubscribeFocus = navigation.addListener('focus', fetchInstances)
 
     return () => { 
       unsubscribeFocus()
@@ -213,31 +235,27 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
     <ScreenWrapper>
       <View className="flex-1 mb-3 flex-col justify-between">
         <View className="p-3 h-fit flex-col justify-between">
-          {isEditingName ? 
-            <TextInput 
-              onChangeText={setName}
-              onSubmitEditing={() => setIsEditingName(false)}
-              className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold"
-              autoCapitalize="words"
-              defaultValue={name}
-              autoFocus={true}
-            />
-          :
-            <TouchableOpacity
-              className="w-full"
-              onPress={() => setIsEditingName(true)}
+          <View className='w-full mb-1 flex-row justify-between items-center'>
+            <View className='w-2/3 -mt-1'>
+              <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Session Name:</Text>
+            </View>
+            <TouchableOpacity 
+              className="w-1/3 h-8 flex-row items-start justify-end"
+              onPress={handlePress}
             >
-              <View className='w-full mb-1 flex-row justify-between items-center'>
-                <View className='w-5/6 -mt-1'>
-                  <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Session Name:</Text>
-                </View>
-                <View className="w-1/6 h-full flex-row items-start justify-end">
-                  <Icon name="pencil" color="#F5F6F3" size={22} /> 
-                </View>
-              </View>
-              <Text className="w-[90%] text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
+              <Icon name="pencil" color="#F5F6F3" size={22} /> 
             </TouchableOpacity>
-          }
+          </View>
+          <TextInput
+            ref={sessionNameInputRef}
+            onChangeText={setName}
+            className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold"
+            autoCapitalize="words"
+            defaultValue={name}
+            selectionColor="#F5F6F3"
+            editable={isEditableSessionName}
+            onSubmitEditing={() => setIsEditableSessionName(false)}
+          />
         </View>
         <Text className="p-3 text-custom-white font-BaiJamjuree-MediumItalic">Exercises:</Text>
         <View className="flex-1">

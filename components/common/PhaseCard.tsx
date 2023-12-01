@@ -24,11 +24,14 @@ const PhaseCard: React.FC<Props> = ({ id, name, status }) => {
     <TouchableOpacity className="w-full h-20 p-3 mb-5 
       flex-row justify-between items-center
       rounded-2xl border-x-2 border-custom-white"
-      onPress={() => navigation.navigate('EditPhase', { 
-        phaseId: id, 
-        phaseName: name,
-        phaseStatus: status
-      })}
+      onPress={() => {
+        navigation.navigate('EditPhase', { 
+          phaseId: id, 
+          phaseName: name,
+          phaseStatus: status,
+          newPhase: false
+        })
+      }}
       activeOpacity={0.6}
     >
       <Text className="w-[60%] text-custom-white text-lg font-BaiJamjuree-Bold">{name}</Text>

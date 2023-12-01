@@ -53,11 +53,13 @@ export type RootStackParamList = {
   },
   EditProgram: {
     programId: number,
+    newProgram: boolean,
   },
   EditPhase: {
     phaseId: number,
     phaseName: string,
     phaseStatus: string,
+    newPhase: boolean,
   },
   GetReady: {
     sessionId: number,

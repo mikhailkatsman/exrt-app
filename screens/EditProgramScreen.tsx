@@ -1,5 +1,5 @@
 import { View, TouchableOpacity, Text, TextInput, Dimensions, ImageBackground, BackHandler } from 'react-native'
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { useFocusEffect } from "@react-navigation/native"
 import { LinearGradient } from "expo-linear-gradient"
 import { Icon } from "@react-native-material/core"
@@ -20,19 +20,26 @@ type Props = NativeStackScreenProps<RootStackParamList, 'EditProgram'>
 const windowWidth = Dimensions.get('window').width - 16
 
 const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
-  const programId: number | undefined = route.params.programId
+  const programId: number = route.params.programId
+  const newProgram: boolean = route.params.newProgram
   
-  const [isEditingName, setIsEditingName] = useState<boolean>(false)
-  const [isEditingDescription, setIsEditingDescription] = useState<boolean>(false)
   const [expandText, setExpandText] = useState<boolean>(false)
   const [dirPath, setDirPath] = useState<string>('')
   const [cachePath, setCachePath] = useState<string>('')
   const [name, setName] = useState<string>('My Custom Program 1')
   const [description, setDescription] = useState<string>('No description provided.')
+  const [isEditableProgramName, setIsEditableProgramName] = useState<boolean>(false)
+  const [isEditableDescription, setIsEditableDescription] = useState<boolean>(false)
   const [thumbnail, setThumbnail] = useState<string>("program_thumbnail_placeholder")
   const [ogThumbnailPath, setOgThumbnailPath]= useState<string>(thumbnail)
   const [status, setStatus] = useState<string>('')
   const [phases, setPhases] = useState<any[]>([])
+  
+  // temp
+  const [isEditingDescription, setIsEditingDescription] = useState<boolean>(false)
+
+  const programNameInputRef = useRef<TextInput>(null)
+  const descriptionInputRef = useRef<TextInput>(null)
 
   const pickImage = async() => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -81,6 +88,14 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const registerProgram = async() => {
+    if (phases.length === 0) {
+      navigation.navigate('ErrorModal', { 
+        title: 'No Phases Added', 
+        message: 'Please add at least one phase to this program.'
+      })
+      return
+    }
+
     let newThumbnailPath = thumbnail
 
     if (thumbnail !== 'program_thumbnail_placeholder' 
@@ -145,17 +160,17 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       `, [programId])
 
       tx.executeSql(`
-        DELETE FROM program_phases
-        WHERE program_id = ?;
-      `, [programId])
-
-      tx.executeSql(`
         DELETE FROM phases
         WHERE id IN (
           SELECT phase_id
           FROM program_phases
           WHERE program_id = ?
         );
+      `, [programId])
+
+      tx.executeSql(`
+        DELETE FROM program_phases
+        WHERE program_id = ?;
       `, [programId])
 
       tx.executeSql(`
@@ -176,17 +191,57 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const onBackPressed = () => {
-    navigation.navigate('DismissModal', {
-      onConfirm: () => {
-        if (thumbnail !== 'program_thumbnail_placeholder') {
-          clearImageCache().then(() => navigation.pop())
-          return
-        }
+    if (newProgram) {
+      navigation.navigate('DismissModal', {
+        onConfirm: () => {
+          if (thumbnail !== 'program_thumbnail_placeholder') {
+            clearImageCache().then(() => deleteProgram())
+            return
+          }
 
-        navigation.pop()
-      },
-    })
+          deleteProgram()
+        },
+      })
+    } else {
+      console.log(JSON.stringify(phases, null, 2))
+      if (phases.length === 0) {
+        navigation.navigate('ErrorModal', { 
+          title: 'No Phases Added', 
+          message: 'Please add at least one phase to this program or delete the program.'
+        })
+        return
+      } else {
+        navigation.navigate('DismissModal', {
+          onConfirm: () => {
+            if (thumbnail !== 'program_thumbnail_placeholder') {
+              clearImageCache().then(() => navigation.pop())
+              return
+            }
+
+            navigation.pop()
+          },
+        })
+      }
+    }
   }
+
+  const handleNamePress = () => {
+    setIsEditableProgramName(true)
+  }
+
+  const handleDescriptionPress = () => {
+    setIsEditableDescription(true)
+  }
+
+  useEffect(() => {
+    if (isEditableProgramName && programNameInputRef.current) {
+      programNameInputRef.current?.focus()
+    }
+
+    if (isEditableDescription && descriptionInputRef.current) {
+      descriptionInputRef.current?.focus()
+    }
+  }, [isEditableProgramName, isEditableDescription])
 
   useFocusEffect(
     useCallback(() => {
@@ -222,8 +277,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    const unsubscribeFocus = navigation.addListener('focus', fetchPhases)
-
     navigation.setOptions({
       headerLeft: (props) => (
         <HeaderBackButton
@@ -233,6 +286,10 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         />      
       )
     })
+  }, [phases])
+
+  useEffect(() => {
+    const unsubscribeFocus = navigation.addListener('focus', fetchPhases)
 
     setDirPath(FileSystem.documentDirectory + 'images/programs/')
     setCachePath(FileSystem.cacheDirectory + 'thumbnails/')
@@ -278,31 +335,29 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             end={{ x: 0.7, y: 1 }}
           />
           <View className="h-full w-full p-3 flex-col justify-between items-end">
-            {isEditingName ? 
-              <TextInput 
+            <View className='w-full flex-col justify-between'>
+              <View className='w-full mb-1 flex-row justify-between items-center'>
+                <View className='w-2/3 -mt-2'>
+                  <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Program Name:</Text>
+                </View>
+                <TouchableOpacity 
+                  className="w-1/3 h-8 flex-row items-start justify-end"
+                  onPress={handleNamePress}
+                >
+                  <Icon name="pencil" color="#F5F6F3" size={22} /> 
+                </TouchableOpacity>
+              </View>
+              <TextInput
+                ref={programNameInputRef}
                 onChangeText={setName}
-                onSubmitEditing={() => setIsEditingName(false)}
                 className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold"
                 autoCapitalize="words"
                 defaultValue={name}
-                autoFocus={true}
+                selectionColor="#F5F6F3"
+                editable={isEditableProgramName}
+                onSubmitEditing={() => setIsEditableProgramName(false)}
               />
-            : 
-              <TouchableOpacity
-                className="w-full"
-                onPress={() => setIsEditingName(true)}
-              >
-                <View className='w-full mb-1 flex-row justify-between items-center'>
-                  <View className='w-5/6 -mt-1'>
-                    <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Program Name:</Text>
-                  </View>
-                  <View className="w-1/6 h-full flex-row items-start justify-end">
-                    <Icon name="pencil" color="#F5F6F3" size={22} /> 
-                  </View>
-                </View>
-                <Text className="w-[90%] text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
-              </TouchableOpacity>
-            }
+            </View>
             <TouchableOpacity 
               onPress={pickImage}
             >
@@ -333,7 +388,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
               autoCapitalize="sentences"
               defaultValue={description}
               autoFocus={true}
-              multiline={true}
+              multiline
             />
           :
             <TouchableOpacity
@@ -374,48 +429,44 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             ))}
           </View>
         </ScrollView>
-        {(!isEditingName && !isEditingDescription) &&
-          <View className="h-16">
-            <TouchableOpacity className="
-              flex-1 border-2 border-custom-white rounded-2xl 
-              flex-row justify-center items-center"
-              onPress={() => navigation.navigate("SetPhaseNameModal", { programId: programId })}
-            >
-              <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Phase</Text>
-              <Icon name="plus" size={24} color="#F5F6F3" />
-            </TouchableOpacity>
-          </View>
-        }
-      </View>
-      {(!isEditingName && !isEditingDescription) &&
-        <BottomBarWrapper>
-          <TouchableOpacity 
-            className="w-[30%] rounded-2xl border-2 border-custom-red flex-row justify-center items-center"
-            onPress={() => {
-              navigation.navigate('ConfirmModal', {
-                text: 'Are you sure you want to delete this program?',
-                onConfirm: deleteProgram
-              })
-            }}
-            activeOpacity={1}
-          >
-            <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
-            <Icon name="delete-outline" size={20} color="#F4533E" />
-          </TouchableOpacity>
-          <View className="w-3" />
+        <View className="h-16">
           <TouchableOpacity className="
-            flex-1 border-2 border-custom-blue
-            flex-row items-center justify-center 
-            rounded-2xl"
-            onPress={registerProgram}
+            flex-1 border-2 border-custom-white rounded-2xl 
+            flex-row justify-center items-center"
+            onPress={() => navigation.navigate("SetPhaseNameModal", { programId: programId })}
           >
-            <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">
-              Confirm Program
-            </Text>
-            <Icon name="check" color="#5AABD6" size={22} /> 
+            <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Phase</Text>
+            <Icon name="plus" size={24} color="#F5F6F3" />
           </TouchableOpacity>
-        </BottomBarWrapper>
-      }
+        </View>
+      </View>
+      <BottomBarWrapper>
+        <TouchableOpacity 
+          className="w-[30%] rounded-2xl border-2 border-custom-red flex-row justify-center items-center"
+          onPress={() => {
+            navigation.navigate('ConfirmModal', {
+              text: 'Are you sure you want to delete this program?',
+              onConfirm: deleteProgram
+            })
+          }}
+          activeOpacity={1}
+        >
+          <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
+          <Icon name="delete-outline" size={20} color="#F4533E" />
+        </TouchableOpacity>
+        <View className="w-3" />
+        <TouchableOpacity className="
+          flex-1 border-2 border-custom-blue
+          flex-row items-center justify-center 
+          rounded-2xl"
+          onPress={registerProgram}
+        >
+          <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">
+            Confirm Program
+          </Text>
+          <Icon name="check" color="#5AABD6" size={22} /> 
+        </TouchableOpacity>
+      </BottomBarWrapper>
     </ScreenWrapper>
   )
 }

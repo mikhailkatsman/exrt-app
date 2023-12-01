@@ -26,9 +26,12 @@ const SetProgramNameModal: React.FC<Props> = ({ navigation }) => {
       'active'
     ],
     (_, result) => {
-      const programId = result.insertId 
+      const programId = result.insertId! 
 
-      navigation.replace('EditProgram', { programId: programId }
+      navigation.replace('EditProgram', { 
+        programId: programId, 
+        newProgram: true 
+      }
     )})
   }
 

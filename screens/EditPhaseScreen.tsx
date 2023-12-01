@@ -1,10 +1,12 @@
-import { Text, View, TouchableOpacity, TextInput } from "react-native"
+import { Text, View, TouchableOpacity, TextInput, BackHandler } from "react-native"
 import { Icon } from "@react-native-material/core"
 import BottomBarWrapper from "@components/common/BottomBarWrapper"
 import ScreenWrapper from "@components/common/ScreenWrapper"
+import { HeaderBackButton } from '@react-navigation/elements'
 import { type NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
+import { useFocusEffect } from "@react-navigation/native"
 import DB from "@modules/DB"
 import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flatlist"
 
@@ -23,11 +25,14 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   const phaseId: number = route.params.phaseId
   const phaseName: string = route.params.phaseName
   const phaseStatus: string = route.params.phaseStatus
+  const newPhase: boolean = route.params.newPhase
 
   const [listData, setListData] = useState<ListItem[]>([])
   const [status, setStatus] = useState<string>(phaseStatus)
   const [name, setName] = useState<string>(phaseName)
-  const [isEditingName, setIsEditingName] = useState<boolean>(false)
+  const [isEditablePhaseName, setIsEditablePhaseName] = useState<boolean>(false)
+
+  const phaseNameInputRef = useRef<TextInput>(null)
 
   const fetchSessions = () => {
     DB.sql(`
@@ -238,6 +243,15 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const registerPhase = () => {
+    const sessions = listData.filter(item => item.type === 'session')
+    if (sessions.length === 0) {
+      navigation.navigate('ErrorModal', { 
+        title: 'No Sessions Added', 
+        message: 'Please add at least one session to this phase.'
+      })
+      return
+    }
+
     DB.sql(`
       UPDATE phases 
       SET name = ?
@@ -246,8 +260,55 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     () => navigation.pop())
   }
 
+  const onBackPressed = () => {
+    if (newPhase) {
+      navigation.navigate('DismissModal', { onConfirm: deletePhase })
+    } else {
+      const sessions = listData.filter(item => item.type === 'session')
+      if (sessions.length === 0) {
+        navigation.navigate('ErrorModal', { 
+          title: 'No Sessions Added', 
+          message: 'Please add at least one session to this phase or delete phase.'
+        })
+        return
+      } else {
+        navigation.navigate('DismissModal', { onConfirm: () => navigation.pop() })
+      }
+    }
+  }
+
+  const handlePress = () => {
+    setIsEditablePhaseName(true)
+  }
+
+  useEffect(() => {
+    if (isEditablePhaseName && phaseNameInputRef.current) {
+      phaseNameInputRef.current?.focus()
+    }
+  }, [isEditablePhaseName])
+
+
+  useFocusEffect(
+    useCallback(() => {
+      BackHandler.addEventListener('hardwareBackPress', () => {
+        onBackPressed()
+        return true
+      })
+    }, [])
+  )
+
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchSessions)
+
+    navigation.setOptions({
+      headerLeft: (props) => (
+        <HeaderBackButton
+          {...props}
+          style={{ marginLeft: -4, marginRight: 30 }}
+          onPress={onBackPressed}
+        />      
+      )
+    })
 
     return () => {
       unsubscribeFocus()
@@ -258,37 +319,34 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     <ScreenWrapper>
       <View className="flex-1 px-3 mb-3">
         <View className="pt-3 pb-8 h-fit flex-col justify-between">
-          {isEditingName ? 
-            <TextInput 
-              onChangeText={setName}
-              onSubmitEditing={() => setIsEditingName(false)}
-              className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold"
-              autoCapitalize="words"
-              defaultValue={name}
-              autoFocus={true}
-            />
-          :
-            <TouchableOpacity
-              onPress={() => setIsEditingName(true)}
+          <View className='w-full mb-1 flex-row justify-between items-center'>
+            <View className='w-2/3 -mt-1'>
+              <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Phase Name:</Text>
+            </View>
+            <TouchableOpacity 
+              className="w-1/3 h-8 flex-row items-start justify-end"
+              onPress={handlePress}
             >
-              <View className='w-full mb-1 flex-row justify-between items-center'>
-                <View className='w-5/6 -mt-1'>
-                  <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Phase Name:</Text>
-                </View>
-                <View className="w-1/6 h-full flex-row items-start justify-end">
-                  <Icon name="pencil" color="#F5F6F3" size={22} /> 
-                </View>
-              </View>
-              <Text className="w-[90%] text-custom-white text-2xl font-BaiJamjuree-Bold">{name}</Text>
+              <Icon name="pencil" color="#F5F6F3" size={22} /> 
             </TouchableOpacity>
-          }
+          </View>
+          <TextInput
+            ref={phaseNameInputRef}
+            onChangeText={setName}
+            className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold"
+            autoCapitalize="words"
+            defaultValue={name}
+            selectionColor="#F5F6F3"
+            editable={isEditablePhaseName}
+            onSubmitEditing={() => setIsEditablePhaseName(false)}
+          />
         </View>
         <TouchableOpacity 
           className="mb-8 border-2 border-custom-white rounded-2xl h-16 flex-row justify-center items-center"
           onPress={changePhaseStatus}
           activeOpacity={0.6}
         >
-          <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Mark As Complete</Text>
+          <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Complete this Phase</Text>
           <Icon name="check" size={24} color="#F5F6F3" />
         </TouchableOpacity>
         <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Exercises:</Text>
