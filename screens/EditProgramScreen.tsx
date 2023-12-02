@@ -370,51 +370,59 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           fadingEdgeLength={100}
         >
           <View className=" w-full flex-row justify-between">
-            <Text className="flex-1 text-custom-white font-BaiJamjuree-MediumItalic">Description:</Text>
-            {!isEditingDescription &&
-              <TouchableOpacity
-                className="w-1/6 flex-row items-start justify-end"
-                onPress={() => setIsEditingDescription(true)}
-              >
-                <Icon name="pencil" color="#F5F6F3" size={22} /> 
-              </TouchableOpacity>
-            }
+            <View className='w-2/3 -mt-1'>
+              <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Description:</Text>
+            </View>
+            <TouchableOpacity 
+              className="w-1/3 h-8 flex-row items-start justify-end"
+              onPress={handleDescriptionPress}
+            >
+              <Icon name="pencil" color="#F5F6F3" size={22} /> 
+            </TouchableOpacity>
           </View>
-          {isEditingDescription ? 
-            <TextInput 
+            <TextInput
+              ref={descriptionInputRef}
               onChangeText={setDescription}
-              onSubmitEditing={() => setIsEditingDescription(false)}
-              className="w-full text-custom-white font-BaiJamjuree-Light"
-              autoCapitalize="sentences"
+              className="w-full text-custom-white font-BaiJamjuree-Regular"
+              style={{ 
+                textAlignVertical: 'top', 
+                height: expandText || isEditableDescription ? undefined : 80,
+                minHeight: expandText || isEditableDescription ? 80 : undefined
+              }}
               defaultValue={description}
-              autoFocus={true}
+              selectionColor="#F5F6F3"
+              editable={isEditableDescription}
               multiline
             />
-          :
-            <TouchableOpacity
-              activeOpacity={1}
-              className='mb-5'
-              onPress={() => setExpandText(prev => !prev)}
-            >
-              <Text className={`
-                mb-1 text-custom-white font-BaiJamjuree-Light
-                ${expandText ? 'h-min' : 'h-20'}
-              `}>
-                {description}
-              </Text>
-              {expandText ? (
-                <View className='flex-row justify-center items-center'>
-                  <Text className='mr-2 font-BaiJamjuree-BoldItalic text-custom-white text-xs'>Less</Text>
-                  <Icon name='chevron-up' size={22} color='#F5F6F3' />
-                </View>
-              ) : (
-                <View className='flex-row justify-center items-center'>
-                  <Text className='mr-2 font-BaiJamjuree-BoldItalic text-custom-white text-xs'>More</Text>
-                  <Icon name='chevron-down' size={22} color='#F5F6F3' />
-                </View>
-              )}
-            </TouchableOpacity>
-          }
+            {isEditableDescription ? 
+              <View className="h-16 my-3">
+                <TouchableOpacity className="
+                  flex-1 border-2 border-custom-white rounded-2xl 
+                  flex-row justify-center items-center"
+                  onPress={() => setIsEditableDescription(false)}
+                >
+                  <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Confirm Description</Text>
+                  <Icon name="plus" size={24} color="#F5F6F3" />
+                </TouchableOpacity>
+              </View>
+            :
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => setExpandText(prev => !prev)}
+              >
+                {expandText ?
+                  <View className='flex-row justify-center items-center my-3'>
+                    <Text className='mr-2 font-BaiJamjuree-BoldItalic text-custom-white text-xs'>Less</Text>
+                    <Icon name='chevron-up' size={22} color='#F5F6F3' />
+                  </View>
+                :
+                  <View className='flex-row justify-center items-center my-3'>
+                    <Text className='mr-2 font-BaiJamjuree-BoldItalic text-custom-white text-xs'>More</Text>
+                    <Icon name='chevron-down' size={22} color='#F5F6F3' />
+                  </View>
+                }
+              </TouchableOpacity>
+            }
           <View className="flex-1">
             <Text className="mb-3 text-custom-white font-BaiJamjuree-MediumItalic">
               {phases.length} {phases.length !== 1 ? 'Phases' : 'Phase'}:
