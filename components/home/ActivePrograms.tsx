@@ -20,7 +20,15 @@ const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth }) => {
 
 	return (
 		<View className='flex-1'>
-			<Text className="mb-3 mx-2 text-custom-white font-BaiJamjuree-BoldItalic">Your Active Programs</Text>
+			<View className='mb-3 mx-2 flex-row justify-between items-center'>
+				<Text className="text-custom-white font-BaiJamjuree-BoldItalic">Your Active Programs</Text>
+				<TouchableOpacity 
+					className='w-[20%] h-8 items-end'
+					onPress={() => navigation.navigate('SetProgramNameModal')}
+				>
+					<Icon name="plus" size={26} color="#F5F6F3" />
+				</TouchableOpacity>
+			</View>
 			<ScrollView 
 				className="flex-1 -mx-2"
 				horizontal={true}
@@ -32,7 +40,7 @@ const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth }) => {
 				contentContainerStyle={{ paddingHorizontal: 16 }}
 				fadingEdgeLength={100}
 				alwaysBounceVertical={false}
-        alwaysBounceHorizontal={false}
+			        alwaysBounceHorizontal={false}
 				overScrollMode="never"
 				bounces={false}
 			>
@@ -51,10 +59,10 @@ const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth }) => {
 				<TouchableOpacity
 					className="h-full overflow-hidden border-x-2 border-custom-white rounded-2xl flex justify-center items-center"
 					style={{ width: elementWidth, backgroundColor: 'rgba(80, 80, 80, 0.2)' }}
-					onPress={() => navigation.navigate('SetProgramNameModal')}
+					onPress={() => navigation.navigate('ProgramsList')}
 					activeOpacity={0.6}
 				>
-					<Text className='text-custom-white font-BaiJamjuree-Bold w-28 text-center mb-4'>Create Custom Program</Text>
+					<Text className='text-custom-white font-BaiJamjuree-Bold w-28 text-center mb-4'>Subscribe to New Program</Text>
 					<Icon name="plus" size={30} color="#F5F6F3" />
 				</TouchableOpacity>
 			</ScrollView>
