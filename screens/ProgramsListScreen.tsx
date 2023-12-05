@@ -10,24 +10,53 @@ import DropDown from "@components/common/Dropdown"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProgramsList'>
 
-const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
+const ProgramsListScreen: React.FC<Props> = () => {
   const [programsList, setProgramsList] = useState<any[]>([])
   const [searchString, setSearchString] = useState<string | null>(null)
   const [typeSort, setTypeSort] = useState<string | null>(null)
-  const [statusSort, setStatusSort] = useState<string | null>(null)
+  const [difficultySort, setDifficultySort] = useState<string | null>(null)
 
   const programTypeList: { label: string, value: string }[] = [
-
+    { label: 'FullBody', value: 'fullbody' },
+    { label: 'Skills', value: 'skills' },
+    { label: 'Mobility', value: 'mobility' },
   ]
-  const programStatusList: { label: string, value: string}[] = [
-
+  const programDifficultyList: { label: string, value: string}[] = [
+    { label: 'Beginner', value: 'beginner' },
+    { label: 'Intermediate', value: 'intermediate' },
+    { label: 'Expert', value: 'expert' },
   ]
 
-  const fetchPrograms = () => {
-    DB.sql(`
-      SELECT * FROM programs
-      GROUP BY name;
-    `, [], 
+  const fetchPrograms = (searchString: string | null, typeSort: string | null, difficultySort: string | null) => {
+    let sqlQuery = `SELECT * FROM programs`
+
+    let parameters = []
+
+    if (searchString) {
+      sqlQuery += ' WHERE name LIKE ?'
+      parameters.push(`%${searchString}%`)
+    }
+
+    if (typeSort) {
+      sqlQuery += searchString ? ' AND' : ' WHERE'
+      sqlQuery += ' type = ?'
+      parameters.push(typeSort)
+    }
+
+    if (difficultySort) {
+      sqlQuery += searchString || typeSort ? ' AND' : ' WHERE'
+      sqlQuery += ' difficulty = ?'
+      parameters.push(difficultySort)
+    }
+
+    sqlQuery += ' ORDER BY name;'
+
+    parameters = parameters.filter(param => param !== undefined || param !== null)
+
+
+    DB.sql(
+      sqlQuery,
+      parameters,
     (_, result) => {
       const programDetails = result.rows._array.map(item => ({
         id: item.id,
@@ -37,21 +66,23 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
         status: item.status,
       }))
 
+        console.log(JSON.stringify(programDetails, null, 2))
+
       setProgramsList(programDetails)
     })
   }
 
   useEffect(() => {
-    
-  }, [searchString, typeSort, statusSort])
+    fetchPrograms(searchString, typeSort, difficultySort)
+  }, [searchString, typeSort, difficultySort])
 
-  useEffect(() => {
-    const unsubscribeFocus = navigation.addListener('focus', fetchPrograms)
-
-    return () => {
-      unsubscribeFocus()
-    }
-  }, [])
+  // useEffect(() => {
+  //   const unsubscribeFocus = navigation.addListener('focus', () => fetchPrograms(searchString, typeSort, difficultySort))
+  //
+  //   return () => {
+  //     unsubscribeFocus()
+  //   }
+  // }, [searchString, typeSort, difficultySort])
 
   return (
     <ScreenWrapper>
@@ -76,10 +107,10 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
               reset={() => setTypeSort(null)}
             />
             <DropDown 
-              placeholder='Status' 
-              listItems={programStatusList} 
-              onIndexChange={(index: number) => setStatusSort(programStatusList[index].value)}
-              reset={() => setStatusSort(null)}
+              placeholder='Difficulty' 
+              listItems={programDifficultyList} 
+              onIndexChange={(index: number) => setDifficultySort(programDifficultyList[index].value)}
+              reset={() => setDifficultySort(null)}
             />
           </View>
           <ScrollView 

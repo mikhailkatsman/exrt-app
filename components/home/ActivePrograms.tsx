@@ -40,7 +40,7 @@ const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth }) => {
 				contentContainerStyle={{ paddingHorizontal: 16 }}
 				fadingEdgeLength={100}
 				alwaysBounceVertical={false}
-			        alwaysBounceHorizontal={false}
+			  alwaysBounceHorizontal={false}
 				overScrollMode="never"
 				bounces={false}
 			>

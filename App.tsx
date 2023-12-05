@@ -123,7 +123,7 @@ const App: React.FC = () => {
           loadFonts(),
         ])
 
-        await logAllData()
+        // await logAllData()
 
         await setResetDate()
 
@@ -191,22 +191,22 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='NewInstance'
                   component={NewInstanceScreen}
-                  options={{title: 'Add New Session Exercise'}}
+                  options={{title: 'Add exercise'}}
                 />
                 <Stack.Screen
                   name='EditSession'
                   component={EditSessionScreen}
-                  options={{title: 'Edit Session' }}
+                  options={{title: 'Session Details' }}
                 />
                 <Stack.Screen
                   name='EditProgram'
                   component={EditProgramScreen}
-                  options={{title: 'Edit Program'}}
+                  options={{title: 'Program Details'}}
                 />
                 <Stack.Screen
                   name='EditPhase'
                   component={EditPhaseScreen}
-                  options={{ title: 'Edit Phase' }}
+                  options={{ title: 'Phase Details' }}
                 />
               </Stack.Group>
               <Stack.Group 

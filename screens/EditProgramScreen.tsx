@@ -23,7 +23,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   const programId: number = route.params.programId
   const newProgram: boolean = route.params.newProgram
   
-  const [expandText, setExpandText] = useState<boolean>(false)
   const [dirPath, setDirPath] = useState<string>('')
   const [cachePath, setCachePath] = useState<string>('')
   const [name, setName] = useState<string>('My Custom Program 1')
@@ -35,9 +34,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   const [status, setStatus] = useState<string>('')
   const [phases, setPhases] = useState<any[]>([])
   
-  // temp
-  const [isEditingDescription, setIsEditingDescription] = useState<boolean>(false)
-
   const programNameInputRef = useRef<TextInput>(null)
   const descriptionInputRef = useRef<TextInput>(null)
 
@@ -338,7 +334,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             <View className='w-full flex-col justify-between'>
               <View className='w-full mb-1 flex-row justify-between items-center'>
                 <View className='w-2/3 -mt-2'>
-                  <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Program Name:</Text>
+                  <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Program Name:</Text>
                 </View>
                 <TouchableOpacity 
                   className="w-1/3 h-8 flex-row items-start justify-end"
@@ -366,35 +362,83 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           </View>
         </ImageBackground>
         <ScrollView 
-          className='mb-3 px-3'
-          fadingEdgeLength={100}
+          className='flex-1'
+          horizontal={true}
+          disableIntervalMomentum={true}
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={windowWidth}
+          decelerationRate='fast'
+          alwaysBounceVertical={false}
+          alwaysBounceHorizontal={false}
+          overScrollMode="never"
+          bounces={false}
         >
-          <View className=" w-full flex-row justify-between">
-            <View className='w-2/3 -mt-1'>
-              <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Description:</Text>
+          <ScrollView 
+            className='px-3'
+            style={{ width: windowWidth }}
+            fadingEdgeLength={100}
+          >
+            <View className="flex-row justify-between">
+              <View className='w-2/3 -mt-1'>
+                <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Type:</Text>
+              </View>
+              <TouchableOpacity 
+                className="w-1/3 h-8 flex-row items-start justify-end"
+                onPress={handleDescriptionPress}
+              >
+                <Icon name="pencil" color="#F5F6F3" size={22} /> 
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity 
-              className="w-1/3 h-8 flex-row items-start justify-end"
-              onPress={handleDescriptionPress}
-            >
-              <Icon name="pencil" color="#F5F6F3" size={22} /> 
-            </TouchableOpacity>
-          </View>
             <TextInput
               ref={descriptionInputRef}
               onChangeText={setDescription}
-              className="w-full text-custom-white font-BaiJamjuree-Regular"
-              style={{ 
-                textAlignVertical: 'top', 
-                height: expandText || isEditableDescription ? undefined : 80,
-                minHeight: expandText || isEditableDescription ? 80 : undefined
-              }}
+              className="flex-1 mb-16 text-custom-white font-BaiJamjuree-Regular"
               defaultValue={description}
               selectionColor="#F5F6F3"
               editable={isEditableDescription}
               multiline
             />
-            {isEditableDescription ? 
+            <View className="flex-row justify-between">
+              <View className='w-2/3 -mt-1'>
+                <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Difficulty:</Text>
+              </View>
+              <TouchableOpacity 
+                className="w-1/3 h-8 flex-row items-start justify-end"
+                onPress={handleDescriptionPress}
+              >
+                <Icon name="pencil" color="#F5F6F3" size={22} /> 
+              </TouchableOpacity>
+            </View>
+            <TextInput
+              ref={descriptionInputRef}
+              onChangeText={setDescription}
+              className="flex-1 mb-16 text-custom-white font-BaiJamjuree-Regular"
+              defaultValue={description}
+              selectionColor="#F5F6F3"
+              editable={isEditableDescription}
+              multiline
+            />
+            <View className="flex-row justify-between">
+              <View className='w-2/3 -mt-1'>
+                <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Description:</Text>
+              </View>
+              <TouchableOpacity 
+                className="w-1/3 h-8 flex-row items-start justify-end"
+                onPress={handleDescriptionPress}
+              >
+                <Icon name="pencil" color="#F5F6F3" size={22} /> 
+              </TouchableOpacity>
+            </View>
+            <TextInput
+              ref={descriptionInputRef}
+              onChangeText={setDescription}
+              className="flex-1 mb-16 text-custom-white font-BaiJamjuree-Regular"
+              defaultValue={description}
+              selectionColor="#F5F6F3"
+              editable={isEditableDescription}
+              multiline
+            />
+            {isEditableDescription && 
               <View className="h-16 my-3">
                 <TouchableOpacity className="
                   flex-1 border-2 border-custom-white rounded-2xl 
@@ -405,48 +449,40 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
                   <Icon name="plus" size={24} color="#F5F6F3" />
                 </TouchableOpacity>
               </View>
-            :
-              <TouchableOpacity
-                activeOpacity={1}
-                onPress={() => setExpandText(prev => !prev)}
-              >
-                {expandText ?
-                  <View className='flex-row justify-center items-center my-3'>
-                    <Text className='mr-2 font-BaiJamjuree-BoldItalic text-custom-white text-xs'>Less</Text>
-                    <Icon name='chevron-up' size={22} color='#F5F6F3' />
-                  </View>
-                :
-                  <View className='flex-row justify-center items-center my-3'>
-                    <Text className='mr-2 font-BaiJamjuree-BoldItalic text-custom-white text-xs'>More</Text>
-                    <Icon name='chevron-down' size={22} color='#F5F6F3' />
-                  </View>
-                }
-              </TouchableOpacity>
             }
-          <View className="flex-1">
-            <Text className="mb-3 text-custom-white font-BaiJamjuree-MediumItalic">
-              {phases.length} {phases.length !== 1 ? 'Phases' : 'Phase'}:
-            </Text>
-            {phases.map((item, index) => (
-              <PhaseCard
-                key={`card-${index}`}
-                id={item.phaseId}
-                name={item.phaseName}
-                status={item.phaseStatus}
-              />
-            ))}
+          </ScrollView>
+          <View
+            style={{ width: windowWidth }}
+          >
+            <ScrollView
+              className='px-3 w-full'
+              fadingEdgeLength={100}
+            >
+              <Text className="mb-5 text-custom-white font-BaiJamjuree-MediumItalic">
+                {phases.length} {phases.length !== 1 ? 'Phases' : 'Phase'}:
+              </Text>
+              {phases.map((item, index) => (
+                <PhaseCard
+                  key={`card-${index}`}
+                  id={item.phaseId}
+                  name={item.phaseName}
+                  status={item.phaseStatus}
+                />
+              ))}
+            </ScrollView>
+            <View className="h-16">
+              <TouchableOpacity className="
+                flex-1 border-2 border-custom-white rounded-2xl 
+                flex-row justify-center items-center"
+                onPress={() => navigation.navigate("SetPhaseNameModal", { programId: programId })}
+              >
+                <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Phase</Text>
+                <Icon name="plus" size={24} color="#F5F6F3" />
+              </TouchableOpacity>
+            </View>
+
           </View>
         </ScrollView>
-        <View className="h-16">
-          <TouchableOpacity className="
-            flex-1 border-2 border-custom-white rounded-2xl 
-            flex-row justify-center items-center"
-            onPress={() => navigation.navigate("SetPhaseNameModal", { programId: programId })}
-          >
-            <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Phase</Text>
-            <Icon name="plus" size={24} color="#F5F6F3" />
-          </TouchableOpacity>
-        </View>
       </View>
       <BottomBarWrapper>
         <TouchableOpacity 

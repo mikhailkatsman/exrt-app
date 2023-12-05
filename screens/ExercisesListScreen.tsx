@@ -78,7 +78,7 @@ const ExerciseListScreen: React.FC<Props> = () => {
     DB.sql(
       sqlQuery,
       parameters,
-      (_: any, result: any) => setExerciseList(result.rows._array)
+      (_, result) => setExerciseList(result.rows._array)
     ) 
   }, [searchString, muscleSort, typeSort])
   
