@@ -23,7 +23,6 @@ const Calendar: React.FC<Props> = ({
   const [activeWeekDays, setActiveWeekDays] = useState<any[]>([])
 
   const selectedDayAnim = useSharedValue(dayNow)
-
   const selectedDayStyle = useAnimatedStyle(() => {
     const x = selectedDayAnim.value * ((screenWidth - 16) / 7)
 

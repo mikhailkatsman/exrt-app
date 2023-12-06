@@ -1,5 +1,6 @@
 import { View, TouchableOpacity, Text, TextInput, Dimensions, ImageBackground, BackHandler } from 'react-native'
 import { useState, useEffect, useCallback, useRef } from "react"
+import Animated, { Easing, withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { useFocusEffect } from "@react-navigation/native"
 import { LinearGradient } from "expo-linear-gradient"
 import { Icon } from "@react-native-material/core"
@@ -26,6 +27,8 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   const [dirPath, setDirPath] = useState<string>('')
   const [cachePath, setCachePath] = useState<string>('')
   const [name, setName] = useState<string>('My Custom Program 1')
+  const [selectedTab, setSelectedTab] = useState<number>(0)
+  const [isTabPressed, setIsTabPressed] = useState<boolean>(false)
   const [description, setDescription] = useState<string>('No description provided.')
   const [isEditableProgramName, setIsEditableProgramName] = useState<boolean>(false)
   const [isEditableDescription, setIsEditableDescription] = useState<boolean>(false)
@@ -36,6 +39,36 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   
   const programNameInputRef = useRef<TextInput>(null)
   const descriptionInputRef = useRef<TextInput>(null)
+  const scrollRef = useRef<ScrollView>(null)
+
+  const selectedTabAnim = useSharedValue(0)
+  const selectedTabStyle = useAnimatedStyle(() => {
+    const x = selectedTabAnim.value * (windowWidth - 20) / 2
+
+    return { transform: [{ translateX: x }] }
+  })
+
+  const handleTabPress = (tabIndex: number) => {
+    setIsTabPressed(true)
+    selectedTabAnim.value = withTiming(tabIndex, { duration: 150, easing: Easing.out(Easing.exp) })
+    setSelectedTab(tabIndex)
+
+    scrollRef.current?.scrollTo({ x: tabIndex * windowWidth, animated: true })
+    setTimeout(() => {
+      setIsTabPressed(false)
+    }, 250)
+  }
+
+  const handleHorizontalScroll = (event: any) => {
+    if (isTabPressed) return
+
+    const scrollPosition = event.nativeEvent.contentOffset.x
+    const currentIndex = Math.round(scrollPosition / windowWidth)
+    
+    if (currentIndex !== selectedTab) {
+      handleTabPress(currentIndex)
+    }
+  }
 
   const pickImage = async() => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -332,7 +365,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           />
           <View className="h-full w-full p-3 flex-col justify-between items-end">
             <View className='w-full flex-col justify-between'>
-              <View className='w-full mb-1 flex-row justify-between items-center'>
+              <View className='w-full flex-row justify-between items-center'>
                 <View className='w-2/3 -mt-2'>
                   <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Program Name:</Text>
                 </View>
@@ -361,12 +394,37 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         </ImageBackground>
+        <View className='h-12 px-3 w-full mb-8 flex-row justify-between'>
+          <Animated.View style={selectedTabStyle}>
+            <View className='absolute h-full border-2 rounded-2xl border-custom-white' style={{ width: (windowWidth - 20) / 2 }} />
+          </Animated.View>
+          <TouchableOpacity 
+            className='h-full pt-1 w-1/2 justify-center items-center' 
+            onPress={() => handleTabPress(0)}
+            activeOpacity={1}
+          >
+            <Text className="text-custom-white text-lg font-BaiJamjuree-Bold">
+              Info
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            className='h-full pt-1 w-1/2 justify-center items-center' 
+            onPress={() => handleTabPress(1)}
+            activeOpacity={1}
+          >
+            <Text className="text-custom-white text-lg font-BaiJamjuree-Bold">
+              Phases
+            </Text>
+          </TouchableOpacity>
+        </View>
         <ScrollView 
+          ref={scrollRef}
           className='flex-1'
           horizontal={true}
           disableIntervalMomentum={true}
           showsHorizontalScrollIndicator={false}
           snapToInterval={windowWidth}
+          onScroll={handleHorizontalScroll}
           decelerationRate='fast'
           alwaysBounceVertical={false}
           alwaysBounceHorizontal={false}
@@ -392,7 +450,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             <TextInput
               ref={descriptionInputRef}
               onChangeText={setDescription}
-              className="flex-1 mb-16 text-custom-white font-BaiJamjuree-Regular"
+              className="flex-1 mb-8 text-custom-white font-BaiJamjuree-Regular"
               defaultValue={description}
               selectionColor="#F5F6F3"
               editable={isEditableDescription}
@@ -412,7 +470,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             <TextInput
               ref={descriptionInputRef}
               onChangeText={setDescription}
-              className="flex-1 mb-16 text-custom-white font-BaiJamjuree-Regular"
+              className="flex-1 mb-8 text-custom-white font-BaiJamjuree-Regular"
               defaultValue={description}
               selectionColor="#F5F6F3"
               editable={isEditableDescription}
@@ -458,9 +516,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
               className='px-3 w-full'
               fadingEdgeLength={100}
             >
-              <Text className="mb-5 text-custom-white font-BaiJamjuree-MediumItalic">
-                {phases.length} {phases.length !== 1 ? 'Phases' : 'Phase'}:
-              </Text>
               {phases.map((item, index) => (
                 <PhaseCard
                   key={`card-${index}`}
