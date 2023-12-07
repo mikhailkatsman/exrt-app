@@ -24,6 +24,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   const programId: number = route.params.programId
   const newProgram: boolean = route.params.newProgram
   
+  const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [dirPath, setDirPath] = useState<string>('')
   const [cachePath, setCachePath] = useState<string>('')
   const [name, setName] = useState<string>('My Custom Program 1')
@@ -33,7 +34,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false)
   const [isEditableProgramName, setIsEditableProgramName] = useState<boolean>(false)
   const [isEditableDescription, setIsEditableDescription] = useState<boolean>(false)
-  const [thumbnail, setThumbnail] = useState<string>("program_thumbnail_placeholder")
+  const [thumbnail, setThumbnail] = useState<string>('program_thumbnail_placeholder')
   const [difficulty, setDifficulty] = useState<number>(1)
   const [type, setType] = useState<string>('')
   const [ogThumbnailPath, setOgThumbnailPath]= useState<string>(thumbnail)
@@ -365,12 +366,17 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       setType(item.type)
       setStatus(item.status)
       setCustom(() => item.custom === 1 ? true : false)
+      setIsLoaded(true)
     })
+
+    if (newProgram) setIsEditable(true)
 
     return () => {
       unsubscribeFocus()
     }
   }, [])
+
+  if (!isLoaded) return <View className='flex-1 bg-custom-dark'/>
 
   return (
     <ScreenWrapper>
@@ -467,6 +473,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             className='px-3'
             style={{ width: windowWidth }}
             fadingEdgeLength={100}
+            showsVerticalScrollIndicator={false}
           >
             <View className="flex-row justify-between">
               <View className='w-2/3 -mt-1'>
@@ -489,7 +496,9 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
                 ? 'specific skill training'
                 : type === 'mobility'
                 ? 'mobility & flexibility training'
-                : 'endurance training'
+                : type === 'endurance'
+                ? 'endurance training'
+                : 'Unspecified'
               }
             </Text>
             <View className="flex-row justify-between">
@@ -510,7 +519,9 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
                 ? <Text className="flex-1 mb-8 text-custom-blue text-lg font-BaiJamjuree-Bold">Beginner</Text>
                 : difficulty === 2
                 ? <Text className="flex-1 mb-8 text-custom-yellow text-lg font-BaiJamjuree-Bold">Intermediate</Text>
-                : <Text className="flex-1 mb-8 text-custom-red text-lg font-BaiJamjuree-Bold">Expert</Text>
+                : difficulty === 3
+                ? <Text className="flex-1 mb-8 text-custom-red text-lg font-BaiJamjuree-Bold">Expert</Text>
+                : <Text className="flex-1 mb-8 text-custom-red text-lg font-BaiJamjuree-Bold">Unspecified</Text>
               }
             <View className="flex-row justify-between">
               <View className='w-2/3 -mt-1'>
@@ -553,7 +564,9 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           >
             <ScrollView
               className='px-3 w-full'
+              style={{ width: windowWidth }}
               fadingEdgeLength={100}
+              showsVerticalScrollIndicator={false}
             >
               {phases.map((item, index) => (
                 <PhaseCard

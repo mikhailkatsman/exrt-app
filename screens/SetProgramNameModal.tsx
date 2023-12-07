@@ -17,13 +17,16 @@ const SetProgramNameModal: React.FC<Props> = ({ navigation }) => {
   
   const createProgram = () => {
     DB.sql(`
-      INSERT INTO programs (name, description, thumbnail, status)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO programs (name, description, thumbnail, difficulty, type, status, custom)
+      VALUES (?, ?, ?, ?, ?, ?, ?);
     `, [
       name, 
       'My custom program description.',
       'program_thumbnail_placeholder', 
-      'active'
+      0,
+      'unspecified',
+      'active',
+      1
     ],
     (_, result) => {
       const programId = result.insertId! 

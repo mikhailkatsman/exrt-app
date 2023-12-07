@@ -28,13 +28,15 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   const newPhase: boolean = route.params.newPhase
 
   const [listData, setListData] = useState<ListItem[]>([])
-  const [status, setStatus] = useState<string>(phaseStatus)
   const [name, setName] = useState<string>(phaseName)
+  const [status, setStatus] = useState<string>(phaseStatus)
+  const [custom, setCustom] = useState<boolean>(false)
+  const [isEditable, setIsEditable] = useState<boolean>(false)
   const [isEditablePhaseName, setIsEditablePhaseName] = useState<boolean>(false)
 
   const phaseNameInputRef = useRef<TextInput>(null)
 
-  const fetchSessions = () => {
+  const fetchPhaseData = () => {
     DB.sql(`
       SELECT s.name AS sessionName,
              sei.session_id AS sessionId, 
@@ -84,6 +86,13 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
       }
 
       setListData(dataArray)
+
+      DB.sql(`
+        SELECT custom AS custom
+        FROM phases
+        WHERE id = ?;
+      `, [phaseId],
+      (_, result) => setCustom(() => result.rows.item(0).custom === 1 ? true : false))
     })
   }
 
@@ -298,7 +307,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   )
 
   useEffect(() => {
-    const unsubscribeFocus = navigation.addListener('focus', fetchSessions)
+    const unsubscribeFocus = navigation.addListener('focus', fetchPhaseData)
 
     navigation.setOptions({
       headerLeft: (props) => (
@@ -307,6 +316,20 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
           style={{ marginLeft: -4, marginRight: 30 }}
           onPress={onBackPressed}
         />      
+      ),
+      headerRight: () => (
+        custom ?
+          <TouchableOpacity 
+            className="flex-row items-start justify-end"
+            onPress={() => setIsEditable(prev => !prev)}
+          >
+            {isEditable ?
+              <Icon name="pencil-remove" color="#F5F6F3" size={22} /> 
+            : 
+              <Icon name="pencil" color="#F5F6F3" size={22} /> 
+            }
+          </TouchableOpacity>
+        : null
       )
     })
 
@@ -323,12 +346,14 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
             <View className='w-2/3 -mt-1'>
               <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Phase Name:</Text>
             </View>
-            <TouchableOpacity 
-              className="w-1/3 h-8 flex-row items-start justify-end"
-              onPress={handlePress}
-            >
-              <Icon name="pencil" color="#F5F6F3" size={22} /> 
-            </TouchableOpacity>
+            {isEditable &&
+              <TouchableOpacity 
+                className="w-1/3 h-8 flex-row items-start justify-end"
+                onPress={handlePress}
+              >
+                <Icon name="pencil" color="#F5F6F3" size={22} /> 
+              </TouchableOpacity>
+            }
           </View>
           <TextInput
             ref={phaseNameInputRef}
@@ -374,45 +399,49 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
           />
         </View>
       </View>
-      <View className="h-16 mb-3">
-        <TouchableOpacity className="
-          flex-1 border-2 border-custom-white rounded-2xl 
-          flex-row justify-center items-center"
-          onPress={() => navigation.navigate('SelectDayModal', { phaseId: phaseId })}
-          activeOpacity={0.6}
-        >
-          <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Session</Text>
-          <Icon name="plus" size={24} color="#F5F6F3" />
-        </TouchableOpacity>
-      </View>
-      <BottomBarWrapper>
-        <TouchableOpacity 
-          className="w-[30%] rounded-2xl border-2 border-custom-red flex-row justify-center items-center"
-          onPress={() => {
-            navigation.navigate('ConfirmModal', {
-              text: 'Are you sure you want to delete this phase?',
-              onConfirm: deletePhase
-            })
-          }}
-          activeOpacity={0.6}
-        >
-          <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
-          <Icon name="delete-outline" size={20} color="#F4533E" />
-        </TouchableOpacity>
-        <View className="w-3" />
-        <TouchableOpacity className="
-          flex-1 border-2 border-custom-blue
-          flex-row items-center justify-center 
-          rounded-2xl"
-          onPress={registerPhase}
-          activeOpacity={0.6}
-        >
-          <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">
-            Confirm Phase
-          </Text>
-          <Icon name="check" color="#5AABD6" size={22} /> 
-        </TouchableOpacity>
-      </BottomBarWrapper>
+      {isEditable &&
+        <View className="h-16 mb-3">
+          <TouchableOpacity className="
+            flex-1 border-2 border-custom-white rounded-2xl 
+            flex-row justify-center items-center"
+            onPress={() => navigation.navigate('SelectDayModal', { phaseId: phaseId })}
+            activeOpacity={0.6}
+          >
+            <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Session</Text>
+            <Icon name="plus" size={24} color="#F5F6F3" />
+          </TouchableOpacity>
+        </View>
+      }
+      {isEditable &&
+        <BottomBarWrapper>
+          <TouchableOpacity 
+            className="w-[30%] rounded-2xl border-2 border-custom-red flex-row justify-center items-center"
+            onPress={() => {
+              navigation.navigate('ConfirmModal', {
+                text: 'Are you sure you want to delete this phase?',
+                onConfirm: deletePhase
+              })
+            }}
+            activeOpacity={0.6}
+          >
+            <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
+            <Icon name="delete-outline" size={20} color="#F4533E" />
+          </TouchableOpacity>
+          <View className="w-3" />
+          <TouchableOpacity className="
+            flex-1 border-2 border-custom-blue
+            flex-row items-center justify-center 
+            rounded-2xl"
+            onPress={registerPhase}
+            activeOpacity={0.6}
+          >
+            <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">
+              Confirm Phase
+            </Text>
+            <Icon name="check" color="#5AABD6" size={22} /> 
+          </TouchableOpacity>
+        </BottomBarWrapper>
+      }
     </ScreenWrapper>
   )
 }

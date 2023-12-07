@@ -33,7 +33,7 @@ const ProgramCard: React.FC<Props> = ({
     >
       <ImageBackground
         className="flex-1 flex-col justify-between"
-        resizeMode="center"
+        resizeMode="contain"
         source={
           programThumbnails[thumbnail as keyof typeof programThumbnails] || 
           {uri: thumbnail}
