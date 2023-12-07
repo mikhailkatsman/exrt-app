@@ -155,6 +155,7 @@ const App: React.FC = () => {
                   headerStyle: {
                     backgroundColor: 'transparent',
                   },
+                  headerShadowVisible: false,
                   headerTitleStyle: {
                     color: '#F5F6F3',
                     fontFamily: 'BaiJamjuree-Bold',

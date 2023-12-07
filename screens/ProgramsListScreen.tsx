@@ -66,8 +66,6 @@ const ProgramsListScreen: React.FC<Props> = () => {
         status: item.status,
       }))
 
-        console.log(JSON.stringify(programDetails, null, 2))
-
       setProgramsList(programDetails)
     })
   }

@@ -30,11 +30,15 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   const [selectedTab, setSelectedTab] = useState<number>(0)
   const [isTabPressed, setIsTabPressed] = useState<boolean>(false)
   const [description, setDescription] = useState<string>('No description provided.')
+  const [isEditable, setIsEditable] = useState<boolean>(false)
   const [isEditableProgramName, setIsEditableProgramName] = useState<boolean>(false)
   const [isEditableDescription, setIsEditableDescription] = useState<boolean>(false)
   const [thumbnail, setThumbnail] = useState<string>("program_thumbnail_placeholder")
+  const [difficulty, setDifficulty] = useState<number>(1)
+  const [type, setType] = useState<string>('')
   const [ogThumbnailPath, setOgThumbnailPath]= useState<string>(thumbnail)
   const [status, setStatus] = useState<string>('')
+  const [custom, setCustom] = useState<boolean>(false)
   const [phases, setPhases] = useState<any[]>([])
   
   const programNameInputRef = useRef<TextInput>(null)
@@ -220,37 +224,40 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const onBackPressed = () => {
-    if (newProgram) {
-      navigation.navigate('DismissModal', {
-        onConfirm: () => {
-          if (thumbnail !== 'program_thumbnail_placeholder') {
-            clearImageCache().then(() => deleteProgram())
-            return
-          }
-
-          deleteProgram()
-        },
-      })
-    } else {
-      console.log(JSON.stringify(phases, null, 2))
-      if (phases.length === 0) {
-        navigation.navigate('ErrorModal', { 
-          title: 'No Phases Added', 
-          message: 'Please add at least one phase to this program or delete the program.'
-        })
-        return
-      } else {
+    if (custom) {
+      if (newProgram) {
         navigation.navigate('DismissModal', {
           onConfirm: () => {
             if (thumbnail !== 'program_thumbnail_placeholder') {
-              clearImageCache().then(() => navigation.pop())
+              clearImageCache().then(() => deleteProgram())
               return
             }
 
-            navigation.pop()
+            deleteProgram()
           },
         })
+      } else {
+        if (phases.length === 0) {
+          navigation.navigate('ErrorModal', { 
+            title: 'No Phases Added', 
+            message: 'Please add at least one phase to this program or delete the program.'
+          })
+          return
+        } else {
+          navigation.navigate('DismissModal', {
+            onConfirm: () => {
+              if (thumbnail !== 'program_thumbnail_placeholder') {
+                clearImageCache().then(() => navigation.pop())
+                return
+              }
+
+              navigation.pop()
+            },
+          })
+        }
       }
+    } else {
+      navigation.pop()
     }
   }
 
@@ -313,9 +320,23 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           style={{ marginLeft: -4, marginRight: 30 }}
           onPress={onBackPressed}
         />      
+      ),
+      headerRight: () => (
+        custom ?
+          <TouchableOpacity 
+            className="flex-row items-start justify-end"
+            onPress={() => setIsEditable(prev => !prev)}
+          >
+            {isEditable ?
+              <Icon name="pencil-remove" color="#F5F6F3" size={22} /> 
+            : 
+              <Icon name="pencil" color="#F5F6F3" size={22} /> 
+            }
+          </TouchableOpacity>
+        : null
       )
     })
-  }, [phases])
+  }, [phases, custom, isEditable])
 
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchPhases)
@@ -327,7 +348,10 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       SELECT name AS name,
              description AS description,
              thumbnail AS thumbnail,
-             status AS status
+             difficulty AS difficulty,
+             type AS type,
+             status AS status,
+             custom AS custom
       FROM programs
       WHERE id = ?;
     `, [programId], 
@@ -337,7 +361,10 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       setDescription(item.description)
       setThumbnail(item.thumbnail)
       setOgThumbnailPath(item.thumbnail)
+      setDifficulty(item.difficulty)
+      setType(item.type)
       setStatus(item.status)
+      setCustom(() => item.custom === 1 ? true : false)
     })
 
     return () => {
@@ -351,7 +378,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         <ImageBackground
           className="w-full mb-5 rounded-2xl overflow-hidden"
           style={{ height: (windowWidth * 9) / 16 }}
-          resizeMode="center" 
+          resizeMode="cover" 
           source={
             programThumbnails[thumbnail as keyof typeof programThumbnails] || 
             {uri: thumbnail}
@@ -369,17 +396,20 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
                 <View className='w-2/3 -mt-2'>
                   <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Program Name:</Text>
                 </View>
-                <TouchableOpacity 
-                  className="w-1/3 h-8 flex-row items-start justify-end"
-                  onPress={handleNamePress}
-                >
-                  <Icon name="pencil" color="#F5F6F3" size={22} /> 
-                </TouchableOpacity>
+                {isEditable ?
+                  <TouchableOpacity 
+                    className="w-1/3 h-8 flex-row items-start justify-end"
+                    onPress={handleNamePress}
+                  >
+                    <Icon name="pencil" color="#F5F6F3" size={22} /> 
+                  </TouchableOpacity>
+                : <View className='w-1/3 h-8' />
+                }
               </View>
               <TextInput
                 ref={programNameInputRef}
                 onChangeText={setName}
-                className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold"
+                className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold capitalize"
                 autoCapitalize="words"
                 defaultValue={name}
                 selectionColor="#F5F6F3"
@@ -387,11 +417,13 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
                 onSubmitEditing={() => setIsEditableProgramName(false)}
               />
             </View>
-            <TouchableOpacity 
-              onPress={pickImage}
-            >
-              <Icon name="image-edit" color="#F5F6F3" size={28} /> 
-            </TouchableOpacity>
+            {isEditable &&
+              <TouchableOpacity 
+                onPress={pickImage}
+              >
+                <Icon name="image-edit" color="#F5F6F3" size={28} /> 
+              </TouchableOpacity>
+            }
           </View>
         </ImageBackground>
         <View className='h-12 px-3 w-full mb-8 flex-row justify-between'>
@@ -440,52 +472,59 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
               <View className='w-2/3 -mt-1'>
                 <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Type:</Text>
               </View>
-              <TouchableOpacity 
-                className="w-1/3 h-8 flex-row items-start justify-end"
-                onPress={handleDescriptionPress}
-              >
-                <Icon name="pencil" color="#F5F6F3" size={22} /> 
-              </TouchableOpacity>
+              {isEditable ?
+                <TouchableOpacity 
+                  className="w-1/3 h-8 flex-row items-start justify-end"
+                  onPress={handleDescriptionPress}
+                >
+                  <Icon name="pencil" color="#F5F6F3" size={22} /> 
+                </TouchableOpacity>
+              : <View className='w-1/3 h-8' />
+              }
             </View>
-            <TextInput
-              ref={descriptionInputRef}
-              onChangeText={setDescription}
-              className="flex-1 mb-8 text-custom-white font-BaiJamjuree-Regular"
-              defaultValue={description}
-              selectionColor="#F5F6F3"
-              editable={isEditableDescription}
-              multiline
-            />
+            <Text className="flex-1 mb-8 text-custom-white text-lg font-BaiJamjuree-Bold capitalize">
+              {type === 'fullbody'
+                ? 'full-body hypertrophy training'
+                : type === 'skills'
+                ? 'specific skill training'
+                : type === 'mobility'
+                ? 'mobility & flexibility training'
+                : 'endurance training'
+              }
+            </Text>
             <View className="flex-row justify-between">
               <View className='w-2/3 -mt-1'>
                 <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Difficulty:</Text>
               </View>
-              <TouchableOpacity 
-                className="w-1/3 h-8 flex-row items-start justify-end"
-                onPress={handleDescriptionPress}
-              >
-                <Icon name="pencil" color="#F5F6F3" size={22} /> 
-              </TouchableOpacity>
+              {isEditable ?
+                <TouchableOpacity 
+                  className="w-1/3 h-8 flex-row items-start justify-end"
+                  onPress={handleDescriptionPress}
+                >
+                  <Icon name="pencil" color="#F5F6F3" size={22} /> 
+                </TouchableOpacity>
+              : <View className='w-1/3 h-8' />
+              }
             </View>
-            <TextInput
-              ref={descriptionInputRef}
-              onChangeText={setDescription}
-              className="flex-1 mb-8 text-custom-white font-BaiJamjuree-Regular"
-              defaultValue={description}
-              selectionColor="#F5F6F3"
-              editable={isEditableDescription}
-              multiline
-            />
+              {difficulty === 1
+                ? <Text className="flex-1 mb-8 text-custom-blue text-lg font-BaiJamjuree-Bold">Beginner</Text>
+                : difficulty === 2
+                ? <Text className="flex-1 mb-8 text-custom-yellow text-lg font-BaiJamjuree-Bold">Intermediate</Text>
+                : <Text className="flex-1 mb-8 text-custom-red text-lg font-BaiJamjuree-Bold">Expert</Text>
+              }
             <View className="flex-row justify-between">
               <View className='w-2/3 -mt-1'>
                 <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Description:</Text>
               </View>
-              <TouchableOpacity 
-                className="w-1/3 h-8 flex-row items-start justify-end"
-                onPress={handleDescriptionPress}
-              >
-                <Icon name="pencil" color="#F5F6F3" size={22} /> 
-              </TouchableOpacity>
+              {isEditable ?
+                <TouchableOpacity 
+                  className="w-1/3 h-8 flex-row items-start justify-end"
+                  onPress={handleDescriptionPress}
+                >
+                  <Icon name="pencil" color="#F5F6F3" size={22} /> 
+                </TouchableOpacity>
+              : <View className='w-1/3 h-8' />
+              }
             </View>
             <TextInput
               ref={descriptionInputRef}
@@ -525,47 +564,50 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
                 />
               ))}
             </ScrollView>
-            <View className="h-16">
-              <TouchableOpacity className="
-                flex-1 border-2 border-custom-white rounded-2xl 
-                flex-row justify-center items-center"
-                onPress={() => navigation.navigate("SetPhaseNameModal", { programId: programId })}
-              >
-                <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Phase</Text>
-                <Icon name="plus" size={24} color="#F5F6F3" />
-              </TouchableOpacity>
-            </View>
-
+            {isEditable &&
+              <View className="h-16">
+                <TouchableOpacity className="
+                  flex-1 border-2 border-custom-white rounded-2xl 
+                  flex-row justify-center items-center"
+                  onPress={() => navigation.navigate("SetPhaseNameModal", { programId: programId })}
+                >
+                  <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Add New Phase</Text>
+                  <Icon name="plus" size={24} color="#F5F6F3" />
+                </TouchableOpacity>
+              </View>
+            }
           </View>
         </ScrollView>
       </View>
-      <BottomBarWrapper>
-        <TouchableOpacity 
-          className="w-[30%] rounded-2xl border-2 border-custom-red flex-row justify-center items-center"
-          onPress={() => {
-            navigation.navigate('ConfirmModal', {
-              text: 'Are you sure you want to delete this program?',
-              onConfirm: deleteProgram
-            })
-          }}
-          activeOpacity={1}
-        >
-          <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
-          <Icon name="delete-outline" size={20} color="#F4533E" />
-        </TouchableOpacity>
-        <View className="w-3" />
-        <TouchableOpacity className="
-          flex-1 border-2 border-custom-blue
-          flex-row items-center justify-center 
-          rounded-2xl"
-          onPress={registerProgram}
-        >
-          <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">
-            Confirm Program
-          </Text>
-          <Icon name="check" color="#5AABD6" size={22} /> 
-        </TouchableOpacity>
-      </BottomBarWrapper>
+      {isEditable &&
+        <BottomBarWrapper>
+          <TouchableOpacity 
+            className="w-[30%] rounded-2xl border-2 border-custom-red flex-row justify-center items-center"
+            onPress={() => {
+              navigation.navigate('ConfirmModal', {
+                text: 'Are you sure you want to delete this program?',
+                onConfirm: deleteProgram
+              })
+            }}
+            activeOpacity={1}
+          >
+            <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
+            <Icon name="delete-outline" size={20} color="#F4533E" />
+          </TouchableOpacity>
+          <View className="w-3" />
+          <TouchableOpacity className="
+            flex-1 border-2 border-custom-blue
+            flex-row items-center justify-center 
+            rounded-2xl"
+            onPress={registerProgram}
+          >
+            <Text className="text text-custom-blue mr-2 font-BaiJamjuree-Bold">
+              Confirm Program
+            </Text>
+            <Icon name="check" color="#5AABD6" size={22} /> 
+          </TouchableOpacity>
+        </BottomBarWrapper>
+      }
     </ScreenWrapper>
   )
 }

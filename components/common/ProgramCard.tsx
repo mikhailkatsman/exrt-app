@@ -46,7 +46,7 @@ const ProgramCard: React.FC<Props> = ({
           end={{ x: 0.7, y: 1 }}
         />
         <View className="h-[60%] p-3">
-          <Text className="text-custom-white text-xl font-BaiJamjuree-Bold">
+          <Text className="text-custom-white text-xl font-BaiJamjuree-Bold capitalize">
             {name}
           </Text>
         </View>

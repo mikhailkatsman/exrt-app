@@ -21,9 +21,10 @@ const PhaseCard: React.FC<Props> = ({ id, name, status }) => {
   }
 
   return (
-    <TouchableOpacity className="w-full h-20 p-3 mb-5 
+    <TouchableOpacity className={`w-full h-24 px-3 mb-8 
       flex-row justify-between items-center
-      rounded-2xl border-x-2 border-custom-white"
+      rounded-2xl border-x-2 
+      ${status === 'completed' ? 'border-custom-grey' : 'border-custom-white'}`}
       onPress={() => {
         navigation.navigate('EditPhase', { 
           phaseId: id, 
@@ -34,10 +35,17 @@ const PhaseCard: React.FC<Props> = ({ id, name, status }) => {
       }}
       activeOpacity={0.6}
     >
-      <Text className="w-[60%] text-custom-white text-lg font-BaiJamjuree-Bold">{name}</Text>
+      <Text 
+        className={`w-[60%] pr-3 text-lg font-BaiJamjuree-Bold 
+          ${status === 'completed' ? 'text-custom-grey' : 'text-custom-white'}
+        `} 
+        style={{ lineHeight: 22 }}
+      >
+        {name}
+      </Text>
       <View className="w-[40%] flex-row justify-end items-center">
         {renderStatus()}
-        <Icon name="chevron-right" color="#F5F6F3" size={32} /> 
+        <Icon name="chevron-right" color={status === 'completed' ? "#505050" : "#F5F6F3"} size={32} /> 
       </View>
     </TouchableOpacity>
   )
