@@ -25,12 +25,13 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   const phaseId: number = route.params.phaseId
   const phaseName: string = route.params.phaseName
   const phaseStatus: string = route.params.phaseStatus
+  const phaseCustom: number = route.params.phaseCustom
   const newPhase: boolean = route.params.newPhase
 
   const [listData, setListData] = useState<ListItem[]>([])
   const [name, setName] = useState<string>(phaseName)
   const [status, setStatus] = useState<string>(phaseStatus)
-  const [custom, setCustom] = useState<boolean>(false)
+  const [custom, setCustom] = useState<boolean>(() => phaseCustom === 1 ? true : false)
   const [isEditable, setIsEditable] = useState<boolean>(false)
   const [isEditablePhaseName, setIsEditablePhaseName] = useState<boolean>(false)
 
@@ -86,13 +87,6 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
       }
 
       setListData(dataArray)
-
-      DB.sql(`
-        SELECT custom AS custom
-        FROM phases
-        WHERE id = ?;
-      `, [phaseId],
-      (_, result) => setCustom(() => result.rows.item(0).custom === 1 ? true : false))
     })
   }
 
@@ -228,6 +222,26 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
+  const listHeader = () => {
+    return (
+      <View className="flex-row items-center">
+        <View 
+          className="mr-3 w-3 h-3 rounded border-2"
+          style={{
+            backgroundColor: listData[0]?.type === 'session' ? '#5AABD6' : 'transparent',
+            borderColor: listData[0]?.type === 'session' ? '#5AABD6' : '#505050',
+          }}
+        />
+        <Text 
+          className="mt-1 font-BaiJamjuree-Regular text-lg"
+          style={{ color: listData[0]?.type === 'session' ? '#5AABD6' : '#505050' }}
+        >
+          Monday
+        </Text>
+      </View>
+    )
+  }
+
   const updateSessionDay = (data: any, from: number, to: number) => {
     if (from === to) return
 
@@ -336,7 +350,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     return () => {
       unsubscribeFocus()
     }
-  }, [])
+  }, [custom, isEditable])
 
   return (
     <ScreenWrapper>
@@ -346,13 +360,14 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
             <View className='w-2/3 -mt-1'>
               <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Phase Name:</Text>
             </View>
-            {isEditable &&
+            {isEditable ?
               <TouchableOpacity 
                 className="w-1/3 h-8 flex-row items-start justify-end"
                 onPress={handlePress}
               >
                 <Icon name="pencil" color="#F5F6F3" size={22} /> 
               </TouchableOpacity>
+            : <View className='w-1/3 h-8' />
             }
           </View>
           <TextInput
@@ -375,27 +390,14 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
           <Icon name="check" size={24} color="#F5F6F3" />
         </TouchableOpacity>
         <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Exercises:</Text>
-        <View className="flex-1 mb-7">
-          <View className="flex-row items-center">
-            <View 
-              className="mr-3 w-3 h-3 rounded border-2"
-              style={{
-                backgroundColor: listData[0]?.type === 'session' ? '#5AABD6' : 'transparent',
-                borderColor: listData[0]?.type === 'session' ? '#5AABD6' : '#505050',
-              }}
-            />
-            <Text 
-              className="mt-1 font-BaiJamjuree-Regular text-lg"
-              style={{ color: listData[0]?.type === 'session' ? '#5AABD6' : '#505050' }}
-            >
-              Monday
-            </Text>
-          </View>
+        <View className="flex-1">
           <DraggableFlatList
             data={listData}
             onDragEnd={({ data, from, to }) => updateSessionDay(data, from, to)}
             keyExtractor={(_, index) => index.toString()}
             renderItem={renderItem}
+            ListHeaderComponent={listHeader}
+            fadingEdgeLength={100}
           />
         </View>
       </View>

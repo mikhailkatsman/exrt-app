@@ -293,6 +293,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     DB.sql(`
       SELECT phases.id AS phaseId,
              phases.name AS phaseName,
+             phases.custom AS phaseCustom,
              phases.status AS phaseStatus
       FROM program_phases
       JOIN phases ON program_phases.phase_id = phases.id
@@ -305,6 +306,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         phaseDetails.push({
           phaseId: item.phaseId,
           phaseName: item.phaseName,
+          phaseCustom: item.phaseCustom,
           phaseStatus: item.phaseStatus,
         })
       })
@@ -573,6 +575,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
                   key={`card-${index}`}
                   id={item.phaseId}
                   name={item.phaseName}
+                  custom={item.phaseCustom}
                   status={item.phaseStatus}
                 />
               ))}

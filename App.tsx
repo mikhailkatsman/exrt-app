@@ -58,6 +58,7 @@ export type RootStackParamList = {
   EditPhase: {
     phaseId: number,
     phaseName: string,
+    phaseCustom: number,
     phaseStatus: string,
     newPhase: boolean,
   },

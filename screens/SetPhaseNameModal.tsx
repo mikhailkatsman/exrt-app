@@ -29,9 +29,9 @@ const SetPhaseNameModal: React.FC<Props> = ({ navigation, route }) => {
       const status = newOrder === 1 ? 'active' : 'upcoming'
 
       DB.sql(`
-        INSERT INTO phases (name, status) 
-        VALUES (?, ?);
-      `, [name, status],
+        INSERT INTO phases (name, status, custom) 
+        VALUES (?, ?, ?);
+      `, [name, status, 1],
       (_, result) => {
         const phaseId = result.insertId!
 
@@ -42,6 +42,7 @@ const SetPhaseNameModal: React.FC<Props> = ({ navigation, route }) => {
         () => navigation.replace('EditPhase', {
           phaseId: phaseId,
           phaseName: name,
+          phaseCustom: 1,
           phaseStatus: status,
           newPhase: true,
         }))

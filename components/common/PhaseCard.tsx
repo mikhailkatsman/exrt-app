@@ -5,10 +5,11 @@ import { Text, TouchableOpacity, View } from "react-native"
 type Props = {
   id: number,
   name: string,
+  custom: number,
   status: string,
 }
 
-const PhaseCard: React.FC<Props> = ({ id, name, status }) => {
+const PhaseCard: React.FC<Props> = ({ id, name, custom, status }) => {
   const navigation = useNavigation()
 
   const renderStatus = () => {
@@ -29,6 +30,7 @@ const PhaseCard: React.FC<Props> = ({ id, name, status }) => {
         navigation.navigate('EditPhase', { 
           phaseId: id, 
           phaseName: name,
+          phaseCustom: custom,
           phaseStatus: status,
           newPhase: false
         })
