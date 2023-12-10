@@ -45,6 +45,7 @@ export type RootStackParamList = {
     dayId: number,
     sessionId: number,
     sessionName: string,
+    sessionCustom: number,
     newSession: boolean,
     phaseId: number,
   },
@@ -57,8 +58,10 @@ export type RootStackParamList = {
   },
   EditPhase: {
     phaseId: number,
+    programId: number,
     phaseName: string,
     phaseCustom: number,
+    phaseOrder: number,
     phaseStatus: string,
     newPhase: boolean,
   },

@@ -52,7 +52,7 @@ const ActiveProgramsCard: React.FC<Props> = ({
 	  end={{ x: 0.8, y: 1 }}
         />
         <View className="flex-1 p-3">
-          <Text className="text-custom-white text-xl font-BaiJamjuree-Bold">
+          <Text className="capitalize text-custom-white text-xl font-BaiJamjuree-Bold" style={{ lineHeight: 24 }}>
             {name}
           </Text>
         </View>

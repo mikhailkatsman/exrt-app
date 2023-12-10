@@ -294,6 +294,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       SELECT phases.id AS phaseId,
              phases.name AS phaseName,
              phases.custom AS phaseCustom,
+             program_phases.phase_order AS phaseOrder,
              phases.status AS phaseStatus
       FROM program_phases
       JOIN phases ON program_phases.phase_id = phases.id
@@ -307,9 +308,12 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           phaseId: item.phaseId,
           phaseName: item.phaseName,
           phaseCustom: item.phaseCustom,
+          phaseOrder: item.phaseOrder,
           phaseStatus: item.phaseStatus,
         })
       })
+
+      console.log(JSON.stringify(phaseDetails, null, 2))
 
       setPhases(phaseDetails)
     })
@@ -423,6 +427,9 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
                 selectionColor="#F5F6F3"
                 editable={isEditableProgramName}
                 onSubmitEditing={() => setIsEditableProgramName(false)}
+                multiline={true}
+                blurOnSubmit={true}
+                enterKeyHint="done"
               />
             </View>
             {isEditable &&
@@ -574,8 +581,10 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
                 <PhaseCard
                   key={`card-${index}`}
                   id={item.phaseId}
+                  programId={programId}
                   name={item.phaseName}
                   custom={item.phaseCustom}
+                  order={item.phaseOrder}
                   status={item.phaseStatus}
                 />
               ))}

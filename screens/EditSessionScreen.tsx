@@ -30,10 +30,12 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   const dayId = route.params.dayId
   const sessionId = route.params.sessionId
   const sessionName = route.params.sessionName
+  const sessionCustom = route.params.sessionCustom
   const newSession = route.params.newSession
   const phaseId = route.params.phaseId
   const [instances, setInstances] = useState<any[]>([])
   const [name, setName] = useState<string>(sessionName)
+  const [isEditable, setIsEditable] = useState<boolean>(() => newSession ? true : false)
   const [isEditableSessionName, setIsEditableSessionName] = useState<boolean>(false)
 
   const sessionNameInputRef = useRef<TextInput>(null)
@@ -93,6 +95,7 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
           minuteDuration={item.minuteDuration}
           secondDuration={item.secondDuration}
           weight={item.weight}
+          isEditable={isEditable}
         />
       </OpacityDecorator>
     )
@@ -212,6 +215,8 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   )
 
   useEffect(() => {
+    const unsubscribeFocus = navigation.addListener('focus', fetchInstances)
+
     navigation.setOptions({
       headerLeft: (props) => (
         <HeaderBackButton
@@ -219,17 +224,27 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
           style={{ marginLeft: -4, marginRight: 30 }}
           onPress={onBackPressed}
         />      
+      ),
+      headerRight: () => (
+        sessionCustom ?
+          <TouchableOpacity 
+            className="flex-row items-start justify-end"
+            onPress={() => setIsEditable(prev => !prev)}
+          >
+            {isEditable ?
+              <Icon name="pencil-remove" color="#F5F6F3" size={22} /> 
+            : 
+              <Icon name="pencil" color="#F5F6F3" size={22} /> 
+            }
+          </TouchableOpacity>
+        : null
       )
     })
-  }, [instances])
-
-  useEffect(() => {
-    const unsubscribeFocus = navigation.addListener('focus', fetchInstances)
 
     return () => { 
       unsubscribeFocus()
     }
-  }, [])
+  }, [instances, isEditable])
 
   return (
     <ScreenWrapper>
@@ -239,12 +254,15 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
             <View className='w-2/3 -mt-1'>
               <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Session Name:</Text>
             </View>
-            <TouchableOpacity 
-              className="w-1/3 h-8 flex-row items-start justify-end"
-              onPress={handlePress}
-            >
-              <Icon name="pencil" color="#F5F6F3" size={22} /> 
-            </TouchableOpacity>
+            {isEditable ?
+              <TouchableOpacity 
+                className="w-1/3 h-8 flex-row items-start justify-end"
+                onPress={handlePress}
+              >
+                <Icon name="pencil" color="#F5F6F3" size={22} /> 
+              </TouchableOpacity>
+            : <View className='w-1/3 h-8' />
+            }
           </View>
           <TextInput
             ref={sessionNameInputRef}
@@ -255,9 +273,12 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
             selectionColor="#F5F6F3"
             editable={isEditableSessionName}
             onSubmitEditing={() => setIsEditableSessionName(false)}
+            multiline={true}
+            blurOnSubmit={true}
+            enterKeyHint="done"
           />
         </View>
-        <Text className="p-3 text-custom-white font-BaiJamjuree-MediumItalic">Exercises:</Text>
+        <Text className="p-3 text-custom-grey font-BaiJamjuree-MediumItalic">Exercises:</Text>
         <View className="flex-1">
           <DraggableFlatList 
             className="p-3 rounded-xl"
@@ -269,7 +290,9 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
             fadingEdgeLength={200}
           />
         </View>
-        <View className="h-16">
+      </View>
+      {isEditable &&
+        <View className="h-16 mb-3">
           <TouchableOpacity className="
             flex-1 border-2 border-custom-white rounded-xl 
             flex-row justify-center items-center"
@@ -280,31 +303,33 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
             <Icon name="plus" size={24} color="#F5F6F3" />
           </TouchableOpacity>
         </View>
-      </View>
-      <BottomBarWrapper>
-        <TouchableOpacity 
-          className="w-[30%] rounded-xl border-2 border-custom-red flex-row justify-center items-center"
-          onPress={() => {
-            navigation.navigate('ConfirmModal', {
-              text: 'Are you sure you want to delete this session?',
-              onConfirm: deleteSession
-            })
-          }}
-          activeOpacity={0.6}
-        >
-          <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
-          <Icon name="delete-outline" size={20} color="#F4533E" />
-        </TouchableOpacity>
-        <View className="w-3" />
-        <TouchableOpacity 
-          className="flex-1 border-2 border-custom-blue rounded-xl flex-row justify-center items-center"
-          onPress={registerSession}
-          activeOpacity={0.6}
-        >
-          <Text className="mr-2 text-custom-blue font-BaiJamjuree-Bold">Confirm Session</Text>
-          <Icon name="check" size={22} color="#5AABD6" />
-        </TouchableOpacity>
-      </BottomBarWrapper>
+      }
+      {isEditable &&
+        <BottomBarWrapper>
+          <TouchableOpacity 
+            className="w-[30%] rounded-xl border-2 border-custom-red flex-row justify-center items-center"
+            onPress={() => {
+              navigation.navigate('ConfirmModal', {
+                text: 'Are you sure you want to delete this session?',
+                onConfirm: deleteSession
+              })
+            }}
+            activeOpacity={0.6}
+          >
+            <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Delete</Text>
+            <Icon name="delete-outline" size={20} color="#F4533E" />
+          </TouchableOpacity>
+          <View className="w-3" />
+          <TouchableOpacity 
+            className="flex-1 border-2 border-custom-blue rounded-xl flex-row justify-center items-center"
+            onPress={registerSession}
+            activeOpacity={0.6}
+          >
+            <Text className="mr-2 text-custom-blue font-BaiJamjuree-Bold">Confirm Session</Text>
+            <Icon name="check" size={22} color="#5AABD6" />
+          </TouchableOpacity>
+        </BottomBarWrapper>
+      }
     </ScreenWrapper>
   )
 }

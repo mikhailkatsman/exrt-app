@@ -125,30 +125,29 @@ const RoutineSlot: React.FC<Props> = ({
             <Icon name="pencil" size={18} color="#F5F6F3" />
           </TouchableOpacity>
         </View>
-        <View className="h-[13%] mx-3">
-          <Text className="text-custom-white font-BaiJamjuree-Bold text-xl">
+        <View className="h-[15%] mx-3">
+          <Text className="text-custom-white font-BaiJamjuree-Bold text-xl capitalize" style={{ lineHeight:22 }}>
             {session.name}
           </Text>
         </View>
-        <View className="h-[10%] mx-3">
-          <Text className="text-custom-white font-BaiJamjuree-RegularItalic text-xs">
+        <View className="h-[10%] mx-3 mb-5">
+          <Text className="text-custom-grey font-BaiJamjuree-RegularItalic text-xs">
             Phase:
           </Text>
-          <Text className="text-custom-white font-BaiJamjuree-Bold">
+          <Text className="text-custom-white font-BaiJamjuree-Bold capitalize">
             {session.phase}
           </Text>
         </View>
-        
         <View className="h-[10%] mx-3 mb-5">
-          <Text className="text-custom-white font-BaiJamjuree-RegularItalic text-xs">
+          <Text className="text-custom-grey font-BaiJamjuree-RegularItalic text-xs">
             Program:
           </Text>
-          <Text className="text-custom-white font-BaiJamjuree-Bold">
+          <Text className="text-custom-white font-BaiJamjuree-Bold capitalize">
             {session.program}
           </Text>
         </View>
         <View className="flex-1 mx-3 mb-3">
-          <Text className="mb-2 text-custom-white font-BaiJamjuree-RegularItalic text-xs">
+          <Text className="mb-2 text-custom-grey font-BaiJamjuree-RegularItalic text-xs">
             Exercises:
           </Text>
           <ScrollView 

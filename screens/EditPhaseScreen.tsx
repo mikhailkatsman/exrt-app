@@ -18,21 +18,23 @@ type ListItem = {
   dayName?: string,
   sessionId?: number,
   sessionName?: string,
+  sessionCustom?: number,
   totalExercises?: number
 }
 
 const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   const phaseId: number = route.params.phaseId
+  const programId: number = route.params.programId
   const phaseName: string = route.params.phaseName
   const phaseStatus: string = route.params.phaseStatus
   const phaseCustom: number = route.params.phaseCustom
+  const phaseOrder: number = route.params.phaseOrder
   const newPhase: boolean = route.params.newPhase
 
   const [listData, setListData] = useState<ListItem[]>([])
   const [name, setName] = useState<string>(phaseName)
   const [status, setStatus] = useState<string>(phaseStatus)
-  const [custom, setCustom] = useState<boolean>(() => phaseCustom === 1 ? true : false)
-  const [isEditable, setIsEditable] = useState<boolean>(false)
+  const [isEditable, setIsEditable] = useState<boolean>(() => newPhase ? true : false)
   const [isEditablePhaseName, setIsEditablePhaseName] = useState<boolean>(false)
 
   const phaseNameInputRef = useRef<TextInput>(null)
@@ -40,6 +42,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   const fetchPhaseData = () => {
     DB.sql(`
       SELECT s.name AS sessionName,
+             s.custom AS sessionCustom,
              sei.session_id AS sessionId, 
              psi.day_id AS dayId,
              COUNT(sei.exercise_instance_id) AS totalExercises
@@ -70,6 +73,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
             type: 'session',
             sessionId: item.sessionId,
             sessionName: item.sessionName,
+            sessionCustom: item.sessionCustom,
             dayId: item.dayId,
             totalExercises: item.totalExercises,
           })
@@ -80,6 +84,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
             type: 'session',
             sessionId: item.sessionId,
             sessionName: item.sessionName,
+            sessionCustom: item.sessionCustom,
             dayId: item.dayId,
             totalExercises: item.totalExercises,
           })
@@ -91,7 +96,30 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const changePhaseStatus = () => {
+    DB.sql(`
+      UPDATE phases
+      SET status = ?
+      WHERE id = ?;
+    `, ['completed', phaseId],
+    (_, result) => {
+      setStatus('completed')
 
+      DB.sql(`
+        UPDATE phases
+        SET status = ?
+        WHERE id IN (
+          SELECT phase_id
+          FROM program_phases
+          WHERE program_id = ?
+          AND phase_order = ?
+        );
+      `, ['active', programId, phaseOrder + 1], 
+      (_, result) => {
+        if (result.rows.item.length === 0) {
+          console.log('LAST PHASE. COMPLETE PROGRAM')
+        }
+      })
+    })
   }
 
   const deletePhase = () => {
@@ -154,10 +182,10 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
       return (
         <View className="flex-row items-center">
           <View 
-            className="ml-1.5 border-l border-custom-grey h-24" 
+            className="ml-1.5 border-l border-custom-grey h-28" 
           />
           <View 
-            className="p-3 ml-4 h-20 flex-1 flex-row rounded-2xl bg-custom-dark border-x-2 border-custom-white"
+            className="p-3 ml-4 h-24 flex-1 flex-row rounded-2xl bg-custom-dark border-x-2 border-custom-white"
           >
             <TouchableOpacity
               className="flex-1 justify-center"
@@ -165,16 +193,17 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
                 dayId: item.dayId,
                 sessionId: item.sessionId, 
                 sessionName: item.sessionName,
+                sessionCustom: item.sessionCustom,
                 newSession: false,
                 phaseId: phaseId 
               })}
               activeOpacity={0.6}
               disabled={isActive}
             >
-              <Text className="text-xl text-custom-white font-BaiJamjuree-Bold">
+              <Text className="text-lg text-custom-white font-BaiJamjuree-Bold">
                 {item.sessionName}
               </Text>
-              <Text className="text-xl text-custom-white font-BaiJamjuree-LightItalic">
+              <Text className="text-custom-white font-BaiJamjuree-LightItalic">
                 {item.totalExercises} {item.totalExercises! !== 1 ? 'exercises': 'exercise'}
               </Text>
             </TouchableOpacity>
@@ -240,6 +269,42 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
         </Text>
       </View>
     )
+  }
+
+  const renderStatusButton = () => {
+    if (status === 'upcoming') {
+      return (
+        <View
+          className="mb-8 border-2 border-custom-grey rounded-2xl h-16 flex-row justify-center items-center"
+        >
+          <Text className="text-custom-grey mr-3 font-BaiJamjuree-Bold">Locked</Text>
+          <Icon name="lock-outline" size={24} color="#505050" />
+        </View>
+      )
+    }
+
+    if (status === 'active') {
+      return (
+        <TouchableOpacity 
+          className="mb-8 border-2 border-custom-green rounded-2xl h-16 justify-center items-center"
+          onPress={changePhaseStatus}
+          activeOpacity={0.6}
+        >
+          <Text className="text-custom-green mr-3 font-BaiJamjuree-Bold">Complete This Phase</Text>
+        </TouchableOpacity>
+      )
+    }
+
+    if (status === 'completed') {
+      return (
+        <View 
+          className="mb-8 border-2 border-custom-dark-green rounded-2xl h-16 flex-row justify-center items-center"
+        >
+          <Text className="text-custom-dark-green mr-3 font-BaiJamjuree-Bold">Phase Completed</Text>
+          <Icon name="check" size={24} color="#3C592F" />
+        </View>
+      )
+    }
   }
 
   const updateSessionDay = (data: any, from: number, to: number) => {
@@ -332,7 +397,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
         />      
       ),
       headerRight: () => (
-        custom ?
+        phaseCustom === 1 ?
           <TouchableOpacity 
             className="flex-row items-start justify-end"
             onPress={() => setIsEditable(prev => !prev)}
@@ -350,7 +415,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     return () => {
       unsubscribeFocus()
     }
-  }, [custom, isEditable])
+  }, [isEditable, listData])
 
   return (
     <ScreenWrapper>
@@ -358,7 +423,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
         <View className="pt-3 pb-8 h-fit flex-col justify-between">
           <View className='w-full mb-1 flex-row justify-between items-center'>
             <View className='w-2/3 -mt-1'>
-              <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Phase Name:</Text>
+              <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Phase Name:</Text>
             </View>
             {isEditable ?
               <TouchableOpacity 
@@ -373,23 +438,18 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
           <TextInput
             ref={phaseNameInputRef}
             onChangeText={setName}
-            className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold"
-            autoCapitalize="words"
+            className="w-[90%] text-custom-white text-xl font-BaiJamjuree-Bold capitalize"
             defaultValue={name}
             selectionColor="#F5F6F3"
             editable={isEditablePhaseName}
             onSubmitEditing={() => setIsEditablePhaseName(false)}
+            multiline={true}
+            blurOnSubmit={true}
+            enterKeyHint="done"
           />
         </View>
-        <TouchableOpacity 
-          className="mb-8 border-2 border-custom-white rounded-2xl h-16 flex-row justify-center items-center"
-          onPress={changePhaseStatus}
-          activeOpacity={0.6}
-        >
-          <Text className="text-custom-white mr-3 font-BaiJamjuree-Bold">Complete this Phase</Text>
-          <Icon name="check" size={24} color="#F5F6F3" />
-        </TouchableOpacity>
-        <Text className="text-custom-white font-BaiJamjuree-MediumItalic">Exercises:</Text>
+        {renderStatusButton()}
+        <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Exercises:</Text>
         <View className="flex-1">
           <DraggableFlatList
             data={listData}

@@ -4,12 +4,14 @@ import { Text, TouchableOpacity, View } from "react-native"
 
 type Props = {
   id: number,
+  programId: number,
   name: string,
   custom: number,
+  order: number,
   status: string,
 }
 
-const PhaseCard: React.FC<Props> = ({ id, name, custom, status }) => {
+const PhaseCard: React.FC<Props> = ({ id, programId, name, custom, order, status }) => {
   const navigation = useNavigation()
 
   const renderStatus = () => {
@@ -29,8 +31,10 @@ const PhaseCard: React.FC<Props> = ({ id, name, custom, status }) => {
       onPress={() => {
         navigation.navigate('EditPhase', { 
           phaseId: id, 
+          programId: programId,
           phaseName: name,
           phaseCustom: custom,
+          phaseOrder: order,
           phaseStatus: status,
           newPhase: false
         })

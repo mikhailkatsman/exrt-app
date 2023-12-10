@@ -16,6 +16,7 @@ type Props = {
   weight: number | null,
   minuteDuration: number | null,
   secondDuration: number | null,
+  isEditable: boolean,
 }
 
 const InstanceCard: React.FC<Props> = ({ 
@@ -29,7 +30,8 @@ const InstanceCard: React.FC<Props> = ({
   reps, 
   weight, 
   minuteDuration,
-  secondDuration
+  secondDuration,
+  isEditable
 }) => {
   const navigation = useNavigation()
 
@@ -70,27 +72,31 @@ const InstanceCard: React.FC<Props> = ({
           {secondDuration && `${secondDuration}s`}
         </Text>
       </View>
-      <TouchableOpacity 
-        className="w-[10%] flex items-center justify-center"
-        onPress={() => {
-          navigation.navigate('ConfirmModal', {
-            text: 'Are you sure you want to delete this exercise?',
-            onConfirm: deleteInstance
-          })
-        }}
-        activeOpacity={1}
-        disabled={isActive}
-      >
-        <Icon name="delete-outline" size={28} color='#F4533E' />
-      </TouchableOpacity>
-      <TouchableOpacity 
-        className="w-[14%] h-full flex items-center justify-center"
-        onPressIn={drag}
-        activeOpacity={1}
-        disabled={isActive}
-      >
-        <Icon name="unfold-more-horizontal" size={30} color='#F5F6F3' />
-      </TouchableOpacity>
+      {isEditable &&
+        <TouchableOpacity 
+          className="w-[10%] flex items-center justify-center"
+          onPress={() => {
+            navigation.navigate('ConfirmModal', {
+              text: 'Are you sure you want to delete this exercise?',
+              onConfirm: deleteInstance
+            })
+          }}
+          activeOpacity={1}
+          disabled={isActive}
+        >
+          <Icon name="delete-outline" size={28} color='#F4533E' />
+        </TouchableOpacity>
+      }
+      {isEditable &&
+        <TouchableOpacity 
+          className="w-[14%] h-full flex items-center justify-center"
+          onPressIn={drag}
+          activeOpacity={1}
+          disabled={isActive}
+        >
+          <Icon name="unfold-more-horizontal" size={30} color='#F5F6F3' />
+        </TouchableOpacity>
+      }
     </View>
   )
 }

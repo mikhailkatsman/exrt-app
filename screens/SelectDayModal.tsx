@@ -31,8 +31,8 @@ const SelectDayModal: React.FC<Props> = ({ navigation, route }) => {
     const sessionName: string = 'New Session'
 
     DB.sql(`
-      INSERT INTO sessions (name, status) VALUES (?, ?);
-    `, [sessionName, 'upcoming'],
+      INSERT INTO sessions (name, status, custom) VALUES (?, ?, ?);
+    `, [sessionName, 'upcoming', 1],
     (_, result) => {
       const sessionId = result.insertId!
 
@@ -45,6 +45,7 @@ const SelectDayModal: React.FC<Props> = ({ navigation, route }) => {
           dayId: dayId,
           sessionId: sessionId,
           sessionName: sessionName,
+          sessionCustom: 1,
           newSession: true,
           phaseId: phaseId
         })
