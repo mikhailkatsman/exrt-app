@@ -10,7 +10,7 @@ import DropDown from "@components/common/Dropdown"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProgramsList'>
 
-const ProgramsListScreen: React.FC<Props> = () => {
+const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
   const [programsList, setProgramsList] = useState<any[]>([])
   const [searchString, setSearchString] = useState<string | null>(null)
   const [typeSort, setTypeSort] = useState<string | null>(null)
@@ -21,10 +21,10 @@ const ProgramsListScreen: React.FC<Props> = () => {
     { label: 'Skills', value: 'skills' },
     { label: 'Mobility', value: 'mobility' },
   ]
-  const programDifficultyList: { label: string, value: string}[] = [
-    { label: 'Beginner', value: 'beginner' },
-    { label: 'Intermediate', value: 'intermediate' },
-    { label: 'Expert', value: 'expert' },
+  const programDifficultyList: { label: string, value: number }[] = [
+    { label: 'Beginner', value: 1 },
+    { label: 'Intermediate', value: 2 },
+    { label: 'Expert', value: 3 },
   ]
 
   const fetchPrograms = (searchString: string | null, typeSort: string | null, difficultySort: string | null) => {
@@ -74,13 +74,13 @@ const ProgramsListScreen: React.FC<Props> = () => {
     fetchPrograms(searchString, typeSort, difficultySort)
   }, [searchString, typeSort, difficultySort])
 
-  // useEffect(() => {
-  //   const unsubscribeFocus = navigation.addListener('focus', () => fetchPrograms(searchString, typeSort, difficultySort))
-  //
-  //   return () => {
-  //     unsubscribeFocus()
-  //   }
-  // }, [searchString, typeSort, difficultySort])
+  useEffect(() => {
+    const unsubscribeFocus = navigation.addListener('focus', () => fetchPrograms(searchString, typeSort, difficultySort))
+
+    return () => {
+      unsubscribeFocus()
+    }
+  }, [])
 
   return (
     <ScreenWrapper>

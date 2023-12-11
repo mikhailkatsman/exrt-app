@@ -97,29 +97,59 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const changePhaseStatus = () => {
     DB.sql(`
-      UPDATE phases
-      SET status = ?
-      WHERE id = ?;
-    `, ['completed', phaseId],
+      SELECT phase_id
+      FROM program_phases
+      WHERE program_id = ?
+      AND phase_order > ?
+    `, [programId, phaseOrder],
     (_, result) => {
-      setStatus('completed')
+      if (result.rows.length > 0) {
+        console.log('THERE ARE MORE PHASES')
 
-      DB.sql(`
-        UPDATE phases
-        SET status = ?
-        WHERE id IN (
-          SELECT phase_id
-          FROM program_phases
-          WHERE program_id = ?
-          AND phase_order = ?
-        );
-      `, ['active', programId, phaseOrder + 1], 
-      (_, result) => {
-        if (result.rows.item.length === 0) {
-          console.log('LAST PHASE. COMPLETE PROGRAM')
-        }
-      })
-    })
+        DB.transaction(tx => {
+          tx.executeSql(`
+            UPDATE phases
+            SET status = ?
+            WHERE id = ?;
+          `, ['completed', phaseId])
+
+          tx.executeSql(`
+            UPDATE phases
+            SET status =?
+            WHERE id IN (
+              SELECT phase_id
+              FROM program_phases
+              WHERE program_id = ?
+              AND phase_order = ?
+            );
+          `, ['active', programId, phaseOrder + 1])
+        },
+          error => console.error('Error updating phase status: ' + error),
+          () => setStatus('completed')
+        )
+      } else {
+        console.log('LAST PHASE')
+
+        DB.transaction(tx => {
+          tx.executeSql(`
+            UPDATE phases
+            SET status = ?
+            WHERE id = ?;
+          `, ['completed', phaseId])
+
+          tx.executeSql(`
+            UPDATE programs
+            SET status = ?
+            WHERE id = ?;
+          `, ['completed', programId])
+        }, 
+          error => console.error('Error updating phase status: ' + error),
+          () => {
+            setStatus('completed')
+          }
+        )
+      }
+    });
   }
 
   const deletePhase = () => {
@@ -166,7 +196,8 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
       `, [phaseId])
     }, 
       error => console.error('Error deleting phase from DB: ' + error),
-      () => navigation.pop())
+      () => navigation.pop()
+    )
   }
 
   const renderItem = ({ 

@@ -41,6 +41,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   const [status, setStatus] = useState<string>('')
   const [custom, setCustom] = useState<boolean>(false)
   const [phases, setPhases] = useState<any[]>([])
+  const [completedPhases, setCompletedPhases] = useState<number>(0)
   
   const programNameInputRef = useRef<TextInput>(null)
   const descriptionInputRef = useRef<TextInput>(null)
@@ -313,8 +314,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         })
       })
 
-      console.log(JSON.stringify(phaseDetails, null, 2))
-
+      setCompletedPhases(() => phaseDetails.filter(phase => phase.phaseStatus === 'completed').length)
       setPhases(phaseDetails)
     })
   }
@@ -441,6 +441,19 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
             }
           </View>
         </ImageBackground>
+        <View className='h-12 mb-8 flex-row border-custom-grey border rounded-xl overflow-hidden'>
+          <View className='absolute z-10 w-full h-full justify-center items-center'>
+            <Text className='text-custom-white text-xs font-BaiJamjuree-Bold'>
+              Progress: {((completedPhases / phases.length) * 100).toFixed(0)}%
+            </Text>
+          </View>
+          {Array.from({ length: phases.length }).map((_, index) => (
+            <View
+              key={index}
+              className={`flex-1 ${index + 1 <= completedPhases && 'bg-custom-grey'}`}
+            />
+          ))}
+        </View>
         <View className='h-12 px-3 w-full mb-8 flex-row justify-between'>
           <Animated.View style={selectedTabStyle}>
             <View className='absolute h-full border-2 rounded-2xl border-custom-white' style={{ width: (windowWidth - 20) / 2 }} />
