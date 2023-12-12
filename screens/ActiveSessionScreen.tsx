@@ -103,6 +103,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const finishSession = () => {
+    // IMPLEMENT EndSessionScreen
     DB.sql(`
       UPDATE sessions
       SET status = 'completed'
@@ -147,27 +148,25 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
-  return <>
-    {currentActivity ? (
-      <ScreenWrapper>
-        <View className="flex-1 mt-5 mb-3">
-          <TimeLine 
-            instances={activities} 
-            currentActivityIndex={currentActivityIndex} 
-          />
-          <CurrentActivityContainer 
-            activity={currentActivity} 
-            nextActivity={switchActivity}
-          />
-        </View>
-        <BottomBarWrapper>
-          {renderButtons()}
-        </BottomBarWrapper>
-      </ScreenWrapper>
-    ) : (
-      <View className="bg-custom-dark flex-1" />
-    )}
-  </>
+  return currentActivity ? (
+    <ScreenWrapper>
+      <View className="flex-1 mt-5 mb-3">
+        <TimeLine 
+          instances={activities} 
+          currentActivityIndex={currentActivityIndex} 
+        />
+        <CurrentActivityContainer 
+          activity={currentActivity} 
+          nextActivity={switchActivity}
+        />
+      </View>
+      <BottomBarWrapper>
+        {renderButtons()}
+      </BottomBarWrapper>
+    </ScreenWrapper>
+  ) : (
+    <View className="bg-custom-dark flex-1" />
+  )
 }
 
 export default ActiveSessionScreen

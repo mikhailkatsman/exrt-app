@@ -7,7 +7,8 @@ defaultConfig.resolver.assetExts.push('db')
 const extraNodeModules = {
   '@exerciseThumbnails': __dirname + '/assets/images/exercises/thumbnails',
   '@exercireBackgrounds': __dirname + '/assets/images/exercises/backgrounds',
-  'programThumbnails': __dirname + '/assets/images/programs',
+  '@programThumbnails': __dirname + '/assets/images/programs',
+  '@muscleGroups': __dirname + '/assets/images/muscles',
   '@videos': __dirname + '/assets/videos',
   '@sounds': __dirname + '/assets/sounds',
   '@fonts': __dirname + '/assets/fonts',

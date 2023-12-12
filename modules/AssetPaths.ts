@@ -27,6 +27,10 @@ export const audioFiles = {
   high_beep: require('@sounds/countdown/sine_880.wav'),
 }
 
+export const muscleGroups = {
+  base: require('@muscleGroups/base.webp'),
+}
+
 export const customFonts = {
   'BaiJamjuree-Light': require('@fonts/BaiJamjuree-Light.ttf'),
   'BaiJamjuree-LightItalic': require('@fonts/BaiJamjuree-LightItalic.ttf'),
