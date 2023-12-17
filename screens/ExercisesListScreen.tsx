@@ -22,17 +22,17 @@ const ExerciseListScreen: React.FC<Props> = () => {
   const [typeSort, setTypeSort] = useState<string | null>(null)
 
   const muscleGroupList: { label: string, value: string }[] = [
-    { label: 'Chest', value: 'chest' },
+    { label: 'Chest', value: 'middle pectoral' },
     { label: 'Biceps', value: 'biceps' },
     { label: 'Triceps', value: 'triceps' },
-    { label: 'Abs', value: 'abs' },
-    { label: 'Traps', value: 'traps' },
+    { label: 'Abs', value: 'upper abs' },
+    { label: 'Traps', value: 'middle trapezius' },
     { label: 'Forearms', value: 'forearms' },
     { label: 'Lats', value: 'lats' },
-    { label: 'Delts', value: 'delts' },
+    { label: 'Delts', value: 'medial deltoid' },
     { label: 'Glutes', value: 'glutes' },
-    { label: 'Quads', value: 'quads' },
-    { label: 'Calves', value: 'calves' }
+    { label: 'Quads', value: 'center quads' },
+    { label: 'Calves', value: 'inner calves' }
   ]
   const exerciseTypeList: { label: string, value: string }[] = [
     { label: 'Body Weight', value: 'bodyweight' },
