@@ -16,6 +16,7 @@ module.exports = {
       'custom-grey': '#505050',
       'custom-blue': '#5AABD6',
       'custom-yellow': '#F7EA40',
+      'custom-orange': '#F34A00',
       'custom-purple': '#7D34A7',
       'half-transparent': 'rgba(0, 0, 0, 0.5)',
       'twothird-transparent': 'rgba(0, 0, 0, 0.75)',
