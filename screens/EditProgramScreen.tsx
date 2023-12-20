@@ -581,9 +581,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
               </View>
             }
           </ScrollView>
-          <View
-            style={{ width: windowWidth }}
-          >
+          <View style={{ width: windowWidth }}>
             <ScrollView
               className='px-3 w-full'
               style={{ width: windowWidth }}
