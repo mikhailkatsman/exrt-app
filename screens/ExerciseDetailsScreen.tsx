@@ -1,10 +1,11 @@
-import { View, TouchableOpacity, Text, ScrollView, Dimensions, ImageBackground, Image } from "react-native"
+import { View, TouchableOpacity, Text, ScrollView, Dimensions, Image } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
-import Animated, { Easing, withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
+import Animated, { Easing, withTiming, withDelay, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
+import { Video, ResizeMode } from 'expo-av'
 import { Icon } from "@react-native-material/core"
 import ScreenWrapper from "@components/common/ScreenWrapper"
-import { muscleGroups } from "@modules/AssetPaths"
+import { muscleGroups, exerciseBackgrounds, videoFiles } from "@modules/AssetPaths"
 import { useEffect, useRef, useState } from "react"
 import DB from "@modules/DB"
 
@@ -15,7 +16,7 @@ const windowWidth = Dimensions.get('window').width - 16
 const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
   const exerciseId = route.params.exerciseId
 
-	const [isPlayingVideo, setIsPlayingVideo] = useState<boolean>(false)
+  const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [selectedTab, setSelectedTab] = useState<number>(0)
   const [isTabPressed, setIsTabPressed] = useState<boolean>(false)
   const [exerciseData, setExerciseData] = useState<{
@@ -24,8 +25,9 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
     style: string,
     difficulty: number,
     description: string,
-    video: string,
-    background: string,
+    execution: string[],
+    video: keyof typeof videoFiles,
+    background: keyof typeof exerciseBackgrounds,
     custom: number
   }>({
     name: '',
@@ -33,6 +35,7 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
     style: '',
     difficulty: 0,
     description: '',
+    execution: [],
     video: '',
     background: '',
     custom: 0
@@ -45,11 +48,25 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
 
   const scrollRef = useRef<ScrollView>(null)
 
+  const isPlayingVideo = useSharedValue(false)
   const selectedTabAnim = useSharedValue(0)
+
   const selectedTabStyle = useAnimatedStyle(() => {
     const x = selectedTabAnim.value * (windowWidth - 20) / 3
 
     return { transform: [{ translateX: x }] }
+  })
+
+  const imageStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withDelay(isPlayingVideo.value ? 0 : 300, withTiming(isPlayingVideo.value ? 0 : 1, { duration: 300 }))
+    }
+  })
+
+  const videoStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withDelay(isPlayingVideo.value ? 300 : 0, withTiming(isPlayingVideo.value ? 1 : 0, { duration: 300 }))
+    }
   })
 
   const handleTabPress = (tabIndex: number) => {
@@ -109,6 +126,7 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
         style: fetchedData.style,
         difficulty: fetchedData.difficulty,
         description: fetchedData.description,
+        execution: fetchedData.execution.split('\n'),
         video: fetchedData.video,
         background: fetchedData.background,
         custom: fetchedData.custom
@@ -212,7 +230,7 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
       </View>
       <ScrollView 
         ref={scrollRef}
-        className='flex-1'
+        className='flex-1 mb-3'
         horizontal={true}
         disableIntervalMomentum={true}
         showsHorizontalScrollIndicator={false}
@@ -224,8 +242,33 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
         overScrollMode="never"
         bounces={false}
       >
-        <View className="px-3" style={{ width: windowWidth }}>
-
+        <View className="px-3 flex-1" style={{ width: windowWidth }}>
+          <Animated.View style={imageStyle} className='absolute top-0 left-3 w-full h-full'>
+            <Image
+              className="h-full w-full rounded-2xl"
+              resizeMode="cover"
+              source={exerciseBackgrounds[exerciseData.background]} 
+            />
+          </Animated.View>
+          <Animated.View style={videoStyle} className='absolute top-0 left-3 w-full h-full'>
+            <Video 
+              className="h-full w-full rounded-2xl"
+              source={videoFiles[exerciseData.video]}
+              resizeMode={"cover" as ResizeMode}
+              isMuted={true}
+              shouldPlay={true}
+              isLooping={true}
+            />
+          </Animated.View>
+          <TouchableOpacity
+            className="absolute top-3 right-6"
+            onPress={() => {
+              isPlayingVideo.value = !isPlayingVideo.value
+              setIsPlaying(prev => !prev)
+            }}
+          >
+            <Icon name={isPlaying ? 'close' : 'video-outline'} size={40} color="#F5F6F3" />
+          </TouchableOpacity>
         </View>
         <ScrollView 
           className='px-3'
@@ -249,6 +292,15 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
             <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Description:</Text>
           </View>
           <Text className="mb-8 text-custom-white font-BaiJamjuree-Regular">{exerciseData.description}</Text>
+          <View className='w-2/3 -mt-1'>
+            <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Execution:</Text>
+          </View>
+          {exerciseData.execution.map((paragraph, index) => (
+            <View key={index} className="w-full flex flex-row gap-3 mb-3">
+              <Text className="w-[10%] text-custom-red font-BaiJamjuree-Bold text-lg">{index + 1}</Text>
+              <Text className="w-[80%] text-custom-white font-BaiJamjuree-Regular">{paragraph}</Text>
+            </View>
+          ))}
         </ScrollView>
         <ScrollView 
           className='px-3'

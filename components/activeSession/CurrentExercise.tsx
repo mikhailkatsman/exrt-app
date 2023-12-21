@@ -53,7 +53,7 @@ const CurrentExercise: React.FC<Props> = ({
 		<Animated.View style={animatedStyle} exiting={FadeOut} className="w-full h-full">
 			{isPlayingVideo ? 
 				<Video 
-					className="absolute h-full w-full top-0 rounded-xl"
+					className="absolute h-full w-full top-0 rounded-2xl"
 					source={videoFiles[video]}
 					resizeMode={"cover" as ResizeMode}
 					isMuted={true}
@@ -64,7 +64,7 @@ const CurrentExercise: React.FC<Props> = ({
 			: 
 				<>
 					<Image
-						className="absolute h-full w-full top-0 rounded-xl"
+						className="absolute h-full w-full top-0 rounded-2xl"
 						resizeMode="cover"
 						source={exerciseBackgrounds[background]} 
 					/>
