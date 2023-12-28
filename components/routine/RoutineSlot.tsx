@@ -117,7 +117,8 @@ const RoutineSlot: React.FC<Props> = ({
           <TouchableOpacity 
             className="w-[25%] items-end justify-start mt-1"
             onPress={() => navigation.navigate("EditSession", { 
-              routineId: routineId,
+              phaseId: routineId,
+              sessionName: session.name,
               sessionId: session.id, 
               newSession: false,
             })}

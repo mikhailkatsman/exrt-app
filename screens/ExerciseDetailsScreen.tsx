@@ -1,8 +1,7 @@
 import { View, TouchableOpacity, Text, ScrollView, Dimensions, Image } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
-import Animated, { Easing, withTiming, withDelay, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
-import { Video, ResizeMode } from 'expo-av'
+import Animated, { Easing, withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { Icon } from "@react-native-material/core"
 import ScreenWrapper from "@components/common/ScreenWrapper"
 import { muscleGroups, exerciseBackgrounds, videoFiles } from "@modules/AssetPaths"
@@ -13,10 +12,9 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ExerciseDetails'>
 
 const windowWidth = Dimensions.get('window').width - 16
 
-const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
+const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const exerciseId = route.params.exerciseId
 
-  const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [selectedTab, setSelectedTab] = useState<number>(0)
   const [isTabPressed, setIsTabPressed] = useState<boolean>(false)
   const [exerciseData, setExerciseData] = useState<{
@@ -48,25 +46,12 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
 
   const scrollRef = useRef<ScrollView>(null)
 
-  const isPlayingVideo = useSharedValue(false)
   const selectedTabAnim = useSharedValue(0)
 
   const selectedTabStyle = useAnimatedStyle(() => {
     const x = selectedTabAnim.value * (windowWidth - 20) / 3
 
     return { transform: [{ translateX: x }] }
-  })
-
-  const imageStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withDelay(isPlayingVideo.value ? 0 : 300, withTiming(isPlayingVideo.value ? 0 : 1, { duration: 300 }))
-    }
-  })
-
-  const videoStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withDelay(isPlayingVideo.value ? 300 : 0, withTiming(isPlayingVideo.value ? 1 : 0, { duration: 300 }))
-    }
   })
 
   const handleTabPress = (tabIndex: number) => {
@@ -132,6 +117,16 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
         custom: fetchedData.custom
       })
     })
+  }
+
+  const renderMuscleNamesByLoad = (loadValue: number) => {
+    const filteredArray = exerciseMuscleGroups.filter(muscle => muscle.load === loadValue)
+
+    return <Text className="mb-8 text-custom-white font-BaiJamjuree-Bold capitalize">
+      {filteredArray.map((muscle, index) => {
+        return `${muscle.name}${index !== filteredArray.length - 1 ? ', ' : ''}`
+      })} 
+    </Text>
   }
 
   useEffect(() => {
@@ -224,7 +219,7 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
           activeOpacity={1}
         >
           <Text className="text-custom-white font-BaiJamjuree-Bold">
-            Muscles
+            Anatomy
           </Text>
         </TouchableOpacity>
       </View>
@@ -242,34 +237,33 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
         overScrollMode="never"
         bounces={false}
       >
-        <View className="px-3 flex-1" style={{ width: windowWidth }}>
-          <Animated.View style={imageStyle} className='absolute top-0 left-3 w-full h-full'>
-            <Image
-              className="h-full w-full rounded-2xl"
-              resizeMode="cover"
-              source={exerciseBackgrounds[exerciseData.background]} 
-            />
-          </Animated.View>
-          <Animated.View style={videoStyle} className='absolute top-0 left-3 w-full h-full'>
-            <Video 
-              className="h-full w-full rounded-2xl"
-              source={videoFiles[exerciseData.video]}
-              resizeMode={"cover" as ResizeMode}
-              isMuted={true}
-              shouldPlay={true}
-              isLooping={true}
-            />
-          </Animated.View>
+        <ScrollView 
+          className='px-3'
+          style={{ width: windowWidth }}
+          fadingEdgeLength={100}
+          showsVerticalScrollIndicator={false}
+        >
+          <Image
+            className="h-96 w-full mb-8 rounded-2xl"
+            resizeMode="cover"
+            source={exerciseBackgrounds[exerciseData.background]} 
+          />
           <TouchableOpacity
             className="absolute top-3 right-6"
-            onPress={() => {
-              isPlayingVideo.value = !isPlayingVideo.value
-              setIsPlaying(prev => !prev)
-            }}
+            onPress={() => navigation.navigate('FullScreenVideo', { videoSource: exerciseData.video })}
           >
-            <Icon name={isPlaying ? 'close' : 'video-outline'} size={40} color="#F5F6F3" />
+            <Icon name='video-outline' size={40} color="#F5F6F3" />
           </TouchableOpacity>
-        </View>
+          <View className='w-2/3 -mt-1 mb-3'>
+            <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Execution:</Text>
+          </View>
+          {exerciseData.execution.map((paragraph, index) => (
+            <View key={index} className="w-full flex flex-row gap-3 mb-3">
+              <Text className="w-[10%] pt-0.5 text-custom-red font-BaiJamjuree-Bold text-lg">{index + 1}</Text>
+              <Text className="w-[80%] text-custom-white font-BaiJamjuree-Regular">{paragraph}</Text>
+            </View>
+          ))}
+        </ScrollView>
         <ScrollView 
           className='px-3'
           style={{ width: windowWidth }}
@@ -292,15 +286,6 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
             <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Description:</Text>
           </View>
           <Text className="mb-8 text-custom-white font-BaiJamjuree-Regular">{exerciseData.description}</Text>
-          <View className='w-2/3 -mt-1'>
-            <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Execution:</Text>
-          </View>
-          {exerciseData.execution.map((paragraph, index) => (
-            <View key={index} className="w-full flex flex-row gap-3 mb-3">
-              <Text className="w-[10%] text-custom-red font-BaiJamjuree-Bold text-lg">{index + 1}</Text>
-              <Text className="w-[80%] text-custom-white font-BaiJamjuree-Regular">{paragraph}</Text>
-            </View>
-          ))}
         </ScrollView>
         <ScrollView 
           className='px-3'
@@ -308,7 +293,7 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
           fadingEdgeLength={100}
           showsVerticalScrollIndicator={false}
         >
-          <View className="h-64 w-full relative">
+          <View className="h-64 w-full mb-8 relative">
             <Image className="absolute w-full h-full" resizeMode="contain" 
               source={muscleGroups['base' as keyof typeof muscleGroups]}
             />
@@ -317,6 +302,18 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route }) => {
               return <Image key={index} className="absolute w-full h-full" resizeMode="contain" source={muscleGroups[fileName]} />
             })}
           </View>
+          <View className='w-2/3 -mt-1'>
+            <Text className="font-BaiJamjuree-BoldItalic" style={{ color: '#d30000' }}>Activators:</Text>
+          </View>
+          {renderMuscleNamesByLoad(3)}
+          <View className='w-2/3 -mt-1'>
+            <Text className="font-BaiJamjuree-BoldItalic" style={{ color: '#f34a00' }}>Assistive:</Text>
+          </View>
+          {renderMuscleNamesByLoad(2)}
+          <View className='w-2/3 -mt-1'>
+            <Text className="font-BaiJamjuree-BoldItalic" style={{ color: '#f4a816' }}>Stabilizers:</Text>
+          </View>
+          {renderMuscleNamesByLoad(1)}
         </ScrollView>
       </ScrollView>
     </ScreenWrapper>

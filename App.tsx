@@ -28,6 +28,7 @@ import SetPhaseNameModal from '@screens/SetPhaseNameModal'
 import SetProgramNameModal from '@screens/SetProgramNameModal'
 import ChangeProgramStatusModal from '@screens/ChangeProgramStatusModal'
 import SessionResultsModal from '@screens/SessionResultsModal'
+import FullScreenVideoScreen from '@screens/FullScreenVideo'
 
 export type RootStackParamList = {
   Home: undefined,
@@ -95,6 +96,9 @@ export type RootStackParamList = {
   ChangeProgramStatusModal: {
     status: string,
     programId: number,
+  },
+  FullScreenVideo: {
+    videoSource: string,
   },
 }
 
@@ -265,6 +269,13 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='ActiveSession'
                   component={ActiveSessionScreen}
+                />
+                <Stack.Screen
+                  name='FullScreenVideo'
+                  component={FullScreenVideoScreen}
+                  options={{
+                    animation: 'fade',
+                  }}
                 />
               </Stack.Group>
             </Stack.Navigator>
