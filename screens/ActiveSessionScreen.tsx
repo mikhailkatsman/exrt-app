@@ -10,12 +10,12 @@ import BottomBarWrapper from "@components/common/BottomBarWrapper";
 import TimeLine from "@components/activeSession/TimeLine";
 import CurrentActivityContainer from "@components/activeSession/CurrentActivityContainer";
 import { exerciseBackgrounds, videoFiles } from "@modules/AssetPaths";
+import Progress from "@components/activeSession/Progress";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 
 const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const sessionId: number = route.params.sessionId
-  const [sessionTime, setSessionTime] = useState<number>(0)
   const [activities, setActivities] = useState<any[]>([])
   const [currentActivityIndex, setCurrentActivityIndex] = useState<number>(0)
   const [currentActivity, setCurrentActivity] = useState<{
@@ -95,21 +95,10 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       setCurrentActivity(activityList[0])
     })
 
-    const timeValue = setInterval(() => {
-      setSessionTime(prev => prev + 1)
-    }, 1000)
-
-    return () => clearInterval(timeValue)
   }, [])
 
   useKeepAwake()
 
-  const formatTime = (totalSeconds) => {
-    const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
-    const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
-    const seconds = (totalSeconds % 60).toString().padStart(2, '0');
-    return `${hours}:${minutes}:${seconds}`;
-  };
 
   const switchActivity = () => {
     setCurrentActivityIndex(currentActivityIndex + 1)
@@ -164,10 +153,11 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return currentActivity ? (
     <ScreenWrapper>
-      <View className="h-5 w-full mb-3">
-        <Text className="text-custom-white font-BaiJamjuree-Bold">{formatTime(sessionTime)}</Text>
-      </View>
       <View className="flex-1 mt-5 mb-3">
+        <Progress
+          totalActivities={activities}
+          currentActivity={currentActivityIndex}
+        />
         <TimeLine 
           instances={activities} 
           currentActivityIndex={currentActivityIndex} 
