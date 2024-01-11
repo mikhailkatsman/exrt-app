@@ -29,9 +29,13 @@ const Progress: React.FC<Props> = ({ totalActivities, currentActivity }) => {
 			<Text className="text-custom-white font-BaiJamjuree-Bold mb-1">
 				{formatTime(sessionTime)}
 			</Text>	
-			<View className="w-full h-1.5 rounded-lg overflow-hidden border-x border-custom-red flex-row">
+			<View className="w-full rounded-lg overflow-hidden flex-row items-center">
 				{totalActivities.map((_, index) => (
-					<View key={index} className={`flex-1 ${index < currentActivity ? 'bg-custom-red' : ''}`} />
+					<View 
+						key={index} 
+						className=
+							{`flex-1 ${index < currentActivity ? 'bg-custom-green h-0.5' : index === currentActivity ? 'bg-custom-red h-1.5 rounded-xl' : 'bg-custom-grey h-0.5'}`} 
+					/>
 				))}
 			</View>
 		</View>

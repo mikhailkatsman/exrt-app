@@ -33,6 +33,7 @@ module.exports = {
         'BaiJamjuree-BoldItalic': ['BaiJamjuree-BoldItalic'],
       },
       spacing: {
+        0.25: '0.075rem',
         10.5: '2.625rem',
         22: '5.5rem',
         30: '7.5rem',
@@ -50,19 +51,19 @@ module.exports = {
       pattern: /(half|twothird)-transparent/
     },
     {
-      pattern: /(mt|mb|mr|ml|my|mx|px|py|pt|pb|pl|pr)-[0-9]+/
+      pattern: /(mt|mb|mr|ml|my|mx|px|py|pt|pb|pl|pr)-[0-9]+(\.[0-9]+)?/
     },
     {
-      pattern: /-(mt|mb|mr|ml|my|mx|px|py|pt|pb|pl|pr)-[0-9]+/
+      pattern: /-(mt|mb|mr|ml|my|mx|px|py|pt|pb|pl|pr)-[0-9]+(\.[0-9]+)?/
     },
     {
       pattern: /flex-.*/
     },
     {
-      pattern: /(bottom|right|top|left)-[0-9]+/
+      pattern: /(bottom|right|top|left)-[0-9]+(\.[0-9]+)?/
     },
     {
-      pattern: /(w|h)-[0-9]+/
+      pattern: /(w|h)-[0-9]+(\.[0-9]+)?/
     }
   ]
 }

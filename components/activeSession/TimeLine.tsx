@@ -38,8 +38,8 @@ const TimeLine: React.FC<Props> = ({ instances, currentActivityIndex }) => {
 			<FlatList 
 				ref={flatListRef}
 				data={instances}
-				renderItem={({item}) => 
-					<TimeLineSlot type={item.type} data={item.data} /> 
+				renderItem={({item, index}) => 
+					<TimeLineSlot type={item.type} data={item.data} completed={index < currentActivityIndex} /> 
 				}
 				keyExtractor={(_, index) => index.toString()}
 				horizontal={true}
