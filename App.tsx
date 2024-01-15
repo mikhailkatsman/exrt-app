@@ -29,6 +29,7 @@ import SetProgramNameModal from '@screens/SetProgramNameModal'
 import ChangeProgramStatusModal from '@screens/ChangeProgramStatusModal'
 import SessionResultsModal from '@screens/SessionResultsModal'
 import FullScreenVideoScreen from '@screens/FullScreenVideo'
+import EndSessionScreen from '@screens/EndSessionScreen'
 
 export type RootStackParamList = {
   Home: undefined,
@@ -71,6 +72,11 @@ export type RootStackParamList = {
   },
   ActiveSession: {
     sessionId: number,
+  },
+  EndSession: {
+    sessionId: number,
+    timeTotal: number,
+    exerciseInstances: any[],
   },
   SessionResultsModal: {
     sessionId: number,
@@ -269,6 +275,10 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='ActiveSession'
                   component={ActiveSessionScreen}
+                />
+                <Stack.Screen
+                  name='EndSession'
+                  component={EndSessionScreen}
                 />
                 <Stack.Screen
                   name='FullScreenVideo'
