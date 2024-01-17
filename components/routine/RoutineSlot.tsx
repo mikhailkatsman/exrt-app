@@ -177,7 +177,7 @@ const RoutineSlot: React.FC<Props> = ({
               justify-center rounded-xl
             "
             style={{ borderColor: statusContext.color }}
-            onPress={() => navigation.navigate("GetReady", { sessionId: session.id })}
+            onPress={() => navigation.navigate("GetReady", { sessionId: session.id, sessionName: session.name })}
           >
             <Text 
               className="mr-4 font-BaiJamjuree-Bold text"

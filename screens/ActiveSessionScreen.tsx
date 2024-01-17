@@ -16,6 +16,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 
 const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const sessionId: number = route.params.sessionId
+  const sessionName: string = route.params.sessionName
+
   const [sessionTime, setSessionTime] = useState<number>(0)
   const [exerciseInstances, setExerciseInstances] = useState<any[]>([])
   const [activities, setActivities] = useState<any[]>([])
@@ -23,6 +25,8 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const [currentActivity, setCurrentActivity] = useState<{
     type: string, 
     data: {
+      id: number,
+      exerciseId: number,
       name: string,
       reps: number,
       background: keyof typeof exerciseBackgrounds,
@@ -41,6 +45,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
              exercise_instances.minuteDuration AS minuteDuration, 
              exercise_instances.secondDuration AS secondDuration, 
              exercise_instances.weight AS weight,
+             exercises.id AS exerciseId,
              exercises.name AS name,
              exercises.background AS background,
              exercises.style AS style,
@@ -58,6 +63,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     (_: any, result: any) => {
       const instanceData = result.rows._array.map((row: any) => ({
         id: row.id,
+        exerciseId: row.exerciseId,
         name: row.name,
         background: row.background,
         video: row.video,
@@ -130,7 +136,8 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     () => 
       navigation.replace('EndSession', { 
         sessionId: sessionId, 
-        exerciseInstances: exerciseInstances, 
+        sessionName: sessionName,
+        exerciseIds: exerciseInstances.map(instance => instance.exerciseId), 
         timeTotal: sessionTime 
       })
     )
