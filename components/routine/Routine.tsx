@@ -59,7 +59,9 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
         const sessions = item.session_ids.split(',')
         const names = item.session_names.split(',')
         const statuses = item.session_statuses.split(',')
+        const phaseIds = item.phase_ids.split(',')
         const phaseNames = item.phase_names.split(',')
+        const programIds = item.program_ids.split(',')
         const programNames = item.program_names.split(',')
         const programThumbnails = item.program_thumbnails.split(',')
 
@@ -67,8 +69,10 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
           id: parseInt(sessionId),
           name: names[index],
           status: statuses[index],
-          phase: phaseNames[index],
-          program: programNames[index],
+          phaseId: phaseIds[index],
+          phaseName: phaseNames[index],
+          programId: programIds[index],
+          programName: programNames[index],
           thumbnail: programThumbnails[index]
         }))
       })

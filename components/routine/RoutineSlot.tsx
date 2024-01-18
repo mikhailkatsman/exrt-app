@@ -13,8 +13,10 @@ type Props = {
     id: number,
     name: string,
     status: string,
-    phase: string,
-    program: string,
+    phaseId: number,
+    phaseName: string,
+    programId: number,
+    programName: string,
     thumbnail: string,
   },
   elementWidth: number,
@@ -136,7 +138,7 @@ const RoutineSlot: React.FC<Props> = ({
             Phase:
           </Text>
           <Text className="text-custom-white font-BaiJamjuree-Bold capitalize">
-            {session.phase}
+            {session.phaseName}
           </Text>
         </View>
         <View className="h-[10%] mx-3 mb-5">
@@ -144,7 +146,7 @@ const RoutineSlot: React.FC<Props> = ({
             Program:
           </Text>
           <Text className="text-custom-white font-BaiJamjuree-Bold capitalize">
-            {session.program}
+            {session.programName}
           </Text>
         </View>
         <View className="flex-1 mx-3 mb-3">
@@ -177,7 +179,12 @@ const RoutineSlot: React.FC<Props> = ({
               justify-center rounded-xl
             "
             style={{ borderColor: statusContext.color }}
-            onPress={() => navigation.navigate("GetReady", { sessionId: session.id, sessionName: session.name })}
+            onPress={() => navigation.navigate("GetReady", { 
+              sessionId: session.id, 
+              sessionName: session.name, 
+              phaseId: session.phaseId,
+              programId: session.programId,
+            })}
           >
             <Text 
               className="mr-4 font-BaiJamjuree-Bold text"

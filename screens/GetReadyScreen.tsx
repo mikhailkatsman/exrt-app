@@ -11,6 +11,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'GetReady'>
 const GetReadyScreen: React.FC<Props> = ({ navigation, route }) => {
   const sessionId = route.params.sessionId
   const sessionName = route.params.sessionName
+  const phaseId = route.params.phaseId
+  const programId = route.params.programId
 
   return (
     <ScreenWrapper>
@@ -19,7 +21,12 @@ const GetReadyScreen: React.FC<Props> = ({ navigation, route }) => {
       </View>
       <CurrentRest 
         duration={10} 
-        endRest={() => navigation.replace('ActiveSession', { sessionId: sessionId, sessionName: sessionName })}
+        endRest={() => navigation.replace('ActiveSession', { 
+          sessionId: sessionId, 
+          sessionName: sessionName,
+          phaseId: phaseId,
+          programId: programId,
+        })}
         screenWidth={screenWidth}
       />
     </ScreenWrapper>

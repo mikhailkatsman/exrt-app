@@ -70,16 +70,22 @@ export type RootStackParamList = {
   GetReady: {
     sessionId: number,
     sessionName: string,
+    phaseId: number,
+    programId: number,
   },
   ActiveSession: {
     sessionId: number,
     sessionName: string,
+    phaseId: number,
+    programId: number,
   },
   EndSession: {
     sessionId: number,
     sessionName: string,
     timeTotal: number,
     exerciseIds: any[],
+    phaseId: number,
+    programId: number,
   },
   SessionResultsModal: {
     sessionId: number,

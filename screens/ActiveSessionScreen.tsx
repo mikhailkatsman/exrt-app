@@ -17,6 +17,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const sessionId: number = route.params.sessionId
   const sessionName: string = route.params.sessionName
+  const phaseId: number = route.params.phaseId
+  const programId: number = route.params.programId
 
   const [sessionTime, setSessionTime] = useState<number>(0)
   const [exerciseInstances, setExerciseInstances] = useState<any[]>([])
@@ -127,7 +129,6 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const finishSession = () => {
-    // IMPLEMENT EndSessionScreen
     DB.sql(`
       UPDATE sessions
       SET status = 'completed'
@@ -138,7 +139,9 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         sessionId: sessionId, 
         sessionName: sessionName,
         exerciseIds: exerciseInstances.map(instance => instance.exerciseId), 
-        timeTotal: sessionTime 
+        timeTotal: sessionTime,
+        phaseId: phaseId,
+        programId: programId
       })
     )
   }

@@ -15,6 +15,15 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const sessionName: string = route.params.sessionName
   const timeTotal: number = route.params.timeTotal
   const exerciseIds: any[] = route.params.exerciseIds
+  const phaseId: number = route.params.phaseId
+  const programId: number = route.params.programId
+
+  console.log(`
+-------------------------
+sessionId: ${sessionId}
+phaseId: ${phaseId}
+programId: ${programId}
+  `)
 
   const [activatedMuscleGroups, setActivatedMuscleGroups] = useState<{
     name: string,
@@ -59,8 +68,68 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     })
   }
 
+  const changePhaseStatus = () => {
+    DB.sql(`
+
+    `, [phaseId],
+    (_, result) => {
+
+    })
+  }
+
+  const changeProgramStatus = () => {
+    DB.sql(`
+
+    `, [programId],
+    (_, result) => {
+
+    })
+  }
+
+  const checkPhaseStatus = () => {
+    DB.sql(`
+      SELECT s.id
+      FROM phase_session_instances psi
+      JOIN sessions s
+      ON psi.session_id = s.id
+      WHERE psi.phase_id = ?
+      AND s.status != 'completed';
+    `, [phaseId],
+    (_, result) => {
+      if (result.rows.length === 0) checkProgramStatus()
+    })
+  }
+
+  const checkProgramStatus = () => {
+    DB.sql(`
+      SELECT id
+      FROM program_phases
+      WHERE program_id = ?
+      AND phase_order > (
+        SELECT phase_order 
+        FROM program_phases 
+        WHERE phase_id = ?
+      );
+    `, [programId, phaseId],
+    (_, result) => {
+      if (result.rows.length === 0) {
+        renderMessage('program')
+        renderButton('program')
+      }
+    })
+  }
+
+  const renderMessage = (type: string) => {
+
+  }
+
+  const renderButton = (type: string) => {
+
+  }
+
   useEffect(() => {
     fetchMuscleGroups()
+    checkPhaseStatus()
   }, [])
 
   return (
