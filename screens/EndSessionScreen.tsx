@@ -18,18 +18,13 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const phaseId: number = route.params.phaseId
   const programId: number = route.params.programId
 
-  console.log(`
--------------------------
-sessionId: ${sessionId}
-phaseId: ${phaseId}
-programId: ${programId}
-  `)
-
   const [activatedMuscleGroups, setActivatedMuscleGroups] = useState<{
     name: string,
     group: number,
     load: number 
   }[]>([])
+  const [phaseCompleted, setPhaseCompleted] = useState<boolean>(false)
+  const [programCompleted, setProgramCompleted] = useState<boolean>(false)
 
   const formatTime = (totalSeconds: number) => {
     const hours = Math.floor(totalSeconds / 3600)
@@ -113,18 +108,35 @@ programId: ${programId}
     `, [programId, phaseId],
     (_, result) => {
       if (result.rows.length === 0) {
-        renderMessage('program')
-        renderButton('program')
+        setProgramCompleted(true)
+      } else {
+        setPhaseCompleted(true)
       }
     })
   }
 
-  const renderMessage = (type: string) => {
+  const renderMessage = () => {
+    let message: string = ''
 
+    if (phaseCompleted) {
+      message = "You have completed all the sesions in this phase! Would you like to move on to the next phase of the program?"
+    } else if (programCompleted) {
+      message = "You have completed all the phases of this program! Would you like to stay at this phase or mark the program as completed?"
+    }
+    
+    return (
+      <View className="h-16 mb-3 flex justify-center items-center">
+        <Text className="text-lg font-BaiJamjuree-BoldItalic text-custom-white">
+          {message}
+        </Text>
+      </View>
+    )
   }
 
-  const renderButton = (type: string) => {
-
+  const renderButton = () => {
+    if (phaseCompleted) {
+    } else if (programCompleted) {
+    }
   }
 
   useEffect(() => {
@@ -151,6 +163,7 @@ programId: ${programId}
           })}
         </View>
       </View>
+      {renderMessage()}
       <BottomBarWrapper>
 
       </BottomBarWrapper>
