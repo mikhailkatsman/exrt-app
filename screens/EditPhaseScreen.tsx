@@ -104,8 +104,6 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
     `, [programId, phaseOrder],
     (_, result) => {
       if (result.rows.length > 0) {
-        console.log('THERE ARE MORE PHASES')
-
         DB.transaction(tx => {
           tx.executeSql(`
             UPDATE phases
@@ -115,7 +113,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
 
           tx.executeSql(`
             UPDATE phases
-            SET status =?
+            SET status = ?
             WHERE id IN (
               SELECT phase_id
               FROM program_phases
@@ -128,8 +126,6 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
           () => setStatus('completed')
         )
       } else {
-        console.log('LAST PHASE')
-
         DB.transaction(tx => {
           tx.executeSql(`
             UPDATE phases

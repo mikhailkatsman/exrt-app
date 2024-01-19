@@ -65,20 +65,54 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const changePhaseStatus = () => {
     DB.sql(`
-
+      SELECT phase_order
+      FROM program_phases
+      WHERE phase_id = ?;
     `, [phaseId],
     (_, result) => {
+      const phaseOrder = result.rows.item(0).phase_order
 
+      DB.transaction(tx => {
+        tx.executeSql(`
+          UPDATE phases
+          SET status = ?
+          WHERE id = ?;
+        `, ['completed', phaseId])
+
+        tx.executeSql(`
+          UPDATE phases
+          SET status = ?
+          WHERE id IN (
+            SELECT phase_id
+            FROM program_phases
+            WHERE program_id = ?
+            AND phase_order = ?
+          );
+        `, ['active', programId, phaseOrder + 1])
+      },
+        error => console.error('Error updating phase status: ' + error),
+        () => navigation.pop()
+      )
     })
   }
 
   const changeProgramStatus = () => {
-    DB.sql(`
+    DB.transaction(tx => {
+      tx.executeSql(`
+        UPDATE phases
+        SET status = ?
+        WHERE id = ?;
+      `, ['completed', phaseId])
 
-    `, [programId],
-    (_, result) => {
-
-    })
+      tx.executeSql(`
+        UPDATE programs
+        SET status = ?
+        WHERE id = ?;
+      `, ['completed', programId])
+    },
+      error => console.error('Error updating phase status: ' + error),
+      () => navigation.pop()
+    )
   }
 
   const checkPhaseStatus = () => {
@@ -117,26 +151,74 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const renderMessage = () => {
     let message: string = ''
+    let suggestion: string = ''
 
     if (phaseCompleted) {
-      message = "You have completed all the sesions in this phase! Would you like to move on to the next phase of the program?"
+      message = "You have completed all the sessions in this phase!"
+      suggestion = "Would you like to move on to the next phase of the program?"
     } else if (programCompleted) {
-      message = "You have completed all the phases of this program! Would you like to stay at this phase or mark the program as completed?"
+      message = "You have completed all the phases of this program!"
+      suggestion = "Would you like mark this program as completed?"
     }
     
     return (
-      <View className="h-16 mb-3 flex justify-center items-center">
-        <Text className="text-lg font-BaiJamjuree-BoldItalic text-custom-white">
+      <View className="h-fit mb-3 flex justify-center items-center gap-3">
+        <Text className="w-3/4 font-BaiJamjuree-BoldItalic text-custom-white">
           {message}
+        </Text>
+        <Text className="w-3/4 font-BaiJamjuree-BoldItalic text-custom-white">
+          {suggestion}
         </Text>
       </View>
     )
   }
 
-  const renderButton = () => {
+  const renderBottomBarWrapper = () => {
+    let leftButtonText: string = 'Continue'
+    let rightButtonText: string = ''
+    let rightButtonIcon: string = ''
+    let rightButtonAction = undefined
+    let renderrightButton: boolean = false
+
     if (phaseCompleted) {
+      leftButtonText = 'Stay on this phase'
+      rightButtonText = 'Advance to next phase'
+      rightButtonIcon = 'chevron-triple-right'
+      rightButtonAction = changePhaseStatus
+      renderrightButton = true
     } else if (programCompleted) {
-    }
+      leftButtonText = 'Stay on this phase'
+      rightButtonText = 'Finish program'
+      rightButtonIcon = 'flag-checkered'
+      rightButtonAction = changeProgramStatus
+      renderrightButton = true
+    } 
+
+    return (
+      <BottomBarWrapper>
+        <TouchableOpacity 
+          className="px-3 flex-1 rounded-xl border-2 border-custom-white flex-row justify-between items-center"
+          onPress={() => navigation.pop()}
+          activeOpacity={0.6}
+        >
+          <Text className="w-[70%] text-custom-white font-BaiJamjuree-Bold capitalize">{leftButtonText}</Text>
+          <Icon name="check" size={20} color="#F5F6F3" />
+        </TouchableOpacity>
+        {renderrightButton ? (
+          <>
+            <View className="w-3" />
+            <TouchableOpacity 
+              className="px-3 flex-1 rounded-xl border-2 border-custom-green flex-row justify-between items-center"
+              onPress={rightButtonAction}
+              activeOpacity={0.6}
+            >
+              <Text className="w-[70%] text-custom-green font-BaiJamjuree-Bold capitalize">{rightButtonText}</Text>
+              <Icon name={rightButtonIcon} size={28} color="#74AC5D" />
+            </TouchableOpacity>
+          </>
+        ) : undefined}
+      </BottomBarWrapper>
+    )
   }
 
   useEffect(() => {
@@ -146,13 +228,13 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <ScreenWrapper>
-      <View className="flex flex-col items-center">
-        <Text className="my-16 font-BaiJamjuree-Bold text-4xl text-custom-white">Well Done!</Text>
-        <Text className="font-BaiJamjuree-BoldItalic text-custom-white">Completed</Text>
-        <Text className="mb-8 font-BaiJamjuree-Bold text-xl text-custom-white">{sessionName}</Text>
-        <Text className="font-BaiJamjuree-BoldItalic text-custom-white">In</Text>
-        <Text className="mb-8 font-BaiJamjuree-Bold text-lg text-custom-white">{formatTime(timeTotal)}</Text>
-        <Text className="mb-3 font-BaiJamjuree-BoldItalic text-custom-white">Activated Muscle Groups:</Text>
+      <View className="flex-1 flex-col items-center">
+        <Text className="my-10 font-BaiJamjuree-Bold text-4xl text-custom-green">Well Done!</Text>
+        <Text className="font-BaiJamjuree-BoldItalic text-custom-grey">Completed</Text>
+        <Text className="mb-5 font-BaiJamjuree-Bold text-xl text-custom-white">{sessionName}</Text>
+        <Text className="font-BaiJamjuree-BoldItalic text-custom-grey">Time</Text>
+        <Text className="mb-5 font-BaiJamjuree-Bold text-lg text-custom-white">{formatTime(timeTotal)}</Text>
+        <Text className="mb-5 font-BaiJamjuree-BoldItalic text-custom-grey">Activated Muscle Groups:</Text>
         <View className="h-64 w-full mb-8 relative">
           <Image className="absolute w-full h-full" resizeMode="contain" 
             source={muscleGroups['base' as keyof typeof muscleGroups]}
@@ -164,9 +246,7 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         </View>
       </View>
       {renderMessage()}
-      <BottomBarWrapper>
-
-      </BottomBarWrapper>
+      {renderBottomBarWrapper()}
     </ScreenWrapper>
   )
 }

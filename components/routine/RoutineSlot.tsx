@@ -108,9 +108,9 @@ const RoutineSlot: React.FC<Props> = ({
         <LinearGradient
           className="absolute w-full h-full"
           colors={['rgba(18, 18, 18, 0.6)', '#121212', '#121212']}
-          start={{ x: 0.2, y: 0 }}
-          end={{ x: 1, y: 1 }}
           locations={[0, 0.45, 1]}
+          // start={{ x: 0.2, y: 0 }}
+          // end={{ x: 1, y: 1 }}
         />
         <View className="h-[8%] mt-3 mx-3 flex-row justify-between">
           <Text className="font-BaiJamjuree-BoldItalic text-sm" style={{color: statusContext.color}}>

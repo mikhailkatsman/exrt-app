@@ -68,8 +68,8 @@ const ProgramCard: React.FC<Props> = ({
         <LinearGradient 
           className="absolute h-full w-full"
           colors={['rgba(18, 18, 18, 1)', 'transparent']}
-          start={{ x: 0.3, y: 0 }}
-          end={{ x: 0.7, y: 1 }}
+          // start={{ x: 0.3, y: 0 }}
+          // end={{ x: 0.7, y: 1 }}
         />
         <View className="h-[60%] p-3">
           <Text className="text-custom-white text-xl font-BaiJamjuree-Bold capitalize">

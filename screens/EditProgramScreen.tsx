@@ -399,8 +399,8 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           <LinearGradient 
             className="absolute h-full w-full"
             colors={['rgba(18, 18, 18, 1)', 'transparent']}
-            start={{ x: 0.3, y: 0 }}
-            end={{ x: 0.7, y: 1 }}
+            // start={{ x: 0.3, y: 0 }}
+            // end={{ x: 0.7, y: 1 }}
           />
           <View className="h-full w-full p-3 flex-col justify-between items-end">
             <View className='w-full flex-col justify-between'>

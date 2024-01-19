@@ -48,8 +48,8 @@ const ActiveProgramsCard: React.FC<Props> = ({
         <LinearGradient 
           className="absolute h-full w-full"
           colors={['rgba(0,0,0,1)', 'transparent']}
-	  start={{ x: 0, y: 0 }}
-	  end={{ x: 0.8, y: 1 }}
+	  // start={{ x: 0, y: 0 }}
+	  // end={{ x: 0.8, y: 1 }}
         />
         <View className="flex-1 p-3">
           <Text className="capitalize text-custom-white text-xl font-BaiJamjuree-Bold" style={{ lineHeight: 24 }}>
