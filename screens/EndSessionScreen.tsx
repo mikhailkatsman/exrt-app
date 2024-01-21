@@ -197,11 +197,11 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     return (
       <BottomBarWrapper>
         <TouchableOpacity 
-          className="px-3 flex-1 rounded-xl border-2 border-custom-white flex-row justify-between items-center"
+          className={`px-3 flex-1 rounded-xl border-2 border-custom-white flex-row ${renderrightButton ? 'justify-between' : 'justify-center'} items-center`}
           onPress={() => navigation.pop()}
           activeOpacity={0.6}
         >
-          <Text className="w-[70%] text-custom-white font-BaiJamjuree-Bold capitalize">{leftButtonText}</Text>
+          <Text className={`${renderrightButton ? 'w-[70%]' : 'mr-3'} text-custom-white font-BaiJamjuree-Bold capitalize`}>{leftButtonText}</Text>
           <Icon name="check" size={20} color="#F5F6F3" />
         </TouchableOpacity>
         {renderrightButton ? (

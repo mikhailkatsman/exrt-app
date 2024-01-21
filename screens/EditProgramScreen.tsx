@@ -512,8 +512,10 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
               }
             </View>
             <Text className="flex-1 mb-8 text-custom-white text-lg font-BaiJamjuree-Bold capitalize">
-              {type === 'fullbody'
-                ? 'full-body hypertrophy training'
+              {type === 'hypertrophy'
+                ? 'hypertrophy training'
+                : type === 'strength'
+                ? 'strength training'
                 : type === 'skills'
                 ? 'specific skill training'
                 : type === 'mobility'

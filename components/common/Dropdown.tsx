@@ -4,7 +4,7 @@ import { Icon } from "@react-native-material/core"
 
 type Props = {
   placeholder: string,
-  listItems: { label: string, value: string }[],
+  listItems: { label: string, value: string | number }[],
   onIndexChange: (index: number) => void,
   reset: () => void
 }
@@ -33,8 +33,8 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, rese
         ref={dropDownRef}
         onLayout={handleLayout}
         className={`
-          h-10 w-32 border-2 border-custom-white 
-          ${isOpen ? 'rounded-t-lg' : 'rounded-lg'} 
+          h-10 w-40 border-2 border-custom-white 
+          ${isOpen ? 'rounded-t-xl' : 'rounded-xl'} 
           flex-row items-center
         `} 
         activeOpacity={1}
@@ -50,14 +50,14 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, rese
           onDismiss={handleDropdownState}
           onRequestClose={handleDropdownState}
           transparent={true}
-          animationType="fade"
+          animationType="none"
         >
           <Pressable className="w-full h-full bg-custom-dark/60" onPress={handleDropdownState} />
-          <View className="w-32 border-2 border-custom-white rounded-lg"
+          <View className="w-40 border-2 border-custom-white rounded-xl"
             style={{ position: "absolute", top: dropDownPosition.y, left: dropDownPosition.x }}
           >
             <TouchableOpacity 
-              className="h-9 bg-custom-dark rounded-t-lg flex-row items-center"
+              className="h-9 bg-custom-dark rounded-t-xl flex-row items-center"
               onPress={() => {
                 setDisplayedText(placeholder)
                 handleDropdownState()
@@ -71,8 +71,8 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, rese
             </TouchableOpacity>
             <ScrollView 
               className={`
-                ${listItems.length < 4 ? 'h-30' : 'h-48'} 
-                bg-custom-dark rounded-b-lg
+                ${listItems.length < 5 ? 'h-fit' : 'h-40'} 
+                bg-custom-dark rounded-b-xl
               `}
               showsVerticalScrollIndicator={false}
               overScrollMode="never"

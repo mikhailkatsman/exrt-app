@@ -17,7 +17,8 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
   const [difficultySort, setDifficultySort] = useState<string | null>(null)
 
   const programTypeList: { label: string, value: string }[] = [
-    { label: 'FullBody', value: 'fullbody' },
+    { label: 'Hypertrophy', value: 'hypertrophy' },
+    { label: 'Strength', value: 'strength' },
     { label: 'Skills', value: 'skills' },
     { label: 'Mobility', value: 'mobility' },
   ]
@@ -84,7 +85,7 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <ScreenWrapper>
-      <View className="mx-2 h-14 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
+      <View className="mx-2 h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
         <TextInput 
           className="px-2 flex-1 h-full text-custom-white text-lg font-BaiJamjuree-Bold"
           enterKeyHint="search"
@@ -95,38 +96,36 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
         <Icon name="magnify" size={30} color="#F5F6F3" />
       </View>
       <View className="flex-1 mb-3 overflow-hidden">
-        <View className="w-full flex-col">
-          <View className="h-[15%] p-2 flex-row items-center justify-between">
-            <Text className="text-custom-white mb-1 font-BaiJamjuree-Regular">Sort by</Text>
-            <DropDown 
-              placeholder='Type'
-              listItems={programTypeList}
-              onIndexChange={(index: number) => setTypeSort(programTypeList[index].value)}
-              reset={() => setTypeSort(null)}
-            />
-            <DropDown 
-              placeholder='Difficulty' 
-              listItems={programDifficultyList} 
-              onIndexChange={(index: number) => setDifficultySort(programDifficultyList[index].value)}
-              reset={() => setDifficultySort(null)}
-            />
-          </View>
-          <ScrollView 
-            className="h-[85%] p-2 bg-custom-dark"
-            horizontal={false}
-            fadingEdgeLength={200}
-          >
-            {programsList.map((item, index) => (
-              <ProgramCard
-                key={index} 
-                id={item.id}
-                name={item.name}
-                thumbnail={item.thumbnail}
-                status={item.status}
-              />
-            ))}
-          </ScrollView>
+        <Text className="px-2 mb-1 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
+        <View className="px-2 mb-5 flex-row items-center justify-between">
+          <DropDown 
+            placeholder='Type'
+            listItems={programTypeList}
+            onIndexChange={(index: number) => setTypeSort(programTypeList[index].value)}
+            reset={() => setTypeSort(null)}
+          />
+          <DropDown 
+            placeholder='Difficulty' 
+            listItems={programDifficultyList} 
+            onIndexChange={(index: number) => setDifficultySort(programDifficultyList[index].value)}
+            reset={() => setDifficultySort(null)}
+          />
         </View>
+        <ScrollView 
+          className="h-[85%] p-2 bg-custom-dark"
+          horizontal={false}
+          fadingEdgeLength={200}
+        >
+          {programsList.map((item, index) => (
+            <ProgramCard
+              key={index} 
+              id={item.id}
+              name={item.name}
+              thumbnail={item.thumbnail}
+              status={item.status}
+            />
+          ))}
+        </ScrollView>
       </View>
     </ScreenWrapper>
   )

@@ -15,11 +15,14 @@ const ExerciseListScreen: React.FC<Props> = () => {
   const [exerciseList, setExerciseList] = useState<{
     id: number, 
     name: string, 
-    thumbnail: keyof typeof exerciseThumbnails
+    thumbnail: keyof typeof exerciseThumbnails, 
+    difficulty: number
   }[]>([])
   const [searchString, setSearchString] = useState<string | null>(null)
   const [muscleSort, setMuscleSort] = useState<string | null>(null)
   const [typeSort, setTypeSort] = useState<string | null>(null)
+  const [styleSort, setStyleSort] = useState<string | null>(null)
+  const [difficultySort, setDifficultySort] = useState<number | null>(null)
 
   const muscleGroupList: { label: string, value: string }[] = [
     { label: 'Chest', value: 'middle pectoral' },
@@ -40,9 +43,22 @@ const ExerciseListScreen: React.FC<Props> = () => {
     { label: 'Free Weight', value: 'freeweight' }
   ]
 
+  const styleList: { label: string, value: string }[] = [
+    { label: 'Compound', value: 'compound' },
+    { label: 'Isolation', value: 'isolation' }
+  ]
+
+  const difficultyList: { label: string, value: number }[] = [
+    { label: 'Beginner', value: 1 },
+    { label: 'Intermediate', value: 2 },
+    { label: 'Advanced', value: 3 },
+    { label: 'Expert', value: 4 },
+    { label: 'Master', value: 5 }
+  ]
+
   useEffect(() => {
     let sqlQuery = `
-      SELECT id, name, thumbnail
+      SELECT id, name, thumbnail, difficulty
       FROM exercises
       WHERE id IN (
         SELECT exercise_id
@@ -71,6 +87,16 @@ const ExerciseListScreen: React.FC<Props> = () => {
       parameters.push(typeSort)
     }
 
+    if (styleSort) {
+      sqlQuery += ' AND style = ?'
+      parameters.push(styleSort)
+    }
+
+    if (difficultySort) {
+      sqlQuery += ' AND difficulty = ?'
+      parameters.push(difficultySort)
+    }
+
     sqlQuery += ' ORDER BY name;'
 
     parameters = parameters.filter(param => param !== undefined || param !== null)
@@ -80,11 +106,11 @@ const ExerciseListScreen: React.FC<Props> = () => {
       parameters,
       (_, result) => setExerciseList(result.rows._array)
     ) 
-  }, [searchString, muscleSort, typeSort])
+  }, [searchString, muscleSort, typeSort, styleSort, difficultySort])
   
   return (
     <ScreenWrapper>
-      <View className="mx-2 h-14 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
+      <View className="mx-2 h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
         <TextInput 
           className="px-2 flex-1 h-full text-custom-white text-lg font-BaiJamjuree-Bold"
           enterKeyHint="search"
@@ -95,37 +121,50 @@ const ExerciseListScreen: React.FC<Props> = () => {
         <Icon name="magnify" size={30} color="#F5F6F3" />
       </View>
       <View className="flex-1 mb-3 overflow-hidden">
-        <View className="w-full flex-col">
-          <View className="h-[15%] p-2 flex-row items-center justify-between">
-            <Text className="text-custom-white mb-1 font-BaiJamjuree-Regular">Sort by</Text>
-            <DropDown 
-              placeholder='Muscle Group'
-              listItems={muscleGroupList}
-              onIndexChange={(index: number) => setMuscleSort(muscleGroupList[index].value)}
-              reset={() => setMuscleSort(null)}
-            />
-            <DropDown 
-              placeholder='Type' 
-              listItems={exerciseTypeList} 
-              onIndexChange={(index: number) => setTypeSort(exerciseTypeList[index].value)}
-              reset={() => setTypeSort(null)}
-            />
-          </View>
-          <ScrollView 
-            className="h-[85%] p-2 bg-custom-dark"
-            horizontal={false}
-            fadingEdgeLength={200}
-          >
-            {exerciseList.map((exercise, index) => (
-              <ExerciseCard 
-                key={index}
-                id={exercise.id}
-                name={exercise.name}
-                thumbnail={exercise.thumbnail}
+        <Text className="px-2 mb-3 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
+            <View className="px-2 pb-2 flex-row items-center justify-between">
+              <DropDown 
+                placeholder='Muscle Group'
+                listItems={muscleGroupList}
+                onIndexChange={(index: number) => setMuscleSort(muscleGroupList[index].value)}
+                reset={() => setMuscleSort(null)}
               />
-            ))}
-          </ScrollView>
-        </View>
+              <DropDown 
+                placeholder='Type' 
+                listItems={exerciseTypeList} 
+                onIndexChange={(index: number) => setTypeSort(exerciseTypeList[index].value)}
+                reset={() => setTypeSort(null)}
+              />
+            </View>
+            <View className="mb-5 px-2 flex-row items-center justify-between">
+              <DropDown 
+                placeholder='Style'
+                listItems={styleList}
+                onIndexChange={(index: number) => setStyleSort(styleList[index].value)}
+                reset={() => setStyleSort(null)}
+              />
+              <DropDown 
+                placeholder='Difficulty' 
+                listItems={difficultyList} 
+                onIndexChange={(index: number) => setDifficultySort(difficultyList[index].value)}
+                reset={() => setDifficultySort(null)}
+              />
+            </View>
+        <ScrollView 
+          className="h-[85%] p-2 bg-custom-dark"
+          horizontal={false}
+          fadingEdgeLength={200}
+        >
+          {exerciseList.map((exercise, index) => (
+            <ExerciseCard 
+              key={index}
+              id={exercise.id}
+              name={exercise.name}
+              thumbnail={exercise.thumbnail}
+              difficulty={exercise.difficulty}
+            />
+          ))}
+        </ScrollView>
       </View>
     </ScreenWrapper>
   )

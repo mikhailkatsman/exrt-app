@@ -255,7 +255,7 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
             <Icon name='video-outline' size={40} color="#F5F6F3" />
           </TouchableOpacity>
           <View className='w-2/3 -mt-1 mb-3'>
-            <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Execution:</Text>
+            <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Step By Step:</Text>
           </View>
           {exerciseData.execution.map((paragraph, index) => (
             <View key={index} className="w-full flex flex-row gap-3 mb-3">
