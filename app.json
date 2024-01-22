@@ -24,8 +24,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#121212"
       },
-      "softwareKeyboardLayoutMode" : "pan",
-      "package": "com.mkatdev.exrt"
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.mkatdev.exrt",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "androidNavigationBar": {
       "backgroundColor": "#121212"
@@ -35,6 +38,11 @@
     },
     "plugins": [
       "expo-image-picker"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d82482d3-5f53-4796-8563-4f3142895081"
+      }
+    }
   }
 }
