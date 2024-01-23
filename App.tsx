@@ -1,5 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import { Text } from 'react-native'
+import React, { useEffect, useState, useCallback } from 'react'
+import DB from '@modules/DB'
+import { IconComponentProvider } from '@react-native-material/core'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import * as Font from 'expo-font'
+import * as SplashScreen from 'expo-splash-screen'
+import { customFonts } from '@modules/AssetPaths'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import HubScreen from '@screens/HubScreen'
 import HomeScreen from '@screens/HomeScreen'
 import EditSessionScreen from '@screens/EditSessionScreen'
@@ -12,15 +21,6 @@ import EditProgramScreen from '@screens/EditProgramScreen'
 import EditPhaseScreen from '@screens/EditPhaseScreen'
 import ErrorModal from '@screens/ErrorModal'
 import ConfirmModal from '@screens/ConfirmModal'
-import DB from '@modules/DB'
-import { IconComponentProvider } from '@react-native-material/core'
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
-import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import * as Font from 'expo-font'
-import { customFonts } from '@modules/AssetPaths'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import DismissModal from '@screens/DismissModal'
 import GetReadyScreen from '@screens/GetReadyScreen'
 import SelectDayModal from '@screens/SelectDayModal'
@@ -117,6 +117,8 @@ export type RootStackParamList = {
   },
 }
 
+SplashScreen.preventAutoHideAsync()
+
 const App: React.FC = () => {
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
 
@@ -149,20 +151,26 @@ const App: React.FC = () => {
         // await logAllData()
 
         await setResetDate()
-
-        setIsInitialized(true)
       } catch (error) {
         console.log('Error Initializing: ' + error)
+      } finally {
+        setIsInitialized(true)
       }
     }
 
     loadAllAppAssets()
   }, [])
 
+  const onLayoutRootView = useCallback(async() => {
+    if (isInitialized) {
+      await SplashScreen.hideAsync();
+    }
+  }, [isInitialized]);
+
   return isInitialized ? (
     <GestureHandlerRootView className='flex-1'>
       <SafeAreaProvider>
-        <NavigationContainer>
+        <NavigationContainer onReady={onLayoutRootView}>
           <IconComponentProvider IconComponent={MaterialCommunityIcons}>
             <Stack.Navigator
               initialRouteName='Home'
@@ -302,9 +310,7 @@ const App: React.FC = () => {
         </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>
-  ) : (
-    <Text>Loading...</Text>
-  )
+  ) : null
 }
 
 export default App

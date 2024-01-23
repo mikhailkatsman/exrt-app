@@ -1,5 +1,5 @@
 import { View, Dimensions } from "react-native"
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import DB from '@modules/DB'
