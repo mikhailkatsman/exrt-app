@@ -122,8 +122,8 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
               />
             )}
             <TouchableOpacity
-              className="h-full mx-2 overflow-hidden border-x-2 border-custom-white rounded-2xl flex justify-center items-center"
-              style={{ width: elementWidth, backgroundColor: 'rgba(80, 80, 80, 0.2)' }}
+              className="h-full mx-2 overflow-hidden bg-custom-dark-grey border-x-2 border-custom-white rounded-2xl flex justify-center items-center"
+              style={{ width: elementWidth }}
               activeOpacity={0.6}
             >
               <Icon name="plus" size={50} color="#F5F6F3" />

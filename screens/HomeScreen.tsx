@@ -60,6 +60,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <ScreenWrapper>
+      <View className="h-8" />
       <Progress 
         dayIds={dayIds} 
         dayNow={dayNow}

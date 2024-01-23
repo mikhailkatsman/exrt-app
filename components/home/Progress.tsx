@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { useEffect, useState } from 'react'
 
 type Props = {
 	dayIds: number[],
@@ -8,13 +9,13 @@ type Props = {
 }
 
 const Progress: React.FC<Props> = ({ dayIds, dayNow, screenWidth }) => {
-  const week: string[] = ["M", "T", "W", "T", "F", "S", "S"]
+	const week: string[] = ["M", "T", "W", "T", "F", "S", "S"]
 
 	const navigation = useNavigation()
 
 	return (
-		<TouchableOpacity 
-			className="px-2 h-[14%] w-full"
+		<TouchableOpacity
+			className="px-2 h-[14%] w-full bg-custom-dark"
 			onPress={() => navigation.navigate('Hub', { dayNow: dayNow, screenWidth: screenWidth })}
 			activeOpacity={0.6}
 		>

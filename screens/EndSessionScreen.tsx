@@ -229,8 +229,8 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <ScreenWrapper>
       <View className="flex-1 flex-col items-center">
-        <Text className="my-10 font-BaiJamjuree-Bold text-4xl text-custom-green">Well Done!</Text>
-        <Text className="font-BaiJamjuree-BoldItalic text-custom-grey">Completed</Text>
+        <Text className="my-10 font-BaiJamjuree-Bold text-4xl text-custom-green">Completed!</Text>
+        <Text className="font-BaiJamjuree-BoldItalic text-custom-grey">Session</Text>
         <Text className="mb-5 font-BaiJamjuree-Bold text-xl text-custom-white">{sessionName}</Text>
         <Text className="font-BaiJamjuree-BoldItalic text-custom-grey">Time</Text>
         <Text className="mb-5 font-BaiJamjuree-Bold text-lg text-custom-white">{formatTime(timeTotal)}</Text>

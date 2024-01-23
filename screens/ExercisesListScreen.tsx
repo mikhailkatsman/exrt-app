@@ -122,13 +122,14 @@ const ExerciseListScreen: React.FC<Props> = () => {
       </View>
       <View className="flex-1 mb-3 overflow-hidden">
         <Text className="px-2 mb-3 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
-            <View className="px-2 pb-2 flex-row items-center justify-between">
+            <View className="px-2 pb-2 flex-row justify-between">
               <DropDown 
                 placeholder='Muscle Group'
                 listItems={muscleGroupList}
                 onIndexChange={(index: number) => setMuscleSort(muscleGroupList[index].value)}
                 reset={() => setMuscleSort(null)}
               />
+              <View className="w-2"/>
               <DropDown 
                 placeholder='Type' 
                 listItems={exerciseTypeList} 
@@ -136,13 +137,14 @@ const ExerciseListScreen: React.FC<Props> = () => {
                 reset={() => setTypeSort(null)}
               />
             </View>
-            <View className="mb-5 px-2 flex-row items-center justify-between">
+            <View className="mb-5 px-2 flex-row justify-between">
               <DropDown 
                 placeholder='Style'
                 listItems={styleList}
                 onIndexChange={(index: number) => setStyleSort(styleList[index].value)}
                 reset={() => setStyleSort(null)}
               />
+              <View className="w-2"/>
               <DropDown 
                 placeholder='Difficulty' 
                 listItems={difficultyList} 

@@ -12,7 +12,7 @@ type Props = {
 const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, reset }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [displayedText, setDisplayedText] = useState<string>(placeholder)
-  const [dropDownPosition, setDropDownPosition] = useState<{x: number, y: number}>({x: 0, y: 0})
+  const [dropDownPosition, setDropDownPosition] = useState<{x: number, y: number, width: number}>({x: 0, y: 0, width: 0})
 
   const dropDownRef = useRef<null | TouchableOpacity>(null)
 
@@ -23,6 +23,7 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, rese
       setDropDownPosition({
         x: pageX,
         y: pageY,
+        width: width,
       })
     })
   }
@@ -33,15 +34,15 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, rese
         ref={dropDownRef}
         onLayout={handleLayout}
         className={`
-          h-10 w-40 border-2 border-custom-white 
+          h-10 flex-1 border-2 border-custom-white 
           ${isOpen ? 'rounded-t-xl' : 'rounded-xl'} 
-          flex-row items-center
+          flex-row items-center justify-between
         `} 
         activeOpacity={1}
         onPress={handleDropdownState}
       >
-        <Text className="w-[80%] pl-2 text-custom-white text-xs font-BaiJamjuree-Bold">{displayedText}</Text>
-        <View className="w-[20%]">
+        <Text className="px-2 text-custom-white text-xs font-BaiJamjuree-Bold">{displayedText}</Text>
+        <View className="pr-2">
           <Icon name="arrow-down-right" size={20} color="#F5F6F3" />
         </View>
       </TouchableOpacity>
@@ -53,20 +54,20 @@ const DropDown: React.FC<Props> = ({ placeholder, listItems, onIndexChange, rese
           animationType="none"
         >
           <Pressable className="w-full h-full bg-custom-dark/60" onPress={handleDropdownState} />
-          <View className="w-40 border-2 border-custom-white rounded-xl"
-            style={{ position: "absolute", top: dropDownPosition.y, left: dropDownPosition.x }}
+          <View className="border-2 border-custom-white rounded-xl"
+            style={{ position: "absolute", top: dropDownPosition.y, left: dropDownPosition.x, width: dropDownPosition.width }}
           >
             <TouchableOpacity 
-              className="h-9 bg-custom-dark rounded-t-xl flex-row items-center"
+              className="h-9 bg-custom-dark rounded-t-xl flex-row items-center justify-between"
               onPress={() => {
                 setDisplayedText(placeholder)
                 handleDropdownState()
                 reset()
               }}
             >
-              <Text className="w-[80%] pl-2 text-custom-white text-xs font-BaiJamjuree-Bold">{displayedText}</Text>
-              <View className="w-[20%]">
-                <Icon name="close" size={18} color="#F5F6F3" />
+              <Text className="px-2 text-custom-white text-xs font-BaiJamjuree-Bold">{displayedText}</Text>
+              <View className="pr-2">
+                <Icon name="close" size={20} color="#F5F6F3" />
               </View>
             </TouchableOpacity>
             <ScrollView 

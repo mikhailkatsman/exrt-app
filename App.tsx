@@ -198,7 +198,7 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='Home'
                   component={HomeScreen}
-                  options={{title: 'EXRT'}}
+                  options={{title: 'EXRT', headerShown: false }}
                 />
                 <Stack.Screen
                   name='ProgramsList'

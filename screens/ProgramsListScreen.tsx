@@ -97,13 +97,14 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
       </View>
       <View className="flex-1 mb-3 overflow-hidden">
         <Text className="px-2 mb-1 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
-        <View className="px-2 mb-5 flex-row items-center justify-between">
+        <View className="px-2 mb-5 flex-row justify-between">
           <DropDown 
             placeholder='Type'
             listItems={programTypeList}
             onIndexChange={(index: number) => setTypeSort(programTypeList[index].value)}
             reset={() => setTypeSort(null)}
           />
+          <View className="w-2"/>
           <DropDown 
             placeholder='Difficulty' 
             listItems={programDifficultyList} 

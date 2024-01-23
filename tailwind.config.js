@@ -14,6 +14,7 @@ module.exports = {
       'custom-dark-green': '#3C592F',
       'custom-dark': '#121212',
       'custom-grey': '#505050',
+      'custom-dark-grey': '#252525',
       'custom-blue': '#5AABD6',
       'custom-yellow': '#F7EA40',
       'custom-orange': '#F34A00',
