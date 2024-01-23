@@ -1,4 +1,4 @@
-import { View, Dimensions } from "react-native"
+import { View, Dimensions, Image } from "react-native"
 import { useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
@@ -8,6 +8,7 @@ import ScreenWrapper from "@components/common/ScreenWrapper"
 import Progress from "@components/home/Progress"
 import ActivePrograms from "@components/home/ActivePrograms"
 import AnimatedNavigationButton from "@components/home/AnimatedNavigationButton"
+import { TouchableOpacity } from "react-native-gesture-handler"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
@@ -51,16 +52,34 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   }
 
   useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => {}}
+          className="h-10 w-10 flex justify-center items-end"
+          activeOpacity={0.6}
+        >
+          <Image 
+            className="h-6 w-6" 
+            resizeMode="contain"
+            source={icons['Logo' as keyof typeof icons]} 
+          />
+        </TouchableOpacity>
+      )
+    })
+
     const unsubscribeFocus = navigation.addListener('focus', () => {
       fetchData()
       setAnimationTrigger(prev => !prev)
     })
-    return () => { unsubscribeFocus() }
+
+    return () => {
+      unsubscribeFocus()
+    }
   }, [])
 
   return (
     <ScreenWrapper>
-      <View className="h-8" />
       <Progress 
         dayIds={dayIds} 
         dayNow={dayNow}

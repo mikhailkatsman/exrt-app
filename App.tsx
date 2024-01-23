@@ -172,9 +172,7 @@ const App: React.FC = () => {
       <SafeAreaProvider>
         <NavigationContainer onReady={onLayoutRootView}>
           <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-            <Stack.Navigator
-              initialRouteName='Home'
-            >
+            <Stack.Navigator initialRouteName='Home'>
               <Stack.Group
                 screenOptions={{
                   presentation: 'card',
@@ -198,7 +196,7 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='Home'
                   component={HomeScreen}
-                  options={{title: 'EXRT', headerShown: false }}
+                  options={{title: ''}}
                 />
                 <Stack.Screen
                   name='ProgramsList'
