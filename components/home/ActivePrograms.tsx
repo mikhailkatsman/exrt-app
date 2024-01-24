@@ -8,10 +8,11 @@ import { useNavigation } from '@react-navigation/native'
 type Props = {
 	activePrograms: any[],
 	screenWidth: number,
+	onLayout: () => void
 }
 
 
-const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth }) => {
+const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth, onLayout }) => {
 	const elementWidth = useMemo(() => {
 		return screenWidth * 70 / 100
 	}, [screenWidth])
@@ -19,7 +20,7 @@ const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth }) => {
 	const navigation = useNavigation()
 
 	return (
-		<View className='flex-1'>
+		<View className='flex-1' onLayout={onLayout}>
 			<View className='mb-3 mx-2 h-8 flex-row justify-between items-center'>
 				<Text className="text-custom-white font-BaiJamjuree-BoldItalic">Your Active Programs</Text>
 				<TouchableOpacity 

@@ -59,7 +59,6 @@ const CurrentExercise: React.FC<Props> = ({
 					isMuted={true}
 					shouldPlay={true}
 					isLooping={true}
-					
 				/>
 			: 
 				<>

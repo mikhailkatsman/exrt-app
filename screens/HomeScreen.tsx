@@ -1,4 +1,4 @@
-import { View, Dimensions, Image } from "react-native"
+import { View, Dimensions, Image, TouchableOpacity } from "react-native"
 import { useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
@@ -9,7 +9,7 @@ import ScreenWrapper from "@components/common/ScreenWrapper"
 import Progress from "@components/home/Progress"
 import ActivePrograms from "@components/home/ActivePrograms"
 import AnimatedNavigationButton from "@components/home/AnimatedNavigationButton"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
@@ -24,6 +24,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [dayIds, setDayIds] = useState<number[]>([])
   const [activePrograms, setActivePrograms] = useState<any[]>([])
   const [animationTrigger, setAnimationTrigger] = useState<boolean>(false)
+
+  const splashOpacity = useSharedValue(1)
 
   const fetchData = () => {
     DB.sql(`
@@ -66,12 +68,25 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (isLoaded) {
+      splashOpacity.value = withTiming(0, { duration: 500 })
+    }
+  }, [isLoaded])
+
+  const animatedSplashStyle = useAnimatedStyle(() => {
+    return {
+      opacity: splashOpacity.value
+    }
+  })
+
   const loadHandler = async() => {
     SplashScreen.hideAsync()
   }
 
   return (
-    <View className="flex-1 bg-custom-dark justify-center items-center">
+    <>
+    <Animated.View style={animatedSplashStyle} className="absolute w-full h-full bg-custom-dark z-50 justify-center items-center">
       <Image
         onLoad={loadHandler}
         resizeMode="center"
@@ -79,58 +94,59 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         source={icons['SplashLogo' as keyof typeof icons]}
         fadeDuration={0}
       />
-      <View className="w-6 h-6 bg-custom-green absolute" />
-    </View>  
-    // <ScreenWrapper>
-    //   <View className="w-full p-2 flex items-end">
-    //     <TouchableOpacity
-    //       onPress={() => {}}
-    //       className="h-10 w-10 flex justify-center items-end"
-    //       activeOpacity={0.6}
-    //     >
-    //       <Image 
-    //         className="h-6 w-6" 
-    //         resizeMode="contain"
-    //         source={icons['Logo' as keyof typeof icons]} 
-    //       />
-    //     </TouchableOpacity>
-    //   </View>
-    //   <Progress 
-    //     dayIds={dayIds} 
-    //     dayNow={dayNow}
-    //     screenWidth={dimentions.width} 
-    //   />
-    //   <View className="h-8" />
-    //   <ActivePrograms 
-    //     activePrograms={activePrograms}
-    //     screenWidth={dimentions.width}
-    //   />
-    //   <View className="h-14" />
-    //   <AnimatedNavigationButton
-    //     key={'button1'}
-    //     trigger={animationTrigger}
-    //     image={icons.ProgramsIcon}
-    //     colorName="custom-purple"
-    //     colorCode="#7D34A7"
-    //     textLine1="Browse"
-    //     textLine2="Programs"
-    //     route="ProgramsList"
-    //     delay={100}
-    //   />
-    //   <View className="h-10" />
-    //   <AnimatedNavigationButton
-    //     key={'button2'}
-    //     trigger={animationTrigger}
-    //     image={icons.ExercisesIcon}
-    //     colorName="custom-yellow"
-    //     colorCode="#F7EA40"
-    //     textLine1="Browse"
-    //     textLine2="Exercises"
-    //     route="ExercisesList"
-    //     delay={200}
-    //   />
-    //   <View className="h-5" />
-    // </ScreenWrapper>
+    </Animated.View>
+    <ScreenWrapper>
+      <View className="w-full p-2 flex items-end">
+        <TouchableOpacity
+          onPress={() => {}}
+          className="h-10 w-10 flex justify-center items-end"
+          activeOpacity={0.6}
+        >
+          <Image 
+            className="h-6 w-6" 
+            resizeMode="contain"
+            source={icons['Logo' as keyof typeof icons]} 
+          />
+        </TouchableOpacity>
+      </View>
+      <Progress 
+        dayIds={dayIds} 
+        dayNow={dayNow}
+        screenWidth={dimentions.width} 
+      />
+      <View className="h-8" />
+      <ActivePrograms 
+        activePrograms={activePrograms}
+        screenWidth={dimentions.width}
+        onLayout={() => setIsLoaded(true)}
+      />
+      <View className="h-14" />
+      <AnimatedNavigationButton
+        key={'button1'}
+        trigger={animationTrigger}
+        image={icons.ProgramsIcon}
+        colorName="custom-purple"
+        colorCode="#7D34A7"
+        textLine1="Browse"
+        textLine2="Programs"
+        route="ProgramsList"
+        delay={200}
+      />
+      <View className="h-10" />
+      <AnimatedNavigationButton
+        key={'button2'}
+        trigger={animationTrigger}
+        image={icons.ExercisesIcon}
+        colorName="custom-yellow"
+        colorCode="#F7EA40"
+        textLine1="Browse"
+        textLine2="Exercises"
+        route="ExercisesList"
+        delay={300}
+      />
+      <View className="h-5" />
+    </ScreenWrapper>
+    </>
   )
 }
 
