@@ -4,6 +4,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import DB from '@modules/DB'
 import { icons } from "@modules/AssetPaths"
+import * as SplashScreen from 'expo-splash-screen'
 import ScreenWrapper from "@components/common/ScreenWrapper"
 import Progress from "@components/home/Progress"
 import ActivePrograms from "@components/home/ActivePrograms"
@@ -15,6 +16,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 const dimentions = Dimensions.get('screen')
 const dateNow: Date = new Date()
 const dayNow = (dateNow.getDay() + 6) % 7
+
+SplashScreen.preventAutoHideAsync()
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
@@ -63,15 +66,20 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [])
 
+  const loadHandler = async() => {
+    SplashScreen.hideAsync()
+  }
+
   return (
-    <View className="flex-1 bg-custom-dark relative">
+    <View className="flex-1 bg-custom-dark justify-center items-center">
       <Image
-        className="absolute top-[39.5%] left-[26.75%] w-[46.65%] h-[20.9%]"
-        resizeMode="contain"
-        source={icons['Logo' as keyof typeof icons]}
+        onLoad={loadHandler}
+        resizeMode="center"
+        className="scale-[1.055]"
+        source={icons['SplashLogo' as keyof typeof icons]}
         fadeDuration={0}
       />
-      <View className="w-6 h-6 bg-custom-green" />
+      <View className="w-6 h-6 bg-custom-green absolute" />
     </View>  
     // <ScreenWrapper>
     //   <View className="w-full p-2 flex items-end">

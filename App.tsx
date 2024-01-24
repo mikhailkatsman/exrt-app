@@ -5,7 +5,6 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import * as Font from 'expo-font'
-import * as SplashScreen from 'expo-splash-screen'
 import { customFonts } from '@modules/AssetPaths'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -117,7 +116,6 @@ export type RootStackParamList = {
   },
 }
 
-SplashScreen.preventAutoHideAsync()
 
 const App: React.FC = () => {
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
@@ -161,16 +159,10 @@ const App: React.FC = () => {
     loadAllAppAssets()
   }, [])
 
-  const onLayoutRootView = useCallback(async() => {
-    if (isInitialized) {
-      setTimeout(() => SplashScreen.hideAsync(), 50)
-    }
-  }, [isInitialized])
-
   return isInitialized ? (
     <GestureHandlerRootView className='flex-1'>
       <SafeAreaProvider>
-        <NavigationContainer onReady={onLayoutRootView}>
+        <NavigationContainer>
           <IconComponentProvider IconComponent={MaterialCommunityIcons}>
             <Stack.Navigator initialRouteName='Home'>
               <Stack.Group

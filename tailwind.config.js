@@ -46,16 +46,16 @@ module.exports = {
   plugins: [],
   safelist: [
     {
-      pattern: /(bg|text|border)-custom-(red|white|green|dark|grey|blue|yellow|purple)/
+      pattern: /(bg|text|border)-custom-(red|white|green|dark|grey|dark-grey|blue|yellow|purple)/
     },
     {
       pattern: /(half|twothird)-transparent/
     },
     {
-      pattern: /(mt|mb|mr|ml|my|mx|px|py|pt|pb|pl|pr)-[0-9]+(\.[0-9]+)?/
+      pattern: /(mt|mb|mr|ml|my|mx|px|py|pt|pb|pl|pr|dp)-[0-9]+(\.[0-9]+)?/
     },
     {
-      pattern: /-(mt|mb|mr|ml|my|mx|px|py|pt|pb|pl|pr)-[0-9]+(\.[0-9]+)?/
+      pattern: /-(mt|mb|mr|ml|my|mx|px|py|pt|pb|pl|pr|dp)-[0-9]+(\.[0-9]+)?/
     },
     {
       pattern: /flex-.*/
