@@ -12,11 +12,12 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
-const screenWidth = Dimensions.get('screen').width
+const dimentions = Dimensions.get('screen')
 const dateNow: Date = new Date()
 const dayNow = (dateNow.getDay() + 6) % 7
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
+  const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [dayIds, setDayIds] = useState<number[]>([])
   const [activePrograms, setActivePrograms] = useState<any[]>([])
   const [animationTrigger, setAnimationTrigger] = useState<boolean>(false)
@@ -52,22 +53,6 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   }
 
   useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => {}}
-          className="h-10 w-10 flex justify-center items-end"
-          activeOpacity={0.6}
-        >
-          <Image 
-            className="h-6 w-6" 
-            resizeMode="contain"
-            source={icons['Logo' as keyof typeof icons]} 
-          />
-        </TouchableOpacity>
-      )
-    })
-
     const unsubscribeFocus = navigation.addListener('focus', () => {
       fetchData()
       setAnimationTrigger(prev => !prev)
@@ -79,43 +64,65 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   }, [])
 
   return (
-    <ScreenWrapper>
-      <Progress 
-        dayIds={dayIds} 
-        dayNow={dayNow}
-        screenWidth={screenWidth} 
+    <View className="flex-1 bg-custom-dark relative">
+      <Image
+        className="absolute top-[39.5%] left-[26.75%] w-[46.65%] h-[20.9%]"
+        resizeMode="contain"
+        source={icons['Logo' as keyof typeof icons]}
+        fadeDuration={0}
       />
-      <View className="h-8" />
-      <ActivePrograms 
-        activePrograms={activePrograms}
-        screenWidth={screenWidth}
-      />
-      <View className="h-14" />
-      <AnimatedNavigationButton
-        key={'button1'}
-        trigger={animationTrigger}
-        image={icons.ProgramsIcon}
-        colorName="custom-purple"
-        colorCode="#7D34A7"
-        textLine1="Browse"
-        textLine2="Programs"
-        route="ProgramsList"
-        delay={100}
-      />
-      <View className="h-10" />
-      <AnimatedNavigationButton
-        key={'button2'}
-        trigger={animationTrigger}
-        image={icons.ExercisesIcon}
-        colorName="custom-yellow"
-        colorCode="#F7EA40"
-        textLine1="Browse"
-        textLine2="Exercises"
-        route="ExercisesList"
-        delay={200}
-      />
-      <View className="h-5" />
-    </ScreenWrapper>
+      <View className="w-6 h-6 bg-custom-green" />
+    </View>  
+    // <ScreenWrapper>
+    //   <View className="w-full p-2 flex items-end">
+    //     <TouchableOpacity
+    //       onPress={() => {}}
+    //       className="h-10 w-10 flex justify-center items-end"
+    //       activeOpacity={0.6}
+    //     >
+    //       <Image 
+    //         className="h-6 w-6" 
+    //         resizeMode="contain"
+    //         source={icons['Logo' as keyof typeof icons]} 
+    //       />
+    //     </TouchableOpacity>
+    //   </View>
+    //   <Progress 
+    //     dayIds={dayIds} 
+    //     dayNow={dayNow}
+    //     screenWidth={dimentions.width} 
+    //   />
+    //   <View className="h-8" />
+    //   <ActivePrograms 
+    //     activePrograms={activePrograms}
+    //     screenWidth={dimentions.width}
+    //   />
+    //   <View className="h-14" />
+    //   <AnimatedNavigationButton
+    //     key={'button1'}
+    //     trigger={animationTrigger}
+    //     image={icons.ProgramsIcon}
+    //     colorName="custom-purple"
+    //     colorCode="#7D34A7"
+    //     textLine1="Browse"
+    //     textLine2="Programs"
+    //     route="ProgramsList"
+    //     delay={100}
+    //   />
+    //   <View className="h-10" />
+    //   <AnimatedNavigationButton
+    //     key={'button2'}
+    //     trigger={animationTrigger}
+    //     image={icons.ExercisesIcon}
+    //     colorName="custom-yellow"
+    //     colorCode="#F7EA40"
+    //     textLine1="Browse"
+    //     textLine2="Exercises"
+    //     route="ExercisesList"
+    //     delay={200}
+    //   />
+    //   <View className="h-5" />
+    // </ScreenWrapper>
   )
 }
 

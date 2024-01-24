@@ -15,12 +15,15 @@ const Progress: React.FC<Props> = ({ dayIds, dayNow, screenWidth }) => {
 
 	return (
 		<TouchableOpacity
-			className="px-2 h-[14%] w-full bg-custom-dark"
-			onPress={() => navigation.navigate('Hub', { dayNow: dayNow, screenWidth: screenWidth })}
+			className="px-2 w-full bg-custom-dark"
+			onPress={() => navigation.navigate('Hub', {
+				dayNow: dayNow, 
+				screenWidth: screenWidth 
+			})}
 			activeOpacity={0.6}
 		>
-			<Text className="mb-5 text-custom-white font-BaiJamjuree-BoldItalic">Continue Your Progress</Text>
-			<View className='flex-1 flex-row justify-around gap-1'>
+			<Text className="h-8 mb-1 text-custom-white font-BaiJamjuree-BoldItalic">Continue Your Progress</Text>
+			<View className='h-14 flex-row justify-around gap-1'>
 				{week.map((item, index) => (
 					<View 
 						key={index}

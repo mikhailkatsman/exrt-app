@@ -20,7 +20,7 @@ const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth }) => {
 
 	return (
 		<View className='flex-1'>
-			<View className='mb-3 mx-2 flex-row justify-between items-center'>
+			<View className='mb-3 mx-2 h-8 flex-row justify-between items-center'>
 				<Text className="text-custom-white font-BaiJamjuree-BoldItalic">Your Active Programs</Text>
 				<TouchableOpacity 
 					className='w-[20%] h-8 items-end'
@@ -30,7 +30,7 @@ const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth }) => {
 				</TouchableOpacity>
 			</View>
 			<ScrollView 
-				className="flex-1 -mx-2"
+				className="-mx-2"
 				horizontal={true}
 				disableIntervalMomentum={true}
 				showsHorizontalScrollIndicator={false}

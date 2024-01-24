@@ -163,9 +163,9 @@ const App: React.FC = () => {
 
   const onLayoutRootView = useCallback(async() => {
     if (isInitialized) {
-      await SplashScreen.hideAsync();
+      setTimeout(() => SplashScreen.hideAsync(), 50)
     }
-  }, [isInitialized]);
+  }, [isInitialized])
 
   return isInitialized ? (
     <GestureHandlerRootView className='flex-1'>
@@ -196,7 +196,7 @@ const App: React.FC = () => {
                 <Stack.Screen
                   name='Home'
                   component={HomeScreen}
-                  options={{title: ''}}
+                  options={{headerShown: false}}
                 />
                 <Stack.Screen
                   name='ProgramsList'
