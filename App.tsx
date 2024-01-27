@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import DB from '@modules/DB'
+import { checkNotificationsPermissions, updateNotification } from '@modules/Notifications'
 import { IconComponentProvider } from '@react-native-material/core'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { NavigationContainer } from '@react-navigation/native'
@@ -145,6 +146,10 @@ const App: React.FC = () => {
           initializeDatabase(),
           loadFonts(),
         ])
+
+        await checkNotificationsPermissions()
+
+        await updateNotification()
 
         // await logAllData()
 

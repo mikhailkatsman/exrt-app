@@ -6,6 +6,7 @@ import { LogBox } from "react-native";
 import ScrollPicker from '@components/common/ScrollPicker';
 import DB from '@modules/DB';
 import ModalContainer from '@components/common/ModalContainer';
+import { scheduleNotification } from '@modules/Notifications';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -41,13 +42,15 @@ const SelectDayModal: React.FC<Props> = ({ navigation, route }) => {
         VALUES (?, ?, ?);
       `, [dayId, sessionId, phaseId],
       () => {
-        navigation.replace('EditSession', {
-          dayId: dayId,
-          sessionId: sessionId,
-          sessionName: sessionName,
-          sessionCustom: 1,
-          newSession: true,
-          phaseId: phaseId
+        scheduleNotification(dayId, dayNames[dayId - 1]).then(() => {
+          navigation.replace('EditSession', {
+            dayId: dayId,
+            sessionId: sessionId,
+            sessionName: sessionName,
+            sessionCustom: 1,
+            newSession: true,
+            phaseId: phaseId
+          })
         })
       })
     })

@@ -76,17 +76,21 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   const animatedSplashStyle = useAnimatedStyle(() => {
     return {
-      opacity: splashOpacity.value
+      opacity: splashOpacity.value,
+      pointerEvents: "none"
     }
   })
 
   const loadHandler = async() => {
-    SplashScreen.hideAsync()
+    SplashScreen.hideAsync()  
   }
 
   return (
     <>
-    <Animated.View style={animatedSplashStyle} className="absolute w-full h-full bg-custom-dark z-50 justify-center items-center">
+    <Animated.View 
+      style={animatedSplashStyle} 
+      className="absolute w-full h-full bg-custom-dark z-50 justify-center items-center"
+    >
       <Image
         onLoad={loadHandler}
         resizeMode="center"
