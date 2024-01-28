@@ -10,6 +10,7 @@ import Progress from "@components/home/Progress"
 import ActivePrograms from "@components/home/ActivePrograms"
 import AnimatedNavigationButton from "@components/home/AnimatedNavigationButton"
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
+import { Icon } from "@react-native-material/core"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
@@ -100,17 +101,18 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       />
     </Animated.View>
     <ScreenWrapper>
-      <View className="w-full p-2 flex items-end">
-        <TouchableOpacity
-          onPress={() => {}}
-          className="h-10 w-10 flex justify-center items-end"
-          activeOpacity={0.6}
-        >
+      <View className="w-full p-2 flex flex-row justify-between items-center">
           <Image 
             className="h-6 w-6" 
             resizeMode="contain"
             source={icons['Logo' as keyof typeof icons]} 
           />
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Settings')}
+          className="h-10 w-10 flex justify-center items-end"
+          activeOpacity={0.6}
+        >
+          <Icon name="cog" size={22} color="#F5F6F3" />
         </TouchableOpacity>
       </View>
       <Progress 

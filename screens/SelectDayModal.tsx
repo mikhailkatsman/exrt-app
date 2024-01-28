@@ -42,15 +42,13 @@ const SelectDayModal: React.FC<Props> = ({ navigation, route }) => {
         VALUES (?, ?, ?);
       `, [dayId, sessionId, phaseId],
       () => {
-        scheduleNotification(dayId, dayNames[dayId - 1]).then(() => {
-          navigation.replace('EditSession', {
-            dayId: dayId,
-            sessionId: sessionId,
-            sessionName: sessionName,
-            sessionCustom: 1,
-            newSession: true,
-            phaseId: phaseId
-          })
+        navigation.replace('EditSession', {
+          dayId: dayId,
+          sessionId: sessionId,
+          sessionName: sessionName,
+          sessionCustom: 1,
+          newSession: true,
+          phaseId: phaseId
         })
       })
     })

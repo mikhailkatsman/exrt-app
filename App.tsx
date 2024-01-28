@@ -11,6 +11,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import HubScreen from '@screens/HubScreen'
 import HomeScreen from '@screens/HomeScreen'
+import SettingsScreen from '@screens/SettingsScreen'
 import EditSessionScreen from '@screens/EditSessionScreen'
 import ActiveSessionScreen from '@screens/ActiveSessionScreen'
 import NewInstanceScreen from '@screens/NewInstanceScreen'
@@ -234,6 +235,11 @@ const App: React.FC = () => {
                   name='EditPhase'
                   component={EditPhaseScreen}
                   options={{ title: 'Phase Details' }}
+                />
+                <Stack.Screen
+                  name='Settings'
+                  component={SettingsScreen}
+                  options={{ title: 'Settings' }}
                 />
               </Stack.Group>
               <Stack.Group 

@@ -11,15 +11,18 @@ export const requestNotificationsPermissions = async() => {
   return status === 'granted'
 }
 
-export const scheduleNotification = async(dayId: number, dayName: string) => {
+export const schedulePhaseNotifications = async(phaseId: number, dayId: number, dayName: string) => {
   const trigger = new Date()
-  trigger.setDate(trigger.getDate() + (dayId - trigger.getDay() + 7) % 7)
-  trigger.setHours(0, 0, 0, 0)
+  const currentDayOfWeek = trigger.getDay()
+  trigger.setDate(trigger.getDate() + (dayId - (currentDayOfWeek === 0 ? 7 : currentDayOfWeek)))
+  trigger.setHours(6)
+
+  const sessions: {name: string, notification_id: string}[] = []
 
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Scheduled Sessions Reminder',
-      body: `You have sessions to complete on ${dayName}`,
+      title: `${dayName} Sessions Reminder`,
+      body: sessions.map(session => session.name).join(', ')
     },
     trigger: trigger
   })
