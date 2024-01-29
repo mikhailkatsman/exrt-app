@@ -6,7 +6,6 @@ import { LogBox } from "react-native";
 import ScrollPicker from '@components/common/ScrollPicker';
 import DB from '@modules/DB';
 import ModalContainer from '@components/common/ModalContainer';
-import { scheduleNotification } from '@modules/Notifications';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
