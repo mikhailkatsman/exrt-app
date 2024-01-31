@@ -59,7 +59,6 @@ export const updateNotifications = async() => {
       }
     })
     
-    console.log(JSON.stringify(notificationsData, null, 4))
     scheduleAllNotifications(notificationsData)
   })
 }

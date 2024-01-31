@@ -24,7 +24,7 @@ const SetProgramNameModal: React.FC<Props> = ({ navigation }) => {
       'My custom program description.',
       'program_thumbnail_placeholder', 
       0,
-      'unspecified',
+      'Not specified',
       'active',
       1
     ],

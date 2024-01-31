@@ -150,7 +150,7 @@ const App: React.FC = () => {
 
         await checkNotificationsPermissions()
 
-        await updateNotifications()
+        // await updateNotifications()
 
         // await returnNotifications()
 
