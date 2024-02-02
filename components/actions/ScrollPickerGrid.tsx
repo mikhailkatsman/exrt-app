@@ -64,6 +64,7 @@ const ScrollPickerGrid: React.FC<Props> = ({
 	  <ScrollPicker 
 	    dataArray={setValues} 
 	    width={50} 
+	    initialIndex={0}
 	    onIndexChange={(index: number) => setInstanceSets(setValues[index])}
 	  />
 	</View>
@@ -73,6 +74,7 @@ const ScrollPickerGrid: React.FC<Props> = ({
 	      <ScrollPicker 
 		dataArray={kgValues} 
 		width={60}
+		initialIndex={0}
 		onIndexChange={(index: number) => setInstanceWeight(kgValues[index])}
 	      />
 	      <Text className="text-custom-white text-lg font-BaiJamjuree-Regular">kg</Text>
@@ -91,6 +93,7 @@ const ScrollPickerGrid: React.FC<Props> = ({
 	  <ScrollPicker 
 	    dataArray={repValues} 
 	    width={50} 
+	    initialIndex={0}
 	    onIndexChange={(index: number) => setInstanceReps(repValues[index])}
 	  />
 	</View>
@@ -100,12 +103,14 @@ const ScrollPickerGrid: React.FC<Props> = ({
 	    <ScrollPicker 
 	      dataArray={minuteValues.map(value => value.toString().padStart(2, '0'))} 
 	      width={40} 
+	      initialIndex={0}
 	      onIndexChange={(index: number) => setInstanceMinuteDuration(minuteValues[index])}
 	    />
 	    <Text className="text-custom-white text-lg font-BaiJamjuree-Regular">m</Text>
 	    <ScrollPicker 
 	      dataArray={secondValues.map(value => value.toString().padStart(2, '0'))} 
 	      width={40} 
+	      initialIndex={0}
 	      onIndexChange={(index: number) => setInstanceSecondDuration(secondValues[index])}
 	    />
 	    <Text className="text-custom-white text-lg font-BaiJamjuree-Regular">s</Text>

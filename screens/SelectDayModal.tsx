@@ -59,6 +59,7 @@ const SelectDayModal: React.FC<Props> = ({ navigation, route }) => {
         <Text className='mb-3 text-custom-white font-BaiJamjuree-Regular'>Choose the day:</Text>
         <ScrollPicker
           dataArray={dayNames}
+          initialIndex={0}
           onIndexChange={(index: number) => setDayId(index + 1)}
           width={230}
         />
