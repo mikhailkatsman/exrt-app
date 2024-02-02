@@ -1,19 +1,48 @@
 import * as Notifications from 'expo-notifications'
 import DB from './DB'
 
-export const checkNotificationsPermissions = async() => {
+export const initNotificationsPermissionsCheck = async() => {
+  DB.sql(`
+    SELECT value 
+    FROM metadata
+    WHERE key = ?;
+  `, ['notifications_enabled'],
+  (_, result) => {
+    if (result.rows.item(0).value === 'true') {
+      checkNotificationsPermissions()
+    }
+  })
+}
+
+const checkNotificationsPermissions = async() => {
   const status = await Notifications.getPermissionsAsync()
   if (!status.granted) return requestNotificationsPermissions()
   return status.granted
 }
 
-export const requestNotificationsPermissions = async() => {
+const requestNotificationsPermissions = async() => {
   const { status } = await Notifications.requestPermissionsAsync()
   return status === 'granted'
 }
 
-export const updateNotifications = async() => {
+export const initNotificationsUpdate = () => {
+  DB.sql(`
+    SELECT value 
+    FROM metadata
+    WHERE key IN (?, ?);
+  `, ['notifications_enabled', 'notifications_time'],
+  (_, result) => {
+    if (result.rows.item(0).value === 'true') {
+      updateNotifications(result.rows.item(1).value)
+    }
+  })
+}
+
+const updateNotifications = async(timeString: string) => {
   await cancelNotifications()
+
+  const hours = parseInt(timeString.substring(0, 2), 10);
+  const minutes = parseInt(timeString.substring(2, 4), 10);
 
   const week: {id: number, name: string}[] = [
     {id: 1, name: 'Monday'},
@@ -28,7 +57,7 @@ export const updateNotifications = async() => {
   const trigger = new Date()
   const currentDayOfWeek = trigger.getDay()
   const currentDate = trigger.getDate()
-  trigger.setHours(6, 0, 0, 0)
+  trigger.setHours(hours, minutes)
 
   DB.sql(`
     SELECT psi.day_id, s.name

@@ -10,6 +10,7 @@ import Progress from "@components/home/Progress"
 import ActivePrograms from "@components/home/ActivePrograms"
 import AnimatedNavigationButton from "@components/home/AnimatedNavigationButton"
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
+import { initNotificationsUpdate, updateNotifications } from '@modules/Notifications'
 import { Icon } from "@react-native-material/core"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -61,6 +62,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', () => {
       fetchData()
+      initNotificationsUpdate()
       setAnimationTrigger(prev => !prev)
     })
 
