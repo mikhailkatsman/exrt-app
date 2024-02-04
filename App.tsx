@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import DB from '@modules/DB'
-import { checkNotificationsPermissions, initNotificationsPermissionsCheck } from '@modules/Notifications'
+import { initNotificationsPermissionsCheck } from '@modules/Notifications'
 import { IconComponentProvider } from '@react-native-material/core'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { NavigationContainer } from '@react-navigation/native'
@@ -97,11 +97,8 @@ export type RootStackParamList = {
   },
   ConfirmModal: {
     text: string,
-    onConfirm: () => void,
   },
-  DismissModal: {
-    onConfirm: () => void,
-  },
+  DismissModal: undefined,
   SelectDayModal: {
     phaseId: number,
   },

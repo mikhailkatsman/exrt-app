@@ -1,17 +1,18 @@
 import ModalContainer from "@components/common/ModalContainer";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "App";
+import { useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { LogBox } from "react-native";
-
-LogBox.ignoreLogs([
-  'Non-serializable values were found in the navigation state',
-])
+import { DeviceEventEmitter } from "react-native";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DismissModal'>
 
-const DismissModal: React.FC<Props> = ({ navigation, route }) => {
-  const onConfirm = route.params.onConfirm
+const DismissModal: React.FC<Props> = ({ navigation }) => {
+  useEffect(() => {
+    return () => {
+      DeviceEventEmitter.removeAllListeners('dismissEvent')
+    }
+  }, [])
 
   return (
     <ModalContainer>
@@ -27,8 +28,8 @@ const DismissModal: React.FC<Props> = ({ navigation, route }) => {
         <TouchableOpacity 
           className="h-full w-1/2 flex justify-center items-center rounded-lg border border-custom-red" 
           onPress={() => {
-            onConfirm()
             navigation.pop()
+            DeviceEventEmitter.emit('dismissEvent')
           }}
         >
           <Text className="text-custom-red font-BaiJamjuree-Bold">Go back</Text>

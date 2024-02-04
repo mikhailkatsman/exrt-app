@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Text, TextInput, Dimensions, ImageBackground, BackHandler } from 'react-native'
+import { View, TouchableOpacity, Text, TextInput, Dimensions, ImageBackground, BackHandler, DeviceEventEmitter } from 'react-native'
 import { useState, useEffect, useCallback, useRef } from "react"
 import Animated, { Easing, withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { useFocusEffect } from "@react-navigation/native"
@@ -225,19 +225,13 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
+  
+
   const onBackPressed = () => {
+        console.log('press detected')
     if (custom) {
       if (newProgram) {
-        navigation.navigate('DismissModal', {
-          onConfirm: () => {
-            if (thumbnail !== 'program_thumbnail_placeholder') {
-              clearImageCache().then(() => deleteProgram())
-              return
-            }
-
-            deleteProgram()
-          },
-        })
+        navigation.navigate('DismissModal')
       } else {
         if (phases.length === 0) {
           navigation.navigate('ErrorModal', { 
@@ -246,16 +240,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           })
           return
         } else {
-          navigation.navigate('DismissModal', {
-            onConfirm: () => {
-              if (thumbnail !== 'program_thumbnail_placeholder') {
-                clearImageCache().then(() => navigation.pop())
-                return
-              }
-
-              navigation.pop()
-            },
-          })
+          navigation.navigate('DismissModal')
         }
       }
     } else {
@@ -281,16 +266,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [isEditableProgramName, isEditableDescription])
 
-  useFocusEffect(
-    useCallback(() => {
-      BackHandler.addEventListener('hardwareBackPress', () => {
-        onBackPressed()
-        return true
-      })
-    }, [])
-  )
-
-  const fetchPhases = () => {
+    const fetchPhases = () => {
     DB.sql(`
       SELECT phases.id AS phaseId,
              phases.name AS phaseName,
@@ -318,6 +294,15 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       setPhases(phaseDetails)
     })
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      BackHandler.addEventListener('hardwareBackPress', () => {
+        onBackPressed()
+        return true
+      })
+    }, [])
+  )
 
   useEffect(() => {
     navigation.setOptions({
@@ -347,6 +332,20 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchPhases)
+
+    DeviceEventEmitter.addListener('deleteEvent', deleteProgram)
+
+    DeviceEventEmitter.addListener('dismissEvent', () => {
+      if (thumbnail !== 'program_thumbnail_placeholder') {
+        clearImageCache()
+      }
+
+      if (newProgram) {
+        deleteProgram()
+      } else {
+        navigation.pop()
+      }
+    })
 
     setDirPath(FileSystem.documentDirectory + 'images/programs/')
     setCachePath(FileSystem.cacheDirectory + 'thumbnails/')
@@ -622,10 +621,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           <TouchableOpacity 
             className="w-[30%] rounded-2xl border-2 border-custom-red flex-row justify-center items-center"
             onPress={() => {
-              navigation.navigate('ConfirmModal', {
-                text: 'Are you sure you want to delete this program?',
-                onConfirm: deleteProgram
-              })
+              navigation.navigate('ConfirmModal', { text: 'Are you sure you want to delete this program?' })
             }}
             activeOpacity={1}
           >
