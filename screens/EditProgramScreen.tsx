@@ -225,22 +225,18 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
-  
-
   const onBackPressed = () => {
-        console.log('press detected')
     if (custom) {
       if (newProgram) {
-        navigation.navigate('DismissModal')
+        navigation.navigate('DismissModal', { eventId: 'Program' })
       } else {
         if (phases.length === 0) {
           navigation.navigate('ErrorModal', { 
             title: 'No Phases Added', 
             message: 'Please add at least one phase to this program or delete the program.'
           })
-          return
         } else {
-          navigation.navigate('DismissModal')
+          navigation.navigate('DismissModal', { eventId: 'Program' })
         }
       }
     } else {
@@ -266,7 +262,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [isEditableProgramName, isEditableDescription])
 
-    const fetchPhases = () => {
+  const fetchPhases = () => {
     DB.sql(`
       SELECT phases.id AS phaseId,
              phases.name AS phaseName,
@@ -297,11 +293,15 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useFocusEffect(
     useCallback(() => {
-      BackHandler.addEventListener('hardwareBackPress', () => {
+      const backHandlerListener = BackHandler.addEventListener('hardwareBackPress', () => {
         onBackPressed()
         return true
       })
-    }, [])
+
+      return () => {
+        backHandlerListener.remove()
+      }
+    }, [custom, phases])
   )
 
   useEffect(() => {
@@ -332,10 +332,8 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchPhases)
-
-    DeviceEventEmitter.addListener('deleteEvent', deleteProgram)
-
-    DeviceEventEmitter.addListener('dismissEvent', () => {
+    const deleteProgramEventListener = DeviceEventEmitter.addListener('deleteEventProgram', deleteProgram)
+    const dismissProgramEventListener = DeviceEventEmitter.addListener('dismissEventProgram', () => {
       if (thumbnail !== 'program_thumbnail_placeholder') {
         clearImageCache()
       }
@@ -378,6 +376,8 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
 
     return () => {
       unsubscribeFocus()
+      deleteProgramEventListener.remove()
+      dismissProgramEventListener.remove()
     }
   }, [])
 
@@ -621,7 +621,10 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           <TouchableOpacity 
             className="w-[30%] rounded-2xl border-2 border-custom-red flex-row justify-center items-center"
             onPress={() => {
-              navigation.navigate('ConfirmModal', { text: 'Are you sure you want to delete this program?' })
+              navigation.navigate('ConfirmModal', {
+                text: 'Are you sure you want to delete this program?',
+                eventId: 'Program'
+              })
             }}
             activeOpacity={1}
           >

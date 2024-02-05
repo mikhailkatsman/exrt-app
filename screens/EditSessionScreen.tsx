@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, BackHandler } from "react-native"
+import { View, Text, TextInput, TouchableOpacity, BackHandler, DeviceEventEmitter } from "react-native"
 import { useEffect, useState, useCallback, useRef } from "react"
 import { useFocusEffect } from "@react-navigation/native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
@@ -186,36 +186,47 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [isEditableSessionName])
 
   const onBackPressed = () => {
-    if (instances.length === 0) {
-      navigation.navigate('ErrorModal', { 
-        title: 'No Exercises Added', 
-        message: 'Please add at least one exercise to this session or delete this session.'
-      })
-      return
-    } else {
-      navigation.navigate('DismissModal', {
-        onConfirm: () => {
-          if (newSession) {
-            deleteSession()
-          } else {
-            navigation.pop()
-          }
+    if (sessionCustom) {
+      if (newSession) {
+        navigation.navigate('DismissModal', { eventId: 'Session' })
+      } else {
+        if (instances.length === 0) {
+          navigation.navigate('ErrorModal', { 
+            title: 'No Exercises Added', 
+            message: 'Please add at least one exercise to this session or delete this session.'
+          })
+        } else {
+          navigation.navigate('DismissModal', { eventId: 'Session' })
         }
-      })
+      }
+    } else {
+      navigation.pop()
     }
   }
 
   useFocusEffect(
     useCallback(() => {
-      BackHandler.addEventListener('hardwareBackPress', () => {
+      const backHandlerListener = BackHandler.addEventListener('hardwareBackPress', () => {
         onBackPressed()
         return true
       })
-    }, [])
+
+      return () => {
+        backHandlerListener.remove()
+      }
+    }, [sessionCustom, instances, isEditable])
   )
 
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchInstances)
+    const deleteSessionEventListener = DeviceEventEmitter.addListener('deleteEventSession', deleteSession)
+    const dismissSessionEventListener = DeviceEventEmitter.addListener('dismissEventSession', () => {
+      if (newSession) {
+        deleteSession()
+      } else {
+        navigation.pop()
+      }
+    })
 
     navigation.setOptions({
       headerLeft: (props) => (
@@ -243,6 +254,8 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
 
     return () => { 
       unsubscribeFocus()
+      deleteSessionEventListener.remove()
+      dismissSessionEventListener.remove()
     }
   }, [instances, isEditable])
 
@@ -311,7 +324,7 @@ const EditSessionsScreen: React.FC<Props> = ({ navigation, route }) => {
             onPress={() => {
               navigation.navigate('ConfirmModal', {
                 text: 'Are you sure you want to delete this session?',
-                onConfirm: deleteSession
+                eventId: 'Session'
               })
             }}
             activeOpacity={0.6}

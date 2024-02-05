@@ -2,7 +2,7 @@ import ScreenWrapper from "@components/common/ScreenWrapper"
 import ScrollPicker from "@components/common/ScrollPicker"
 import DB from "@modules/DB"
 import { useEffect, useState } from "react"
-import { ScrollView, Text, View, Switch } from "react-native"
+import { Text, View, Switch } from "react-native"
 
 const SettingsScreen: React.FC = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(true)
@@ -22,8 +22,6 @@ const SettingsScreen: React.FC = () => {
       setNotificationsEnabled(result.rows.item(0).value === 'true' ? true : false)
       setNotificationsHour(parseInt(result.rows.item(1).value.slice(0,2)))
       setNotificationsMinute(parseInt(result.rows.item(1).value.slice(2,4)))
-
-      console.log(result.rows.item(1))
     })
   }, [])
 
@@ -47,13 +45,12 @@ const SettingsScreen: React.FC = () => {
     () => {
       setNotificationsHour(hourValue)
       setNotificationsMinute(minuteValue)
-      console.log('DB updated with time: ' + notificationsTime)
     })
   }
 
   return (
     <ScreenWrapper>
-      <View className="px-2">
+      <View className="px-2 flex-1">
         <Text className="text-custom-white font-BaiJamjuree-BoldItalic mb-10">Notifications:</Text>
         <View className="flex flex-row justify-between items-start mb-8">
           <View className="w-2/3">

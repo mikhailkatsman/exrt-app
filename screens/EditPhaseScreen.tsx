@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, TextInput, BackHandler } from "react-native"
+import { Text, View, TouchableOpacity, TextInput, BackHandler, DeviceEventEmitter } from "react-native"
 import { Icon } from "@react-native-material/core"
 import BottomBarWrapper from "@components/common/BottomBarWrapper"
 import ScreenWrapper from "@components/common/ScreenWrapper"
@@ -9,7 +9,6 @@ import { useEffect, useState, useCallback, useRef } from "react"
 import { useFocusEffect } from "@react-navigation/native"
 import DB from "@modules/DB"
 import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flatlist"
-import { returnNotifications, updateNotifications } from "@modules/Notifications"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EditPhase'>
 
@@ -377,19 +376,22 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const onBackPressed = () => {
-    if (newPhase) {
-      navigation.navigate('DismissModal', { onConfirm: deletePhase })
-    } else {
-      const sessions = listData.filter(item => item.type === 'session')
-      if (sessions.length === 0) {
-        navigation.navigate('ErrorModal', { 
-          title: 'No Sessions Added', 
-          message: 'Please add at least one session to this phase or delete phase.'
-        })
-        return
+    if (phaseCustom) {
+      if (newPhase) {
+        navigation.navigate('DismissModal', { eventId: 'Phase' })
       } else {
-        navigation.navigate('DismissModal', { onConfirm: () => navigation.pop() })
+        const sessions = listData.filter(item => item.type === 'session')
+        if (sessions.length === 0) {
+          navigation.navigate('ErrorModal', { 
+            title: 'No Sessions Added', 
+            message: 'Please add at least one session to this phase or delete phase.'
+          })
+        } else {
+          navigation.navigate('DismissModal', { eventId: 'Phase' })
+        }
       }
+    } else {
+      navigation.pop()
     }
   }
 
@@ -406,15 +408,27 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useFocusEffect(
     useCallback(() => {
-      BackHandler.addEventListener('hardwareBackPress', () => {
+      const backHandlerListener = BackHandler.addEventListener('hardwareBackPress', () => {
         onBackPressed()
         return true
       })
-    }, [])
+
+      return () => {
+        backHandlerListener.remove()
+      }
+    }, [isEditable, phaseCustom, listData])
   )
 
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', fetchPhaseData)
+    const deletePhaseEventListener = DeviceEventEmitter.addListener('deleteEventPhase', deletePhase)
+    const dismissPhaseEventListener = DeviceEventEmitter.addListener('dismissEventPhase', () => {
+      if (newPhase) {
+        deletePhase()
+      } else {
+        navigation.pop()
+      }
+    })
 
     navigation.setOptions({
       headerLeft: (props) => (
@@ -442,6 +456,8 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
 
     return () => {
       unsubscribeFocus()
+      deletePhaseEventListener.remove()
+      dismissPhaseEventListener.remove()
     }
   }, [isEditable, listData])
 
@@ -509,7 +525,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
             onPress={() => {
               navigation.navigate('ConfirmModal', {
                 text: 'Are you sure you want to delete this phase?',
-                onConfirm: deletePhase
+                eventId: 'Phase'
               })
             }}
             activeOpacity={0.6}

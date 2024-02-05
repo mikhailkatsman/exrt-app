@@ -97,8 +97,11 @@ export type RootStackParamList = {
   },
   ConfirmModal: {
     text: string,
+    eventId: string,
   },
-  DismissModal: undefined,
+  DismissModal: {
+    eventId: string,
+  },
   SelectDayModal: {
     phaseId: number,
   },

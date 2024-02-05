@@ -1,18 +1,13 @@
 import ModalContainer from "@components/common/ModalContainer";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "App";
-import { useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { DeviceEventEmitter } from "react-native";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DismissModal'>
 
-const DismissModal: React.FC<Props> = ({ navigation }) => {
-  useEffect(() => {
-    return () => {
-      DeviceEventEmitter.removeAllListeners('dismissEvent')
-    }
-  }, [])
+const DismissModal: React.FC<Props> = ({ navigation, route }) => {
+  const eventId: string = route.params.eventId
 
   return (
     <ModalContainer>
@@ -29,7 +24,7 @@ const DismissModal: React.FC<Props> = ({ navigation }) => {
           className="h-full w-1/2 flex justify-center items-center rounded-lg border border-custom-red" 
           onPress={() => {
             navigation.pop()
-            DeviceEventEmitter.emit('dismissEvent')
+            DeviceEventEmitter.emit(`dismissEvent${eventId}`)
           }}
         >
           <Text className="text-custom-red font-BaiJamjuree-Bold">Go back</Text>
