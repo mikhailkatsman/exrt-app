@@ -443,7 +443,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
         <View className='h-12 mb-8 flex-row border-custom-grey border rounded-xl overflow-hidden'>
           <View className='absolute z-10 w-full h-full justify-center items-center'>
             <Text className='text-custom-white text-xs font-BaiJamjuree-Bold'>
-              Progress: {((completedPhases / phases.length) * 100).toFixed(0)}%
+              Progress: {phases.length === 0 ? '0' : ((completedPhases / phases.length) * 100).toFixed(0)}%
             </Text>
           </View>
           {Array.from({ length: phases.length }).map((_, index) => (

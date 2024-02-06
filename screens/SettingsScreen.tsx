@@ -37,6 +37,8 @@ const SettingsScreen: React.FC = () => {
   const updateNotificationsTime = (hourValue: number, minuteValue: number) => {
     const notificationsTime: string = hourValue.toString().padStart(2, '0') + minuteValue.toString().padStart(2, '0')
 
+    console.log('DB ACCESS')
+
     DB.sql(`
       UPDATE metadata 
       SET value = ?
@@ -74,7 +76,7 @@ const SettingsScreen: React.FC = () => {
               Set time at which you want EXRT to send you notifications
             </Text>
           </View>
-          {notificationsHour && notificationsMinute && (
+          {notificationsHour !== null && notificationsMinute !== null && (
             <View className="-mt-7 flex flex-row items-center justify-between">
               <ScrollPicker
                 dataArray={hourValues.map(value => value.toString().padStart(2, '0'))}

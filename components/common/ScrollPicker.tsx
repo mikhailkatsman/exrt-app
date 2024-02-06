@@ -24,7 +24,7 @@ const ScrollPicker: React.FC<Props> = ({ dataArray, width, initialIndex, onIndex
     const offsetY = event.nativeEvent.contentOffset.y
     scrollOffsetY.setValue(offsetY)
     setSelectedIndex(Math.round(offsetY / itemHeight))
-  };
+  }
 
   const renderItem = useCallback(
     ({ item, index }: { item: number | string, index: number }) => {
@@ -60,7 +60,7 @@ const ScrollPicker: React.FC<Props> = ({ dataArray, width, initialIndex, onIndex
         keyExtractor={(_, index) => index.toString()} 
       />
     </View>
-  );
-};
+  )
+}
 
-export default ScrollPicker;
+export default ScrollPicker
