@@ -58,7 +58,7 @@ const ActivePrograms: React.FC<Props> = ({ activePrograms, screenWidth, onLayout
 					/>
 				))}
 				<TouchableOpacity
-					className="h-full overflow-hidden border-x-2 border-custom-white bg-custom-dark-grey rounded-2xl flex justify-center items-center"
+					className="h-full overflow-hidden border-x-2 border-custom-white rounded-2xl flex justify-center items-center"
 					style={{ width: elementWidth }}
 					onPress={() => navigation.navigate('ProgramsList')}
 					activeOpacity={0.6}

@@ -13,7 +13,8 @@
       "@components/*": ["components/*"],
       "@modules/*": ["modules/*"],
       "@screens/*": ["screens/*"],
-      "@icons/*": ["assets/icons/*"]
+      "@icons/*": ["assets/icons/*"],
+      "@images/*": ["assets/images/*"]
     }
   },
   "extends": "expo/tsconfig.base"

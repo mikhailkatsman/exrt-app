@@ -11,6 +11,7 @@ import Animated, {
 import RoutineSlot from "./RoutineSlot"
 import { ScrollView } from "react-native-gesture-handler"
 import { Icon } from "@react-native-material/core"
+import RestDayAnimation from "./RestDayAnimation"
 
 type Props = {
   dataArray: any[],
@@ -91,13 +92,13 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
   return (
     <Animated.View style={animatedStyle} className="flex-1 flex-col py-3">
       {sessionsArray.length === 0 ? (
-        <View className="flex-1 justify-center items-center">
-          <Text className="text-custom-white font-BaiJamjuree-Bold text-4xl">Rest</Text>
-        </View>
+        // <View className="flex-1 justify-center items-center">
+        //   <Text className="text-custom-white font-BaiJamjuree-Bold text-4xl">REST DAY</Text>
+        // </View>
+        <RestDayAnimation />
       ) : (
         <>
-          <View className="h-[10%] mx-3">
-          </View>
+          <View className="h-[10%] mx-3" />
           <ScrollView 
             ref={scrollRef}
             horizontal={true} 
@@ -122,10 +123,14 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
               />
             )}
             <TouchableOpacity
-              className="h-full mx-2 overflow-hidden bg-custom-dark-grey border-x-2 border-custom-white rounded-2xl flex justify-center items-center"
+              className="h-full mx-2 overflow-hidden border-x-2 border-custom-white rounded-2xl flex justify-center items-center"
               style={{ width: elementWidth }}
+              onPress={() => {}}
               activeOpacity={0.6}
             >
+              <Text className="mx-12 mb-6 text-custom-white text-center font-BaiJamjuree-Bold">
+                Subscribe to another program and add more sessions
+              </Text>
               <Icon name="plus" size={50} color="#F5F6F3" />
             </TouchableOpacity>
           </ScrollView>

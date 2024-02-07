@@ -37,8 +37,6 @@ const SettingsScreen: React.FC = () => {
   const updateNotificationsTime = (hourValue: number, minuteValue: number) => {
     const notificationsTime: string = hourValue.toString().padStart(2, '0') + minuteValue.toString().padStart(2, '0')
 
-    console.log('DB ACCESS')
-
     DB.sql(`
       UPDATE metadata 
       SET value = ?
