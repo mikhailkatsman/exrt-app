@@ -81,8 +81,8 @@ const updateNotifications = async(timeString: string) => {
           .join(', ')
 
         notificationsData.push({
-          title: `${day.name} Sessions Reminder`,
-          body: 'TODO: ' + filteredSessions,
+          title: 'EXRT',
+          body: `${day.name} Sessions: ` + filteredSessions,
           trigger: triggerDate
         })
       }
