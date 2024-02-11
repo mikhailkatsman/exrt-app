@@ -262,6 +262,34 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [isEditableProgramName, isEditableDescription])
 
+  const fetchProgramData = () => {
+    DB.sql(`
+      SELECT name AS name,
+             description AS description,
+             thumbnail AS thumbnail,
+             difficulty AS difficulty,
+             type AS type,
+             status AS status,
+             custom AS custom
+      FROM programs
+      WHERE id = ?;
+    `, [programId], 
+    (_, result) => {
+      const item = result.rows.item(0)
+      setName(item.name)
+      setDescription(item.description)
+      setThumbnail(item.thumbnail)
+      setOgThumbnailPath(item.thumbnail)
+      setDifficulty(item.difficulty)
+      setType(item.type)
+      setStatus(item.status)
+      setCustom(() => item.custom === 1 ? true : false)
+      setIsLoaded(true)
+
+      fetchPhases()
+    })
+  }
+
   const fetchPhases = () => {
     DB.sql(`
       SELECT phases.id AS phaseId,
@@ -289,6 +317,40 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
       setCompletedPhases(() => phaseDetails.filter(phase => phase.phaseStatus === 'completed').length)
       setPhases(phaseDetails)
     })
+  }
+
+  const renderStatusButton = () => {
+    let data = {
+      text: 'Unsubscribe',
+      borderColor: status === 'active' ? 'border-custom-red' : 'border-custom-green',
+      textColor: status === 'active' ? 'text-custom-red' : 'text-custom-green',
+      action: () => {}
+    }
+
+    if (status === 'inactive') {
+      data.text = 'Subscribe'
+      data.action = () => {}
+    }
+
+    if (status === 'completed') {
+      data.text = 'Resubscribe'
+      data.action = () => {}
+    }
+
+    return (
+      <TouchableOpacity 
+        className={`flex-1 border-2 ${data.borderColor} rounded-2xl justify-center items-center`}
+        onPress={() => {
+          navigation.navigate('ChangeProgramStatusModal', {
+            status: status,
+            programId: programId
+          })
+        }}
+        activeOpacity={0.6}
+      >
+        <Text className={`${data.textColor} font-BaiJamjuree-Bold`}>{data.text}</Text>
+      </TouchableOpacity>
+    )
   }
 
   useFocusEffect(
@@ -331,7 +393,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [phases, custom, isEditable])
 
   useEffect(() => {
-    const unsubscribeFocus = navigation.addListener('focus', fetchPhases)
+    const unsubscribeFocus = navigation.addListener('focus', fetchProgramData)
     const deleteProgramEventListener = DeviceEventEmitter.addListener('deleteEventProgram', deleteProgram)
     const dismissProgramEventListener = DeviceEventEmitter.addListener('dismissEventProgram', () => {
       if (thumbnail !== 'program_thumbnail_placeholder') {
@@ -348,30 +410,6 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     setDirPath(FileSystem.documentDirectory + 'images/programs/')
     setCachePath(FileSystem.cacheDirectory + 'thumbnails/')
 
-    DB.sql(`
-      SELECT name AS name,
-             description AS description,
-             thumbnail AS thumbnail,
-             difficulty AS difficulty,
-             type AS type,
-             status AS status,
-             custom AS custom
-      FROM programs
-      WHERE id = ?;
-    `, [programId], 
-    (_, result) => {
-      const item = result.rows.item(0)
-      setName(item.name)
-      setDescription(item.description)
-      setThumbnail(item.thumbnail)
-      setOgThumbnailPath(item.thumbnail)
-      setDifficulty(item.difficulty)
-      setType(item.type)
-      setStatus(item.status)
-      setCustom(() => item.custom === 1 ? true : false)
-      setIsLoaded(true)
-    })
-
     if (newProgram) setIsEditable(true)
 
     return () => {
@@ -387,7 +425,7 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
     <ScreenWrapper>
       <View className="flex-1 mb-3">
         <ImageBackground
-          className="w-full mb-5 rounded-2xl overflow-hidden"
+          className="w-full mb-3 rounded-2xl overflow-hidden"
           style={{ height: (windowWidth * 9) / 16 }}
           resizeMode="cover" 
           source={
@@ -398,8 +436,8 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
           <LinearGradient 
             className="absolute h-full w-full"
             colors={['rgba(18, 18, 18, 1)', 'transparent']}
-            // start={{ x: 0.3, y: 0 }}
-            // end={{ x: 0.7, y: 1 }}
+            start={{ x: 0.3, y: 0 }}
+            end={{ x: 0.7, y: 1 }}
           />
           <View className="h-full w-full p-3 flex-col justify-between items-end">
             <View className='w-full flex-col justify-between'>
@@ -431,29 +469,37 @@ const EditProgramScreen: React.FC<Props> = ({ navigation, route }) => {
                 enterKeyHint="done"
               />
             </View>
-            {isEditable &&
-              <TouchableOpacity 
-                onPress={pickImage}
-              >
-                <Icon name="image-edit" color="#F5F6F3" size={28} /> 
-              </TouchableOpacity>
-            }
+            <View className='w-full flex-row justify-between items-end'>
+              <Text className="font-BaiJamjuree-RegularItalic text-custom-white capitalize">
+                {status}
+              </Text>
+              {isEditable &&
+                <TouchableOpacity 
+                  onPress={pickImage}
+                >
+                  <Icon name="image-edit" color="#F5F6F3" size={28} /> 
+                </TouchableOpacity>
+              }
+            </View>
           </View>
         </ImageBackground>
-        <View className='h-12 mb-8 flex-row border-custom-grey border rounded-xl overflow-hidden'>
-          <View className='absolute z-10 w-full h-full justify-center items-center'>
-            <Text className='text-custom-white text-xs font-BaiJamjuree-Bold'>
-              Progress: {phases.length === 0 ? '0' : ((completedPhases / phases.length) * 100).toFixed(0)}%
-            </Text>
+        <View className='h-12 mb-8 flex-row justify-between'>
+          <View className='h-full w-[60%] mr-3 flex-row border-custom-grey border rounded-2xl overflow-hidden'>
+            <View className='absolute z-10 w-full h-full justify-center items-center'>
+              <Text className='text-custom-white text-xs font-BaiJamjuree-Bold'>
+                Progress: {phases.length === 0 ? '0' : ((completedPhases / phases.length) * 100).toFixed(0)}%
+              </Text>
+            </View>
+            {Array.from({ length: phases.length }).map((_, index) => (
+              <View
+                key={index}
+                className={`flex-1 ${index + 1 <= completedPhases && 'bg-custom-grey'}`}
+              />
+            ))}
           </View>
-          {Array.from({ length: phases.length }).map((_, index) => (
-            <View
-              key={index}
-              className={`flex-1 ${index + 1 <= completedPhases && 'bg-custom-grey'}`}
-            />
-          ))}
+          {renderStatusButton()}
         </View>
-        <View className='h-12 px-3 w-full mb-8 flex-row justify-between'>
+        <View className='h-10 px-3 w-full mb-8 flex-row justify-between'>
           <Animated.View style={selectedTabStyle}>
             <View className='absolute h-full border-2 rounded-2xl border-custom-white' style={{ width: (windowWidth - 20) / 2 }} />
           </Animated.View>
