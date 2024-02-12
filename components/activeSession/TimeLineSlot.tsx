@@ -24,19 +24,16 @@ const TimeLineSlot: React.FC<Props> = ({ type, data, completed }) => {
 		>
 			{type === 'exercise' ?
 				<>
-					<View>
-					{words.map((word: string, index: number) => (
-						<Text className={`text-center capitalize text-xs font-BaiJamjuree-Bold ${renderTextColor()}`}
-							key={index}
-						>
-							{word}
+					<Text className={`text-center capitalize text-xs mb-2 font-BaiJamjuree-Bold ${renderTextColor()}`}>
+						{words.map((word: string) => `${word} `)}
+					</Text>
+					{(data.minuteDuration || data.minuteDuration) && <>
+						<Text className={`text-2xl -mb-2 font-BaiJamjuree-Bold ${renderTextColor()}`}>
+							{data.minuteDuration && `${data.minuteDuration}'`}
+							{data.secondDuration && `${data.secondDuration}"`}
 						</Text>
-					))}
-					</View>
-					<Text className={`text-2xl font-BaiJamjuree-Bold ${renderTextColor()}`}
-					>
-						{data.minuteDuration && `${data.minuteDuration}'`}
-						{data.secondDuration && `${data.secondDuration}"`}
+					</>}
+					<Text className={`text-2xl font-BaiJamjuree-Bold ${renderTextColor()}`}>
 						{data.reps && `x ${data.reps}`}
 					</Text>
 				</>
