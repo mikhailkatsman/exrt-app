@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+// import { getLocales } from 'react-native-localize';
 import { View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Calendar from "@components/calendar/Calendar";
@@ -15,6 +16,8 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const [dataArray, setDataArray] = useState<any[]>([])
   const [selectedDay, setSelectedDay] = useState<number>(0)
+  const [mondayDate, setMondayDate] = useState<string>('')
+  const [locale, setLocale] = useState<string>('en-GB')
 
   const fetchRoutineData = () => {
     DB.sql(`
@@ -50,12 +53,27 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
       })
 
       setDataArray(resultArray)
+
+      
     }) 
   }
 
 
   useEffect(() => {
     setSelectedDay(dayNow)
+    
+    // const localeData = getLocales()
+    //
+    // setLocale(localeData[0].languageTag)
+
+    DB.sql(`
+      SELECT value
+      FROM metadata
+      WHERE key = 'last_reset';
+    `, [],
+    (_, result) => {
+      setMondayDate(result.rows.item(0).value)
+    })
 
     const unsubscribeFocus = navigation.addListener('focus', fetchRoutineData)
     return () => { unsubscribeFocus() }
@@ -75,6 +93,8 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
           dataArray={dataArray}
           selectedDay={selectedDay}
           screenWidth={screenWidth}
+          mondayDate={mondayDate}
+          locale={locale}
         />
       </View>
     </ScreenWrapper>

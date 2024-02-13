@@ -17,11 +17,14 @@ type Props = {
   dataArray: any[],
   selectedDay: number, 
   screenWidth: number,
+  mondayDate: string,
+  locale: string,
 }
 
-const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
+const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth, mondayDate, locale }) => {
   const [intState, setIntState] = useState(selectedDay)
   const [sessionsArray, setSessionsArray] = useState<any[]>([])
+  const [dateString, setDateString] = useState<string | undefined>('')
 
   const opacity = useSharedValue(0)
   const translateX = useSharedValue(screenWidth)
@@ -30,8 +33,26 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
   const elementWidth = (screenWidth / 100 * 70) 
 
   const animatedStyle = useAnimatedStyle(() => {
-    return { opacity: opacity.value, transform: [{ translateX: translateX.value }] }
+    return { 
+      opacity: opacity.value, 
+      transform: [{ translateX: translateX.value }] 
+    }
   })
+
+  function formatDate(selectedDay: number): string | undefined {
+    if (mondayDate.length === 0) return undefined
+
+    const date = new Date(mondayDate)
+
+    date.setDate(date.getDate() + selectedDay)
+
+    return new Intl.DateTimeFormat(locale, {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    }).format(date)
+  }
 
   useEffect(() => {
     opacity.value = withSequence(
@@ -79,6 +100,7 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
       })
       .flat()
 
+    setDateString(formatDate(selectedDay))
     setSessionsArray(filteredData)
   }, [dataArray, intState])
 
@@ -91,14 +113,15 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth }) => {
 
   return (
     <Animated.View style={animatedStyle} className="flex-1 flex-col py-3">
+      <View className="h-[10%] mx-2">
+        <Text className="text-custom-white font-BaiJamjuree-MediumItalic">
+          {dateString}
+        </Text>
+      </View>
       {sessionsArray.length === 0 ? (
-        // <View className="flex-1 justify-center items-center">
-        //   <Text className="text-custom-white font-BaiJamjuree-Bold text-4xl">REST DAY</Text>
-        // </View>
         <RestDayAnimation />
       ) : (
         <>
-          <View className="h-[10%] mx-3" />
           <ScrollView 
             ref={scrollRef}
             horizontal={true} 

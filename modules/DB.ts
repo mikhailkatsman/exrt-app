@@ -80,8 +80,8 @@ class DB {
               tx.executeSql(`
                 UPDATE metadata 
                 SET value = ?
-                WHERE key = 'last_reset';`, 
-              [prevMondayISO])
+                WHERE key = 'last_reset';
+              `, [prevMondayISO])
             } else {
               const lastResetDate = new Date(lastResetISO)
               const daysSinceReset = Math.floor((dateNow.getTime() - lastResetDate.getTime()) / (1000 * 60 * 60 * 24))

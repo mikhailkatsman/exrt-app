@@ -99,6 +99,17 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const changeProgramStatus = () => {
     DB.transaction(tx => {
       tx.executeSql(`
+        UPDATE sessions
+        SET status = ?
+        WHERE id IN (
+          SELECT psi.session_id
+          FROM phase_session_instances psi
+          INNER JOIN program_phases pp ON pp.phase_id = psi.phase_id
+          WHERE pp.program_id = ?
+        );
+      `, ['upcoming', programId])
+
+      tx.executeSql(`
         UPDATE phases
         SET status = ?
         WHERE id = ?;
