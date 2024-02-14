@@ -8,35 +8,40 @@ type Props = {
 		type: string, 
 		data: {
 			name: string,
-			reps: number,
+			style: string,
+			totalTimeInSeconds: number,
 			background: keyof typeof exerciseBackgrounds,
 			video: keyof typeof videoFiles,
-			description: string,
-			style: string,
-			type: string,
 		} | number 
 	},
-	nextActivity: () => void
+	nextActivity: () => void,
+	setActivityStatus: (status: boolean) => void,
+	showActivityTimer: boolean,
+	setShowActivityTimer: (value: boolean) => void
 }
 
 const screenWidth = Dimensions.get('screen').width
 
-const CurrentActivityContainer: React.FC<Props> = ({ activity, nextActivity }) => {
-
+const CurrentActivityContainer: React.FC<Props> = ({
+	activity, 
+	nextActivity, 
+	setActivityStatus,
+	showActivityTimer,
+	setShowActivityTimer
+}) => {
 	return (
 		<View className="flex-1 rounded-xl object-contain">
 			{activity.type === 'exercise' ? 
 				<CurrentExercise 
 					name={activity.data?.name}
-					reps={activity.data?.reps}
-					minuteDuration={activity.data?.minuteDuration ?? null}
-					secondDuration={activity.data?.secondDuration ?? null}
+					style={activity.data?.style}
+					totalTimeInSeconds={activity.data?.totalTimeInSeconds}
 					background={activity.data?.background}
 					video={activity.data?.video}
-					description={activity.data?.description}
-					style={activity.data?.style}
-					type={activity.data?.type}
 					screenWidth={screenWidth}
+					setActivityStatus={setActivityStatus}
+					showTimer={showActivityTimer}
+					setShowTimer={setShowActivityTimer}
 				/>
 			:
 				<CurrentRest 

@@ -19,27 +19,29 @@ const TimeLineSlot: React.FC<Props> = ({ type, data, completed }) => {
 	}
 
 	return (
-		<View className={`w-24 py-4 px-1
+		<View className={`w-24 py-3 px-1
 			flex-col items-center justify-between`}
 		>
 			{type === 'exercise' ?
 				<>
-					<Text className={`text-center capitalize text-xs mb-2 font-BaiJamjuree-Bold ${renderTextColor()}`}>
+					<Text className={`text-center capitalize text-xs font-BaiJamjuree-Bold ${renderTextColor()}`}>
 						{words.map((word: string) => `${word} `)}
 					</Text>
-					{(data.minuteDuration || data.minuteDuration) && <>
-						<Text className={`text-2xl -mb-2 font-BaiJamjuree-Bold ${renderTextColor()}`}>
+					{(data.minuteDuration || data.secondDuration) &&
+						<Text className={`text-2xl ${data.reps <= 1 ? '' : '-mb-2'} font-BaiJamjuree-Bold ${renderTextColor()}`}>
 							{data.minuteDuration && `${data.minuteDuration}'`}
 							{data.secondDuration && `${data.secondDuration}"`}
 						</Text>
-					</>}
-					<Text className={`text-2xl font-BaiJamjuree-Bold ${renderTextColor()}`}>
-						{data.reps && `x ${data.reps}`}
-					</Text>
+					}
+					{data.reps >= 1 &&
+						<Text className={`text-2xl font-BaiJamjuree-Bold ${renderTextColor()}`}>
+							x {data.reps}
+						</Text>
+					}
 				</>
 			:
 				<>
-					<Text className={`text-center text-xs font-BaiJamjuree-Bold mb-2 ${renderTextColor()}`}>
+					<Text className={`text-center text-xs font-BaiJamjuree-Bold ${renderTextColor()}`}>
 						Rest	
 					</Text>
 					<Text className={`text-2xl font-BaiJamjuree-Bold ${renderTextColor()}`}>

@@ -1,8 +1,10 @@
 import { Text, View, Image, TouchableOpacity } from "react-native"
+import { DeviceEventEmitter } from "react-native";
 import { exerciseThumbnails } from "@modules/AssetPaths"
 import { Icon } from "@react-native-material/core"
 import DB from "@modules/DB"
 import { useNavigation } from "@react-navigation/native"
+import { useEffect } from "react"
 
 type Props = {
   updateInstances: () => void,
@@ -40,17 +42,25 @@ const InstanceCard: React.FC<Props> = ({
       tx.executeSql(`
         DELETE FROM session_exercise_instances
         WHERE exercise_instance_id = ?;
-      `, [id], () => console.log(`Deleted instance: ${id} from session`))
+      `, [id])
 
       tx.executeSql(`
         DELETE FROM exercise_instances
         WHERE id = ?;
-      `, [id], () => console.log(`Deleted instance: ${id} from exercise instances`))
+      `, [id])
     },
       error => console.log('Error deleting instance: ' + error),
       () => updateInstances()
     )
   }
+
+  useEffect(() => {
+    const deleteInstanceEventListener = DeviceEventEmitter.addListener(`deleteEventInstance${id}`, deleteInstance)
+
+    return () => {
+      deleteInstanceEventListener.remove()
+    }
+  }, [])
 
   return (
     <View className="w-full h-20 mb-5 flex-row pl-2 py-2 rounded-xl border-x-2 border-custom-white">
@@ -78,7 +88,7 @@ const InstanceCard: React.FC<Props> = ({
           onPress={() => {
             navigation.navigate('ConfirmModal', {
               text: 'Are you sure you want to delete this exercise?',
-              onConfirm: deleteInstance
+              eventId: `Instance${id}`
             })
           }}
           activeOpacity={1}

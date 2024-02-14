@@ -3,38 +3,37 @@ import { Icon } from "@react-native-material/core"
 import { LinearGradient } from "expo-linear-gradient"
 import { Image, Text, View, TouchableOpacity } from "react-native"
 import Animated, { Easing, FadeOut, useSharedValue, withTiming, withDelay, useAnimatedStyle } from "react-native-reanimated"
-import { Video, ResizeMode } from 'expo-av'
 import { useState, useEffect } from "react"
+import { useNavigation } from "@react-navigation/native"
+import ActivityTimer from "./ActivityTimer"
 
 type Props = {
 	name: string,
-	reps: number,
-	minuteDuration: number,
-	secondDuration: number,
 	background: keyof typeof exerciseBackgrounds,
 	video: keyof typeof videoFiles,
-	description: string,
 	style: string,
-	type: string,
-	screenWidth: number
+	totalTimeInSeconds: number,
+	screenWidth: number,
+	setActivityStatus: (status: boolean) => void,
+	showTimer: boolean,
+	setShowTimer: (value: boolean) => void,
 }
 
 const CurrentExercise: React.FC<Props> = ({
 	name,
-	reps,
-	minuteDuration,
-	secondDuration,
 	background,
 	video,
-	description,
 	style,
-	type,
-	screenWidth
+	totalTimeInSeconds,
+	screenWidth,
+	setActivityStatus,
+	showTimer,
+	setShowTimer
 }) => {
-	const [isPlayingVideo, setIsPlayingVideo] = useState<boolean>(false)
-
 	const opacity = useSharedValue(0)
 	const translateX = useSharedValue(screenWidth)
+
+	const navigation = useNavigation()
 
 	useEffect(() => {
 		opacity.value = withDelay(50, withTiming(1, { duration: 150, easing: Easing.in(Easing.ease) }))
@@ -51,16 +50,15 @@ const CurrentExercise: React.FC<Props> = ({
 
 	return (
 		<Animated.View style={animatedStyle} exiting={FadeOut} className="w-full h-full">
-			{isPlayingVideo ? 
-				<Video 
-					className="absolute h-full w-full top-0 rounded-2xl"
-					source={videoFiles[video]}
-					resizeMode={"cover" as ResizeMode}
-					isMuted={true}
-					shouldPlay={true}
-					isLooping={true}
+			{showTimer ? (
+				<ActivityTimer 
+					duration={totalTimeInSeconds} 
+					endTimer={() => {
+						setActivityStatus(true)
+						setShowTimer(false)
+					}}
 				/>
-			: 
+			) : (
 				<>
 					<Image
 						className="absolute h-full w-full top-0 rounded-2xl"
@@ -71,41 +69,25 @@ const CurrentExercise: React.FC<Props> = ({
 						className="absolute h-full w-full top-0"
 						colors={['transparent', 'transparent', '#121212']}
 					/>
-				</> 
-			}
-			<View className="p-4 h-full flex-col justify-between">
-				<View className="flex-row justify-between">
-					<View className="w-[80%]">
-						<Text className="text-custom-white font-BaiJamjuree-Bold text-4xl">
-							{name}
-						</Text>
-						<Text className="text-custom-white font-BaiJamjuree-RegularItalic text-lg">
-							{style}
-						</Text>
+					<View className="p-4 flex-1">
+						<View className="flex-row justify-between">
+							<View className="w-[80%]">
+								<Text className="text-custom-white font-BaiJamjuree-Bold text-4xl capitalize">
+									{name}
+								</Text>
+								<Text className="text-custom-white font-BaiJamjuree-RegularItalic text-lg">
+									{style}
+								</Text>
+							</View>
+							<TouchableOpacity
+								onPress={() => navigation.navigate('FullScreenVideo', { videoSource: video })}
+							>
+								<Icon name="video-outline" size={40} color="#F5F6F3" />
+							</TouchableOpacity>
+						</View>
 					</View>
-					{isPlayingVideo ? 
-						<TouchableOpacity
-							onPress={() => setIsPlayingVideo(false)}
-						>
-							<Icon name="close" size={40} color="#F5F6F3" />
-						</TouchableOpacity>
-					:
-						<TouchableOpacity
-							onPress={() => setIsPlayingVideo(true)}
-						>
-							<Icon name="video-outline" size={40} color="#F5F6F3" />
-						</TouchableOpacity>
-					}
-				</View>
-				<View>
-					<Text className="text-custom-white">
-						Description: {description}
-					</Text>
-					<Text className="text-custom-white">
-						Type: {type}
-					</Text>
-				</View>
-			</View>
+				</>
+			)}
 		</Animated.View>
 	)
 }

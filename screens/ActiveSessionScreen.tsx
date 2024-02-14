@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import { View, Text, TouchableOpacity } from "react-native";
@@ -20,9 +20,12 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const phaseId: number = route.params.phaseId
   const programId: number = route.params.programId
 
-  const [sessionTime, setSessionTime] = useState<number>(0)
+  const sessionTimeRef = useRef<number>(0)
+
   const [exerciseInstances, setExerciseInstances] = useState<any[]>([])
   const [activities, setActivities] = useState<any[]>([])
+  const [isActivityFinished, setIsActivityFinished] = useState<boolean>(false)
+  const [showActivityTimer, setShowActivityTimer] = useState<boolean>(false)
   const [currentActivityIndex, setCurrentActivityIndex] = useState<number>(0)
   const [currentActivity, setCurrentActivity] = useState<{
     type: string, 
@@ -76,6 +79,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         reps: row.reps || null,
         minuteDuration: row.minuteDuration || null,
         secondDuration: row.secondDuration || null,
+        totalTimeInSeconds: row.minuteDuration * 60 + row.secondDuration || null,
         weight: row.weight || null
       }))
 
@@ -106,26 +110,18 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       setActivities(activityList)
       setCurrentActivity(activityList[0])
     })
-
-    const timeValue = setInterval(() => {
-      setSessionTime(prev => prev + 1)
-    }, 1000)
-
-    return () => clearInterval(timeValue)
   }, [])
 
   useKeepAwake()
 
-  const formatTime = (totalSeconds: number) => {
-    const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0')
-    const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0')
-    const seconds = (totalSeconds % 60).toString().padStart(2, '0')
-    return `${hours}:${minutes}:${seconds}`
-  }
-
   const switchActivity = () => {
+    setIsActivityFinished(false)
     setCurrentActivityIndex(currentActivityIndex + 1)
     setCurrentActivity(activities[currentActivityIndex + 1])
+  }
+
+  const handleTimeChange = (timeValue: number) => {
+    sessionTimeRef.current = timeValue
   }
 
   const finishSession = () => {
@@ -139,7 +135,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         sessionId: sessionId, 
         sessionName: sessionName,
         exerciseIds: exerciseInstances.map(instance => instance.exerciseId), 
-        timeTotal: sessionTime,
+        timeTotal: sessionTimeRef.current,
         phaseId: phaseId,
         programId: programId
       })
@@ -150,7 +146,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     if (currentActivity?.type === 'rest') {
       return (
         <TouchableOpacity className="flex-1 flex-row items-center 
-          justify-center rounded-xl border-2 border-custom-red"
+          justify-center rounded-2xl border-2 border-custom-red"
           onPress={switchActivity}
         >
           <Text className="mr-2 text-custom-red font-BaiJamjuree-Bold">Skip Rest</Text>
@@ -159,10 +155,42 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       )
     }
 
+    if (currentActivity?.data.totalTimeInSeconds > 0) {
+      if (isActivityFinished) {
+        return (
+          <TouchableOpacity className="flex-1 flex-row items-center 
+            justify-center rounded-2xl border-2 border-custom-white"
+            onPress={switchActivity}
+          >
+            <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Complete</Text>
+            <Icon name="dumbbell" color="#F5F6F3" size={24} /> 
+          </TouchableOpacity>
+        )
+      } else {
+        return (
+          <TouchableOpacity className={`flex-1 flex-row items-center 
+            justify-center rounded-2xl border-2 
+            ${showActivityTimer ? 'border-custom-dark-grey' : 'border-custom-red'}`}
+            onPress={() => setShowActivityTimer(true)}
+            disabled={showActivityTimer}
+          >
+            <Text className={`mr-2 ${showActivityTimer ? 'text-custom-dark-grey' : 'text-custom-red'} font-BaiJamjuree-Bold`}>
+              {showActivityTimer ? 'Complete' : 'Start Timer'}
+            </Text>
+            {showActivityTimer ? 
+              <Icon name="dumbbell" color="#252525" size={24} /> 
+            :
+              <Icon name="timer-outline" color="#F4533E" size={24} /> 
+            }
+          </TouchableOpacity>
+        )
+      }
+    }
+
     if (currentActivityIndex === activities.length - 1) {
       return ( 
         <TouchableOpacity className="flex-1 flex-row items-center 
-          justify-center rounded-xl border-2 border-custom-green"
+          justify-center rounded-2xl border-2 border-custom-green"
           onPress={finishSession}
         >
           <Text className="mr-2 text-custom-green font-BaiJamjuree-Bold">Finish Session</Text>
@@ -173,7 +201,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
 
     return (
       <TouchableOpacity className="flex-1 flex-row items-center 
-        justify-center rounded-xl border-2 border-custom-white"
+        justify-center rounded-2xl border-2 border-custom-white"
         onPress={switchActivity}
       >
         <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Complete</Text>
@@ -188,7 +216,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         <Progress
           totalActivities={activities}
           currentActivity={currentActivityIndex}
-          timeString={formatTime(sessionTime)}
+          setTimeRef={handleTimeChange}
         />
         <TimeLine 
           instances={activities} 
@@ -197,6 +225,9 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         <CurrentActivityContainer 
           activity={currentActivity} 
           nextActivity={switchActivity}
+          setActivityStatus={setIsActivityFinished}
+          showActivityTimer={showActivityTimer}
+          setShowActivityTimer={setShowActivityTimer}
         />
       </View>
       <BottomBarWrapper>
