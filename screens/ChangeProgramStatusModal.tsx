@@ -89,7 +89,7 @@ All progress will be lost!`
 
     return (
       <TouchableOpacity 
-        className={`h-full w-1/2 justify-center items-center rounded-lg border ${colors.border}`}
+        className={`h-full w-1/2 justify-center items-center rounded-xl border-2 ${colors.border}`}
         onPress={changeProgramStatus}
       >
         <Text className={`font-BaiJamjuree-Bold ${colors.text}`}>

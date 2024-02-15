@@ -25,6 +25,7 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
           GROUP_CONCAT(sessions.id, ',') AS session_ids,
           GROUP_CONCAT(sessions.name, ',') AS session_names,
           GROUP_CONCAT(sessions.status, ',') AS session_statuses,
+          GROUP_CONCAT(sessions.custom, ',') AS session_customs,
           GROUP_CONCAT(phases.id, ',') AS phase_ids,
           GROUP_CONCAT(phases.name, ',') AS phase_names,
           GROUP_CONCAT(programs.id, ',') AS program_ids,

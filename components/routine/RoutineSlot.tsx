@@ -13,6 +13,7 @@ type Props = {
     id: number,
     name: string,
     status: string,
+    custom: number,
     phaseId: number,
     phaseName: string,
     programId: number,
@@ -116,17 +117,20 @@ const RoutineSlot: React.FC<Props> = ({
           <Text className="font-BaiJamjuree-BoldItalic text-sm" style={{color: statusContext.color}}>
             {statusContext.statusText}
           </Text>
-          <TouchableOpacity 
-            className="w-[25%] items-end justify-start mt-1"
-            onPress={() => navigation.navigate("EditSession", { 
-              phaseId: routineId,
-              sessionName: session.name,
-              sessionId: session.id, 
-              newSession: false,
-            })}
-          >
-            <Icon name="pencil" size={18} color="#F5F6F3" />
-          </TouchableOpacity>
+          {session.custom === 1 &&
+            <TouchableOpacity 
+              className="w-[25%] items-end justify-start mt-1"
+              onPress={() => navigation.navigate("EditSession", { 
+                phaseId: routineId,
+                sessionName: session.name,
+                sessionId: session.id, 
+                newSession: false,
+                sessionCustom: session.custom
+              })}
+            >
+              <Icon name="pencil" size={18} color="#F5F6F3" />
+            </TouchableOpacity>
+          }
         </View>
         <View className="h-[15%] mx-3">
           <Text className="text-custom-white font-BaiJamjuree-Bold text-xl capitalize" style={{ lineHeight:22 }}>

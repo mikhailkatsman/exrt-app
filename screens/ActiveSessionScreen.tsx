@@ -143,6 +143,8 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const renderButtons = () => {
+    const lastInstance: boolean = currentActivityIndex === activities.length - 1
+
     if (currentActivity?.type === 'rest') {
       return (
         <TouchableOpacity className="flex-1 flex-row items-center 
@@ -158,12 +160,25 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     if (currentActivity?.data.totalTimeInSeconds > 0) {
       if (isActivityFinished) {
         return (
-          <TouchableOpacity className="flex-1 flex-row items-center 
-            justify-center rounded-2xl border-2 border-custom-white"
-            onPress={switchActivity}
+          <TouchableOpacity className={`flex-1 flex-row items-center 
+            justify-center rounded-2xl border-2 
+            ${lastInstance ? 'border-custom-green' : 'border-custom-white'}`}
+            onPress={() => {
+              if (lastInstance) {
+                finishSession()
+              } else {
+                switchActivity()
+              }
+            }}
           >
-            <Text className="mr-2 text-custom-white font-BaiJamjuree-Bold">Complete</Text>
-            <Icon name="dumbbell" color="#F5F6F3" size={24} /> 
+            <Text className={`mr-2 ${lastInstance ? 'text-custom-green' : 'text-custom-white'} font-BaiJamjuree-Bold`}>
+              {lastInstance ? 'Finish Session' : 'Complete'}
+            </Text>
+            {lastInstance ?
+              <Icon name="flag-checkered" color="#74AC5D" size={24} /> 
+            :
+              <Icon name="dumbbell" color="#F5F6F3" size={24} /> 
+            }
           </TouchableOpacity>
         )
       } else {
@@ -187,7 +202,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       }
     }
 
-    if (currentActivityIndex === activities.length - 1) {
+    if (lastInstance) {
       return ( 
         <TouchableOpacity className="flex-1 flex-row items-center 
           justify-center rounded-2xl border-2 border-custom-green"

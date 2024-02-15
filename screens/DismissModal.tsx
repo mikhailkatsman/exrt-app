@@ -21,7 +21,7 @@ const DismissModal: React.FC<Props> = ({ navigation, route }) => {
       </View>
       <View className="h-[30%] p-2 flex-row justify-between items-center">
         <TouchableOpacity 
-          className="h-full w-1/2 flex justify-center items-center rounded-lg border border-custom-red" 
+          className="h-full w-1/2 flex justify-center items-center rounded-xl border-2 border-custom-red" 
           onPress={() => {
             navigation.pop()
             DeviceEventEmitter.emit(`dismissEvent${eventId}`)
