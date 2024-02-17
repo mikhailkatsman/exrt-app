@@ -203,6 +203,35 @@ class DB {
 
     console.log(JSON.stringify(allData, null, 2))
   }
+
+  public async checkMetaFirstTime(): Promise<boolean> {
+    let firstTime: boolean = false
+
+    await new Promise<void>((resolve, reject) => {
+      this.db!.transaction(tx => {
+        tx.executeSql(`
+          SELECT value
+          FROM metadata
+          WHERE key = ?;
+          `, ['first_time'], 
+          (_, resultSet) => {
+            if (resultSet.rows.item(0).value === 'true') {
+              firstTime = true
+            }
+            console.log('FIRST TIME: ' + firstTime)
+            resolve()
+          }, 
+          (_, error) => {
+            console.error(`Error Checking Meta Data`, error)
+            reject(error)
+            return true
+          }
+        )
+      })
+    })  
+
+    return firstTime
+  }
 }
 
 export default new DB()

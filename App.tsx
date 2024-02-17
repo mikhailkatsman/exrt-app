@@ -6,6 +6,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import * as Font from 'expo-font'
+import { preventAutoHideAsync } from 'expo-splash-screen'
 import { customFonts } from '@modules/AssetPaths'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -31,8 +32,10 @@ import ChangeProgramStatusModal from '@screens/ChangeProgramStatusModal'
 import SessionResultsModal from '@screens/SessionResultsModal'
 import FullScreenVideoScreen from '@screens/FullScreenVideo'
 import EndSessionScreen from '@screens/EndSessionScreen'
+import WelcomeScreen from '@screens/WelcomeScreen'
 
 export type RootStackParamList = {
+  Welcome: undefined,
   Home: undefined,
   ProgramsList: undefined,
   ExercisesList: undefined,
@@ -118,13 +121,14 @@ export type RootStackParamList = {
   },
 }
 
-
 const App: React.FC = () => {
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
+  const [initScreen, setInitScreen] = useState<keyof RootStackParamList | undefined>('Home')
 
   const Stack = createNativeStackNavigator<RootStackParamList>()
 
   useEffect(() => {
+
     const initializeDatabase = async () => {
       return await DB.initDatabase() 
     }
@@ -141,6 +145,14 @@ const App: React.FC = () => {
       return await DB.setResetDate()
     }
 
+    const setInitialScreen = async () => {
+      const isFirstTimeLaunch = await DB.checkMetaFirstTime()
+
+      if (isFirstTimeLaunch) {
+        setInitScreen('Welcome' as keyof RootStackParamList)
+      }
+    }
+
     const loadAllAppAssets = async () => {
       try {
         await Promise.all([
@@ -153,6 +165,8 @@ const App: React.FC = () => {
         // await logAllData()
 
         await setResetDate()
+
+        await setInitialScreen()
       } catch (error) {
         console.log('Error Initializing: ' + error)
       } finally {
@@ -160,6 +174,7 @@ const App: React.FC = () => {
       }
     }
 
+    preventAutoHideAsync()
     loadAllAppAssets()
   }, [])
 
@@ -168,7 +183,7 @@ const App: React.FC = () => {
       <SafeAreaProvider>
         <NavigationContainer>
           <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-            <Stack.Navigator initialRouteName='Home'>
+            <Stack.Navigator initialRouteName={initScreen}>
               <Stack.Group
                 screenOptions={{
                   presentation: 'card',
@@ -189,6 +204,11 @@ const App: React.FC = () => {
                   headerTintColor: '#F5F6F3'
                 }}
               >
+                <Stack.Screen
+                  name='Welcome'
+                  component={WelcomeScreen}
+                  options={{headerShown: false}}
+                />
                 <Stack.Screen
                   name='Home'
                   component={HomeScreen}

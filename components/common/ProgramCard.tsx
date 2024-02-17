@@ -91,8 +91,8 @@ const ProgramCard: React.FC<Props> = ({
             }}
             activeOpacity={0.6}
           >
-            <View className="flex-1 justify-center items-center bg-twothird-transparent rounded-xl border"
-                  style={{ borderColor: statusProps.buttonBorderColor }}
+            <View className="flex-1 justify-center items-center bg-twothird-transparent rounded-xl border-2"
+              style={{ borderColor: statusProps.buttonBorderColor }}
             >
               <Text className="font-BaiJamjuree-Bold" style={{ color: statusProps.buttonTextColor }}>
                 {statusProps.buttonText}
