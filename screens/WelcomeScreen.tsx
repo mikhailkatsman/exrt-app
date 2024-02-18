@@ -25,7 +25,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
           <TouchableOpacity 
             className="px-3 flex-1 rounded-xl border-2 border-custom-white flex-row justify-between items-center"
             onPress={() => {
-              navigation.replace('Home')
+              navigation.replace('Home', { isFirstTime: true })
             }}
             activeOpacity={0.6}
           >

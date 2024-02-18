@@ -2,6 +2,7 @@ import { View, Dimensions, Image, TouchableOpacity } from "react-native"
 import { useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
+import { CopilotStep, useCopilot } from "react-native-copilot"
 import DB from '@modules/DB'
 import { icons } from "@modules/AssetPaths"
 import ScreenWrapper from "@components/common/ScreenWrapper"
@@ -18,11 +19,15 @@ const dimentions = Dimensions.get('screen')
 const dateNow: Date = new Date()
 const dayNow = (dateNow.getDay() + 6) % 7
 
-const HomeScreen: React.FC<Props> = ({ navigation }) => {
+const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
+  const isFirstTime: boolean | undefined = route.params.isFirstTime
+
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [dayIds, setDayIds] = useState<number[]>([])
   const [activePrograms, setActivePrograms] = useState<any[]>([])
   const [animationTrigger, setAnimationTrigger] = useState<boolean>(false)
+
+  const copilot = useCopilot()
 
   const fetchData = () => {
     DB.sql(`
@@ -54,6 +59,58 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     })
   }
 
+  const CopilotProgress = ({ copilot }: any) => (
+    <View {...copilot}>
+      <Progress 
+        dayIds={dayIds} 
+        dayNow={dayNow}
+        screenWidth={dimentions.width} 
+      />
+    </View>
+  )
+
+  const CopilotActivePrograms = ({ copilot }: any) => (
+    <View {...copilot} className="flex-1">
+      <ActivePrograms 
+        activePrograms={activePrograms}
+        screenWidth={dimentions.width}
+        onLayout={() => setIsLoaded(true)}
+      />
+    </View>
+  )
+
+  const CopilotProgramsAnimatedButton = ({ copilot }: any) => (
+    <View {...copilot} className="h-1/5">
+      <AnimatedNavigationButton
+        key={'button1'}
+        trigger={animationTrigger}
+        image={icons.ProgramsIcon}
+        colorName="custom-purple"
+        colorCode="#7D34A7"
+        textLine1="Browse"
+        textLine2="Programs"
+        route="ProgramsList"
+        delay={200}
+      />
+    </View>
+  )
+
+  const CopilotExercisesAnimatedButton = ({ copilot }: any) => (
+    <View {...copilot} className="h-1/5">
+      <AnimatedNavigationButton
+        key={'button2'}
+        trigger={animationTrigger}
+        image={icons.ExercisesIcon}
+        colorName="custom-yellow"
+        colorCode="#F7EA40"
+        textLine1="Browse"
+        textLine2="Exercises"
+        route="ExercisesList"
+        delay={300}
+      />
+    </View>
+  )
+
   useEffect(() => {
     const unsubscribeFocus = navigation.addListener('focus', () => {
       fetchData()
@@ -68,57 +125,40 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <>
-      <SplashScreen isComponentLoaded={isLoaded} />
+      {!isFirstTime &&
+        <SplashScreen isComponentLoaded={isLoaded} />
+      }
       <ScreenWrapper>
         <View className="w-full p-2 flex flex-row justify-between items-center">
-            <Image 
-              className="h-6 w-6" 
-              resizeMode="contain"
-              source={icons['Logo' as keyof typeof icons]} 
-            />
+          <Image 
+            className="h-6 w-6" 
+            resizeMode="contain"
+            source={icons['Logo' as keyof typeof icons]} 
+          />
           <TouchableOpacity
-            onPress={() => navigation.navigate('Settings')}
+            // onPress={() => navigation.navigate('Settings')}
+            onPress={() => copilot.start()}
             className="h-10 w-10 flex justify-center items-end"
             activeOpacity={0.6}
           >
             <Icon name="cog" size={22} color="#F5F6F3" />
           </TouchableOpacity>
         </View>
-        <Progress 
-          dayIds={dayIds} 
-          dayNow={dayNow}
-          screenWidth={dimentions.width} 
-        />
+        <CopilotStep text='This is your progress tracker' order={1} name="progress">
+           <CopilotProgress /> 
+        </CopilotStep>
         <View className="h-8" />
-        <ActivePrograms 
-          activePrograms={activePrograms}
-          screenWidth={dimentions.width}
-          onLayout={() => setIsLoaded(true)}
-        />
-        <View className="h-14" />
-        <AnimatedNavigationButton
-          key={'button1'}
-          trigger={animationTrigger}
-          image={icons.ProgramsIcon}
-          colorName="custom-purple"
-          colorCode="#7D34A7"
-          textLine1="Browse"
-          textLine2="Programs"
-          route="ProgramsList"
-          delay={200}
-        />
-        <View className="h-10" />
-        <AnimatedNavigationButton
-          key={'button2'}
-          trigger={animationTrigger}
-          image={icons.ExercisesIcon}
-          colorName="custom-yellow"
-          colorCode="#F7EA40"
-          textLine1="Browse"
-          textLine2="Exercises"
-          route="ExercisesList"
-          delay={300}
-        />
+        <CopilotStep text='These are your active programs' order={2} name="activePrograms">
+           <CopilotActivePrograms /> 
+        </CopilotStep>
+        <View className="h-4" />
+        <CopilotStep text='This is where you view all available programs' order={3} name="programs">
+          <CopilotProgramsAnimatedButton />
+        </CopilotStep>
+        <View className="h-4" />
+        <CopilotStep text='This is where you view details about all the exercises' order={4} name="exercises">
+           <CopilotExercisesAnimatedButton /> 
+        </CopilotStep>
         <View className="h-5" />
       </ScreenWrapper>
     </>

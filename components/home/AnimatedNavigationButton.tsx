@@ -91,7 +91,7 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 
 	return (
 		<TouchableOpacity 
-			className="mx-2 h-[16%]"
+			className="mx-2 h-full pt-7"
 			onPress={() => navigation.navigate(route, params)}
 			activeOpacity={0.6}
 		>

@@ -218,7 +218,6 @@ class DB {
             if (resultSet.rows.item(0).value === 'true') {
               firstTime = true
             }
-            console.log('FIRST TIME: ' + firstTime)
             resolve()
           }, 
           (_, error) => {
