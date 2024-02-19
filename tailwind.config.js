@@ -13,6 +13,7 @@ module.exports = {
       'custom-green': '#74AC5D',
       'custom-dark-green': '#3C592F',
       'custom-dark': '#121212',
+      'custom-light-grey': '#A0A0A0',
       'custom-grey': '#505050',
       'custom-dark-grey': '#252525',
       'custom-blue': '#5AABD6',
@@ -47,7 +48,7 @@ module.exports = {
   plugins: [],
   safelist: [
     {
-      pattern: /(bg|text|border)-custom-(red|white|green|dark|grey|dark-grey|blue|yellow|purple)/
+      pattern: /(bg|text|border)-custom-(red|white|green|dark|light-grey|grey|dark-grey|blue|yellow|purple)/
     },
     {
       pattern: /(half|twothird)-transparent/

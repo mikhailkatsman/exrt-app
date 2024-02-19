@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { View } from 'react-native'
 import DB from '@modules/DB'
 import { initNotificationsPermissionsCheck } from '@modules/Notifications'
 import { IconComponentProvider } from '@react-native-material/core'
@@ -39,7 +40,7 @@ import CopilotCustomTooltip from '@components/common/CopilotCustomTooltip'
 export type RootStackParamList = {
   Welcome: undefined,
   Home: {
-    isFirstTime: boolean | undefined,
+    isFirstTime: boolean,
   },
   ProgramsList: undefined,
   ExercisesList: undefined,
@@ -191,9 +192,13 @@ const App: React.FC = () => {
           verticalOffset={36}
           tooltipStyle={{
             borderRadius: 16,
-            backgroundColor: '#F5F6F3'
+            backgroundColor: '#F5F6F3',
+            left: 16,
+            right: 16,
           }}
           tooltipComponent={(props: any) => <CopilotCustomTooltip {...props} />}
+          // stepNumberComponent={(props: any) => <CopilotCustomStepNumber {...props} />}
+          stepNumberComponent={() => <></>}
         >
           <NavigationContainer>
             <IconComponentProvider IconComponent={MaterialCommunityIcons}>

@@ -12,7 +12,6 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
     void goToNext()
   }
 
-
   const handlePrev = () => {
     void goToPrev()
   }
@@ -24,10 +23,10 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
           {currentStep?.text}
         </Text>
       </View>
-      <View className='mt-3 flex-row justify-end'>
+      <View className='my-3 flex-row justify-end'>
         {!isLastStep ? (
           <TouchableOpacity onPress={handleStop} className='p-3'>
-            <Text className='text-custom-dark font-BaiJamjuree-Bold'>
+            <Text className='text-custom-light-grey font-BaiJamjuree-Bold'>
               {labels.skip}
             </Text>
           </TouchableOpacity>
@@ -46,7 +45,7 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
             </Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity onPress={handleStop} className='p-3'>
+          <TouchableOpacity onPress={handleStop} className='px-3 my-1 border-2 rounded-xl border-custom-dark justify-center'>
             <Text className='text-custom-dark font-BaiJamjuree-Bold'>
               {labels.finish}
             </Text>

@@ -208,7 +208,7 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     return (
       <BottomBarWrapper>
         <TouchableOpacity 
-          className={`px-3 flex-1 rounded-xl border-2 border-custom-white flex-row ${renderrightButton ? 'justify-between' : 'justify-center'} items-center`}
+          className={`px-3 flex-1 rounded-2xl border-2 border-custom-white flex-row ${renderrightButton ? 'justify-between' : 'justify-center'} items-center`}
           onPress={() => navigation.pop()}
           activeOpacity={0.6}
         >
@@ -219,7 +219,7 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
           <>
             <View className="w-3" />
             <TouchableOpacity 
-              className="px-3 flex-1 rounded-xl border-2 border-custom-green flex-row justify-between items-center"
+              className="px-3 flex-1 rounded-2xl border-2 border-custom-green flex-row justify-between items-center"
               onPress={rightButtonAction}
               activeOpacity={0.6}
             >

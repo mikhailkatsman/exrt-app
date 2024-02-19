@@ -20,7 +20,7 @@ const dateNow: Date = new Date()
 const dayNow = (dateNow.getDay() + 6) % 7
 
 const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
-  const isFirstTime: boolean | undefined = route.params.isFirstTime
+  const isFirstTime: boolean = route.params.isFirstTime
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [dayIds, setDayIds] = useState<number[]>([])
@@ -123,12 +123,18 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [])
 
+  
+
   return (
     <>
       {!isFirstTime &&
         <SplashScreen isComponentLoaded={isLoaded} />
       }
-      <ScreenWrapper>
+      <ScreenWrapper onLayoutCallback={() => {
+        if (isFirstTime) {
+          copilot.start()
+        }
+      }}>
         <View className="w-full p-2 flex flex-row justify-between items-center">
           <Image 
             className="h-6 w-6" 
@@ -136,8 +142,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             source={icons['Logo' as keyof typeof icons]} 
           />
           <TouchableOpacity
-            // onPress={() => navigation.navigate('Settings')}
-            onPress={() => copilot.start()}
+            onPress={() => navigation.navigate('Settings')}
             className="h-10 w-10 flex justify-center items-end"
             activeOpacity={0.6}
           >
