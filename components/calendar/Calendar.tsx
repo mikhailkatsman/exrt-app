@@ -43,6 +43,7 @@ const Calendar: React.FC<Props> = ({
 	}
       })
 
+    console.log(JSON.stringify(filteredData, null, 2))
     setActiveWeekDays(filteredData)
   }, [dataArray])
 
@@ -60,8 +61,12 @@ const Calendar: React.FC<Props> = ({
 	>
 	  <View className="h-1/3 flex justify-center items-center">
 	    <Text className={`font-BaiJamjuree-Bold
-              ${index === dayNow ? 'text-custom-red' : 'text-custom-white'}
-	      `}
+              ${index === dayNow ?
+                'text-custom-red' 
+	      : activeWeekDays.some((item: any) => item.dayId === index + 1) ? 
+		'text-custom-white'
+	      : 'text-custom-grey'
+	      }`}
 	    >
 	      {day}
 	    </Text>

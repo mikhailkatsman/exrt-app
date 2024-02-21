@@ -188,7 +188,7 @@ const App: React.FC = () => {
       <SafeAreaProvider>
         <CopilotProvider 
           overlay='svg'
-          backdropColor='rgba(0,0,0,0.9)'
+          backdropColor='rgba(0,0,0,0.6)'
           verticalOffset={36}
           tooltipStyle={{
             borderRadius: 16,
@@ -197,8 +197,8 @@ const App: React.FC = () => {
             right: 16,
           }}
           tooltipComponent={(props: any) => <CopilotCustomTooltip {...props} />}
-          // stepNumberComponent={(props: any) => <CopilotCustomStepNumber {...props} />}
           stepNumberComponent={() => <></>}
+          arrowColor='#F5F6F3'
         >
           <NavigationContainer>
             <IconComponentProvider IconComponent={MaterialCommunityIcons}>

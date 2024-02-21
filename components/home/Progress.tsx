@@ -1,6 +1,5 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { useEffect, useState } from 'react'
 
 type Props = {
 	dayIds: number[],
@@ -27,12 +26,12 @@ const Progress: React.FC<Props> = ({ dayIds, dayNow, screenWidth }) => {
 				{week.map((item, index) => (
 					<View 
 						key={index}
-						className={`flex-col items-center justify-center flex-1
-						${dayIds.includes(index + 1) ? 'border-2 border-custom-white rounded-2xl' : ''}`}
+						className={`flex-col items-center justify-center flex-1 border-2 rounded-2xl
+						${dayIds.includes(index + 1) ? 'border-custom-white' : 'border-custom-dark'}`}
 					>
 						<Text 
 							className={`font-BaiJamjuree-Bold 
-							${index === dayNow ? 'text-custom-red' : 'text-custom-white'}`}
+							${index === dayNow ? 'text-custom-red' : dayIds.includes(index + 1) ? 'text-custom-white' : 'text-custom-grey'}`}
 						>
 							{item}
 						</Text>

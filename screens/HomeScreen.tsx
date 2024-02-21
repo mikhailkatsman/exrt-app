@@ -112,7 +112,9 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   )
 
   useEffect(() => {
+
     const unsubscribeFocus = navigation.addListener('focus', () => {
+      console.log('FOCUS EVENT TRIGGERED')
       fetchData()
       initNotificationsUpdate()
       setAnimationTrigger(prev => !prev)
@@ -123,18 +125,17 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [])
 
-  
-
   return (
     <>
       {!isFirstTime &&
         <SplashScreen isComponentLoaded={isLoaded} />
       }
       <ScreenWrapper onLayoutCallback={() => {
-        if (isFirstTime) {
-          copilot.start()
-        }
-      }}>
+          if (isFirstTime) {
+            setTimeout(() => copilot.start(), 800)
+          }
+        }}
+      >
         <View className="w-full p-2 flex flex-row justify-between items-center">
           <Image 
             className="h-6 w-6" 
