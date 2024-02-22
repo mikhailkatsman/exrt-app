@@ -1,19 +1,27 @@
 import { useCopilot, TooltipProps } from 'react-native-copilot'
 import { View, Text, TouchableOpacity } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import tourNavigationMap from '@modules/TourNavigationMap'
 
 const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
-  const { goToNext, goToPrev, stop, currentStep, isFirstStep, isLastStep } = useCopilot()
+  const { goToNext, stop, currentStep, isLastStep } = useCopilot()
+
+  const navigation = useNavigation()
 
   const handleStop = () => {
-    void stop()
+    const nextScreen = tourNavigationMap[currentStep?.name]
+    if (nextScreen) {
+      navigation.navigate(
+        nextScreen.screenName, 
+        nextScreen.screenProps
+      )
+    } else {
+      void stop()
+    }
   }
 
   const handleNext = () => {
     void goToNext()
-  }
-
-  const handlePrev = () => {
-    void goToPrev()
   }
 
   return (
@@ -31,13 +39,6 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
             </Text>
           </TouchableOpacity>
         ) : null}
-        {!isFirstStep ? (
-          <TouchableOpacity onPress={handlePrev} className='p-3'>
-            <Text className='text-custom-dark font-BaiJamjuree-Bold'>
-              {labels.previous}
-            </Text>
-          </TouchableOpacity>
-        ) : null}
         {!isLastStep ? (
           <TouchableOpacity onPress={handleNext} className='p-3'>
             <Text className='text-custom-dark font-BaiJamjuree-Bold'>
@@ -45,9 +46,12 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
             </Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity onPress={handleStop} className='px-3 my-1 border-2 rounded-xl border-custom-dark justify-center'>
+          <TouchableOpacity 
+              onPress={handleStop} 
+              className='p-3 border-2 rounded-xl border-custom-dark justify-center'
+          >
             <Text className='text-custom-dark font-BaiJamjuree-Bold'>
-              {labels.finish}
+              {tourNavigationMap[currentStep?.name] ? 'Continue' : labels.finish}
             </Text>
           </TouchableOpacity>
         )}

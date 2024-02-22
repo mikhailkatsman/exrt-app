@@ -42,7 +42,9 @@ export type RootStackParamList = {
   Home: {
     isFirstTime: boolean,
   },
-  ProgramsList: undefined,
+  ProgramsList: {
+    continueTour: boolean
+  } | undefined,
   ExercisesList: undefined,
   ExerciseDetails : {
     exerciseId: number,
@@ -183,24 +185,43 @@ const App: React.FC = () => {
     loadAllAppAssets()
   }, [])
 
+  const rectangleSvgPath = ({ position, size, canvasSize }) => {
+    const borderRadius = 16
+
+    const left = position.x._value
+    const top = position.y._value
+    const right = left + size.width
+    const bottom = top + size.height
+
+    return `M0,0H${canvasSize.x}V${canvasSize.y}H0V0ZM${left},${top}H${right}V${bottom}H${left}Z`
+
+    // return `M0,0 H${canvasSize.x} V${canvasSize.y} H0 V0 Z 
+    //         M${left},${top + borderRadius} 
+    //         a${borderRadius},${borderRadius} 0 0 1 ${borderRadius},-${borderRadius} 
+    //         H${right - borderRadius} a${borderRadius},${borderRadius} 0 0 1 ${borderRadius},${borderRadius} 
+    //         V${bottom - borderRadius} a${borderRadius},${borderRadius} 0 0 1 -${borderRadius},${borderRadius} 
+    //         H${left + borderRadius} a${borderRadius},${borderRadius} 0 0 1 -${borderRadius},-${borderRadius}
+    //         Z`
+  }
+
   return isInitialized ? (
     <GestureHandlerRootView className='flex-1'>
       <SafeAreaProvider>
-        <CopilotProvider 
-          overlay='svg'
-          backdropColor='rgba(0,0,0,0.6)'
-          verticalOffset={36}
-          tooltipStyle={{
-            borderRadius: 16,
-            backgroundColor: '#F5F6F3',
-            left: 16,
-            right: 16,
-          }}
-          tooltipComponent={(props: any) => <CopilotCustomTooltip {...props} />}
-          stepNumberComponent={() => <></>}
-          arrowColor='#F5F6F3'
-        >
-          <NavigationContainer>
+        <NavigationContainer>
+          <CopilotProvider 
+            overlay='svg'
+            backdropColor='rgba(0,0,0,0.7)'
+            verticalOffset={36}
+            tooltipStyle={{
+              borderRadius: 16,
+              backgroundColor: '#F5F6F3',
+              left: 32,
+              marginRight: 32
+            }}
+            tooltipComponent={(props: any) => <CopilotCustomTooltip {...props} />}
+            stepNumberComponent={() => <></>}
+            svgMaskPath={rectangleSvgPath}
+          >
             <IconComponentProvider IconComponent={MaterialCommunityIcons}>
               <Stack.Navigator initialRouteName={initScreen}>
                 <Stack.Group
@@ -345,8 +366,8 @@ const App: React.FC = () => {
                 </Stack.Group>
               </Stack.Navigator>
             </IconComponentProvider>
-          </NavigationContainer>
-        </CopilotProvider>
+          </CopilotProvider>
+        </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   ) : null

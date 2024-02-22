@@ -114,7 +114,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   useEffect(() => {
 
     const unsubscribeFocus = navigation.addListener('focus', () => {
-      console.log('FOCUS EVENT TRIGGERED')
       fetchData()
       initNotificationsUpdate()
       setAnimationTrigger(prev => !prev)
@@ -162,7 +161,14 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           <CopilotProgramsAnimatedButton />
         </CopilotStep>
         <View className="h-4" />
-        <CopilotStep text='This is where you view details about all the exercises' order={4} name="exercises">
+        <CopilotStep 
+          text={`This is where you view details about all the exercises.
+
+Click "Continue" to navigate
+to programs list.`} 
+          order={4} 
+          name="toBrowseProgramsScreen"
+        >
            <CopilotExercisesAnimatedButton /> 
         </CopilotStep>
         <View className="h-5" />

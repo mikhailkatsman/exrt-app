@@ -7,14 +7,19 @@ import { useEffect, useState } from "react"
 import DB from "@modules/DB"
 import ProgramCard from "@components/common/ProgramCard"
 import DropDown from "@components/common/Dropdown"
+import { CopilotStep, useCopilot } from "react-native-copilot"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProgramsList'>
 
-const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
+const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
+  const continueTour: boolean | undefined = route.params?.continueTour
+
   const [programsList, setProgramsList] = useState<any[]>([])
   const [searchString, setSearchString] = useState<string | null>(null)
   const [typeSort, setTypeSort] = useState<string | null>(null)
   const [difficultySort, setDifficultySort] = useState<string | null>(null)
+
+  const copilot = useCopilot()
 
   const programTypeList: { label: string, value: string }[] = [
     { label: 'Hypertrophy', value: 'hypertrophy' },
@@ -83,9 +88,35 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [])
 
+  const CopilotFilters = ({ copilot }: any) => (
+    <View {...copilot}>
+      <Text className="px-2 mb-1 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
+      <View className="px-2 mb-3 flex-row justify-between">
+        <DropDown 
+          placeholder='Type'
+          listItems={programTypeList}
+          onIndexChange={(index: number) => setTypeSort(programTypeList[index].value)}
+          reset={() => setTypeSort(null)}
+        />
+        <View className="w-2"/>
+        <DropDown 
+          placeholder='Difficulty' 
+          listItems={programDifficultyList} 
+          onIndexChange={(index: number) => setDifficultySort(programDifficultyList[index].value)}
+          reset={() => setDifficultySort(null)}
+        />
+      </View>
+    </View>
+  )
+
   return (
-    <ScreenWrapper>
-      <View className="mx-2 h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
+    <ScreenWrapper onLayoutCallback={() => {
+        if (continueTour) {
+          copilot.goToNext()
+        }
+      }}
+    >
+      <View className="mx-2 h-14 mb-3 p-2 rounded-2xlxl border-2 border-custom-white flex justify-between flex-row items-center">
         <TextInput 
           className="px-2 flex-1 h-full text-custom-white text-lg font-BaiJamjuree-Bold"
           enterKeyHint="search"
@@ -96,24 +127,11 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation }) => {
         <Icon name="magnify" size={30} color="#F5F6F3" />
       </View>
       <View className="flex-1 mb-3 overflow-hidden">
-        <Text className="px-2 mb-1 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
-        <View className="px-2 mb-5 flex-row justify-between">
-          <DropDown 
-            placeholder='Type'
-            listItems={programTypeList}
-            onIndexChange={(index: number) => setTypeSort(programTypeList[index].value)}
-            reset={() => setTypeSort(null)}
-          />
-          <View className="w-2"/>
-          <DropDown 
-            placeholder='Difficulty' 
-            listItems={programDifficultyList} 
-            onIndexChange={(index: number) => setDifficultySort(programDifficultyList[index].value)}
-            reset={() => setDifficultySort(null)}
-          />
-        </View>
+        <CopilotStep text="These are the program list filters" order={5} name="filters">
+          <CopilotFilters />
+        </CopilotStep>
         <ScrollView 
-          className="h-[85%] p-2 bg-custom-dark"
+          className="h-[85%] mt-3 p-2 bg-custom-dark"
           horizontal={false}
           fadingEdgeLength={200}
         >

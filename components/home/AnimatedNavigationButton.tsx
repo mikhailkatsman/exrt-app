@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { Icon } from "@react-native-material/core"
 import { TouchableOpacity, Text, View } from 'react-native'
@@ -31,6 +31,9 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 		bg: `bg-${colorCode}`,
 		code: colorCode
 	}
+	
+	const prevTriggerRef = useRef(trigger)
+
 	const navigation = useNavigation()
 
 	const imageTranslateX = useSharedValue(-100)
@@ -67,12 +70,16 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 	}
 
 	useEffect(() => {
-		imageTranslateX.value = -100
-		imageOpacity.value = 0
-		textTranslateX.value = -50
-		textOpacity.value = 0
+		if (prevTriggerRef.current ! === trigger) {
+			imageTranslateX.value = -100
+			imageOpacity.value = 0
+			textTranslateX.value = -50
+			textOpacity.value = 0
 
-		animationSequence()
+			animationSequence()
+		}
+
+		prevTriggerRef.current = trigger
 	}, [trigger])
 
 	const animatedImageStyle = useAnimatedStyle(() => {
