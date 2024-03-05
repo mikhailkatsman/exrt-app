@@ -220,7 +220,7 @@ const App: React.FC = () => {
             }}
             tooltipComponent={(props: any) => <CopilotCustomTooltip {...props} />}
             stepNumberComponent={() => <></>}
-            svgMaskPath={rectangleSvgPath}
+            // svgMaskPath={rectangleSvgPath}
           >
             <IconComponentProvider IconComponent={MaterialCommunityIcons}>
               <Stack.Navigator initialRouteName={initScreen}>

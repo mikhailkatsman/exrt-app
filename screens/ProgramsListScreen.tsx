@@ -112,11 +112,13 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <ScreenWrapper onLayoutCallback={() => {
         if (continueTour) {
-          copilot.goToNext()
+          setTimeout(() => {
+            copilot.goToNext()
+          }, 1000)
         }
       }}
     >
-      <View className="mx-2 h-14 mb-3 p-2 rounded-2xlxl border-2 border-custom-white flex justify-between flex-row items-center">
+      <View className="mx-2 h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
         <TextInput 
           className="px-2 flex-1 h-full text-custom-white text-lg font-BaiJamjuree-Bold"
           enterKeyHint="search"
