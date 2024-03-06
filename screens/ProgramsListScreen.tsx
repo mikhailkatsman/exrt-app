@@ -18,6 +18,7 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
   const [searchString, setSearchString] = useState<string | null>(null)
   const [typeSort, setTypeSort] = useState<string | null>(null)
   const [difficultySort, setDifficultySort] = useState<string | null>(null)
+  const [copilotStarted, setCopilotStarted] = useState(false)
 
   const copilot = useCopilot()
 
@@ -32,6 +33,19 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
     { label: 'Intermediate', value: 2 },
     { label: 'Expert', value: 3 },
   ]
+
+  useEffect(() => {
+    if (continueTour && !copilotStarted) {
+      const timeout = setTimeout(() => {
+        console.log('STARTING COPILOT ON A NEW SCREEN')
+        copilot.start()
+        copilot.goToNext()
+        setCopilotStarted(true)
+      }, 600)
+
+      return () => clearTimeout(timeout)
+    } 
+  }, [copilot, copilotStarted])
 
   const fetchPrograms = (searchString: string | null, typeSort: string | null, difficultySort: string | null) => {
     let sqlQuery = `SELECT * FROM programs`
@@ -110,14 +124,7 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
   )
 
   return (
-    <ScreenWrapper onLayoutCallback={() => {
-        if (continueTour) {
-          setTimeout(() => {
-            copilot.goToNext()
-          }, 1000)
-        }
-      }}
-    >
+    <ScreenWrapper>
       <View className="mx-2 h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
         <TextInput 
           className="px-2 flex-1 h-full text-custom-white text-lg font-BaiJamjuree-Bold"

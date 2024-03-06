@@ -26,8 +26,22 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   const [dayIds, setDayIds] = useState<number[]>([])
   const [activePrograms, setActivePrograms] = useState<any[]>([])
   const [animationTrigger, setAnimationTrigger] = useState<boolean>(false)
+  const [copilotStarted, setCopilotStarted] = useState<boolean>(false)
 
   const copilot = useCopilot()
+
+  useEffect(() => {
+    if (isFirstTime && !copilotStarted) {
+      const timeout = setTimeout(() => {
+        console.log('STARTING COPILOT ON HOME')
+        setCopilotStarted(true)
+        setAnimationTrigger(false)
+        copilot.start()
+      }, 800)
+
+      return () => clearTimeout(timeout)
+    }
+  }, [copilot, copilotStarted])
 
   const fetchData = () => {
     DB.sql(`
@@ -112,29 +126,25 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   )
 
   useEffect(() => {
-
     const unsubscribeFocus = navigation.addListener('focus', () => {
       fetchData()
       initNotificationsUpdate()
-      setAnimationTrigger(prev => !prev)
+      if (!copilotStarted) {
+        setAnimationTrigger(true)
+      }
     })
 
     return () => {
       unsubscribeFocus()
     }
-  }, [])
+  }, [copilotStarted])
 
   return (
     <>
       {!isFirstTime &&
         <SplashScreen isComponentLoaded={isLoaded} />
       }
-      <ScreenWrapper onLayoutCallback={() => {
-          if (isFirstTime) {
-            setTimeout(() => copilot.start(), 800)
-          }
-        }}
-      >
+      <ScreenWrapper>
         <View className="w-full p-2 flex flex-row justify-between items-center">
           <Image 
             className="h-6 w-6" 
