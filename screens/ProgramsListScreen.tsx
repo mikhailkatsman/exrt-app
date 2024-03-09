@@ -36,16 +36,16 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     if (continueTour && !copilotStarted) {
+      console.log('STARTING COPILOT ON A NEW SCREEN')
       const timeout = setTimeout(() => {
-        console.log('STARTING COPILOT ON A NEW SCREEN')
-        copilot.start()
         copilot.goToNext()
+        copilot.start()
         setCopilotStarted(true)
-      }, 600)
+      }, 800)
 
       return () => clearTimeout(timeout)
     } 
-  }, [copilot, copilotStarted])
+  }, [copilotStarted])
 
   const fetchPrograms = (searchString: string | null, typeSort: string | null, difficultySort: string | null) => {
     let sqlQuery = `SELECT * FROM programs`
@@ -103,9 +103,19 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [])
 
   const CopilotFilters = ({ copilot }: any) => (
-    <View {...copilot}>
-      <Text className="px-2 mb-1 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
-      <View className="px-2 mb-3 flex-row justify-between">
+    <View {...copilot} className="h-40 p-2">
+      <View className="h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
+        <TextInput 
+          className="px-2 flex-1 h-full text-custom-white text-lg font-BaiJamjuree-Bold"
+          enterKeyHint="search"
+          maxLength={25}
+          selectionColor="#F5F6F3"
+          onChangeText={setSearchString}
+        />
+        <Icon name="magnify" size={30} color="#F5F6F3" />
+      </View>
+      <Text className="mb-1 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
+      <View className="flex-row justify-between">
         <DropDown 
           placeholder='Type'
           listItems={programTypeList}
@@ -125,16 +135,6 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <ScreenWrapper>
-      <View className="mx-2 h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
-        <TextInput 
-          className="px-2 flex-1 h-full text-custom-white text-lg font-BaiJamjuree-Bold"
-          enterKeyHint="search"
-          maxLength={25}
-          selectionColor="#F5F6F3"
-          onChangeText={setSearchString}
-        />
-        <Icon name="magnify" size={30} color="#F5F6F3" />
-      </View>
       <View className="flex-1 mb-3 overflow-hidden">
         <CopilotStep text="These are the program list filters" order={5} name="filters">
           <CopilotFilters />

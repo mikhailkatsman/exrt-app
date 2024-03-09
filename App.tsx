@@ -185,25 +185,6 @@ const App: React.FC = () => {
     loadAllAppAssets()
   }, [])
 
-  const rectangleSvgPath = ({ position, size, canvasSize }) => {
-    const borderRadius = 16
-
-    const left = position.x._value
-    const top = position.y._value
-    const right = left + size.width
-    const bottom = top + size.height
-
-    return `M0,0H${canvasSize.x}V${canvasSize.y}H0V0ZM${left},${top}H${right}V${bottom}H${left}Z`
-
-    // return `M0,0 H${canvasSize.x} V${canvasSize.y} H0 V0 Z 
-    //         M${left},${top + borderRadius} 
-    //         a${borderRadius},${borderRadius} 0 0 1 ${borderRadius},-${borderRadius} 
-    //         H${right - borderRadius} a${borderRadius},${borderRadius} 0 0 1 ${borderRadius},${borderRadius} 
-    //         V${bottom - borderRadius} a${borderRadius},${borderRadius} 0 0 1 -${borderRadius},${borderRadius} 
-    //         H${left + borderRadius} a${borderRadius},${borderRadius} 0 0 1 -${borderRadius},-${borderRadius}
-    //         Z`
-  }
-
   return isInitialized ? (
     <GestureHandlerRootView className='flex-1'>
       <SafeAreaProvider>
@@ -220,7 +201,6 @@ const App: React.FC = () => {
             }}
             tooltipComponent={(props: any) => <CopilotCustomTooltip {...props} />}
             stepNumberComponent={() => <></>}
-            // svgMaskPath={rectangleSvgPath}
           >
             <IconComponentProvider IconComponent={MaterialCommunityIcons}>
               <Stack.Navigator initialRouteName={initScreen}>
