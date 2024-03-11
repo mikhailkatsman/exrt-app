@@ -36,16 +36,15 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     if (continueTour && !copilotStarted) {
-      console.log('STARTING COPILOT ON A NEW SCREEN')
       const timeout = setTimeout(() => {
-        copilot.goToNext()
-        copilot.start()
+        console.log('STARTING COPILOT ON A NEW SCREEN')
         setCopilotStarted(true)
-      }, 800)
+        copilot.start('filters')
+      }, 500)
 
       return () => clearTimeout(timeout)
     } 
-  }, [copilotStarted])
+  }, [copilotStarted, copilot])
 
   const fetchPrograms = (searchString: string | null, typeSort: string | null, difficultySort: string | null) => {
     let sqlQuery = `SELECT * FROM programs`
@@ -133,27 +132,35 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
     </View>
   )
 
+  const CopilotProgramList = ({ copilot }: any) => (
+    <View {...copilot} className="flex-1">
+      <ScrollView 
+        className="p-2 bg-custom-dark"
+        horizontal={false}
+        fadingEdgeLength={200}
+      >
+        {programsList.map((item, index) => (
+          <ProgramCard
+            key={index} 
+            id={item.id}
+            name={item.name}
+            thumbnail={item.thumbnail}
+            status={item.status}
+          />
+        ))}
+      </ScrollView>
+    </View>
+  )
+
   return (
     <ScreenWrapper>
       <View className="flex-1 mb-3 overflow-hidden">
         <CopilotStep text="These are the program list filters" order={5} name="filters">
           <CopilotFilters />
         </CopilotStep>
-        <ScrollView 
-          className="h-[85%] mt-3 p-2 bg-custom-dark"
-          horizontal={false}
-          fadingEdgeLength={200}
-        >
-          {programsList.map((item, index) => (
-            <ProgramCard
-              key={index} 
-              id={item.id}
-              name={item.name}
-              thumbnail={item.thumbnail}
-              status={item.status}
-            />
-          ))}
-        </ScrollView>
+        <CopilotStep text="Here you can view programs subscribe to them or unsubscribe" order={6} name="programs">
+          <CopilotProgramList />
+        </CopilotStep> 
       </View>
     </ScreenWrapper>
   )

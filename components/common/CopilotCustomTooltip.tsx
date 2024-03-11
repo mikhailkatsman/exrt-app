@@ -4,14 +4,14 @@ import { useNavigation } from '@react-navigation/native'
 import tourNavigationMap from '@modules/TourNavigationMap'
 
 const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
-  const { goToNext, stop, currentStep, isLastStep } = useCopilot()
+  const copilot = useCopilot()
 
   const navigation = useNavigation()
 
   const handleStop = async () => {
-    await stop()
+    await copilot.stop().then(() => console.log('COPILOT STOPPED'))
 
-    const nextScreen = tourNavigationMap[currentStep?.name] ?? null
+    const nextScreen = tourNavigationMap[copilot.currentStep?.name] ?? null
 
     if (nextScreen) {
       setTimeout(() => {
@@ -24,25 +24,26 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
   }
 
   const handleNext = () => {
-    void goToNext()
+    console.log('NEXT STEP CALLED')
+    void copilot.goToNext()
   }
 
   return (
     <View>
       <View className='h-fit'>
         <Text className='text-custom-dark font-BaiJamjuree-Regular'>
-          {currentStep?.text}
+          {copilot.currentStep?.text}
         </Text>
       </View>
       <View className='my-3 flex-row justify-end'>
-        {!isLastStep ? (
+        {!copilot.isLastStep ? (
           <TouchableOpacity onPress={handleStop} className='p-3'>
             <Text className='text-custom-light-grey font-BaiJamjuree-Bold'>
               {labels.skip}
             </Text>
           </TouchableOpacity>
         ) : null}
-        {!isLastStep ? (
+        {!copilot.isLastStep ? (
           <TouchableOpacity onPress={handleNext} className='p-3'>
             <Text className='text-custom-dark font-BaiJamjuree-Bold'>
               {labels.next}
@@ -54,7 +55,7 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
               className='p-3 border-2 rounded-xl border-custom-dark justify-center'
           >
             <Text className='text-custom-dark font-BaiJamjuree-Bold'>
-              {tourNavigationMap[currentStep?.name] ? 'Continue' : labels.finish}
+              {tourNavigationMap[copilot.currentStep?.name] ? 'Continue' : labels.finish}
             </Text>
           </TouchableOpacity>
         )}
