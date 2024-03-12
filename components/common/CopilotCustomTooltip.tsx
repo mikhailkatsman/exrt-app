@@ -9,7 +9,7 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
   const navigation = useNavigation()
 
   const handleStop = async () => {
-    await copilot.stop().then(() => console.log('COPILOT STOPPED'))
+    await copilot.stop()
 
     const nextScreen = tourNavigationMap[copilot.currentStep?.name] ?? null
 
@@ -24,7 +24,6 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
   }
 
   const handleNext = () => {
-    console.log('NEXT STEP CALLED')
     void copilot.goToNext()
   }
 

@@ -28,19 +28,18 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
     { label: 'Skills', value: 'skills' },
     { label: 'Mobility', value: 'mobility' },
   ]
-  const programDifficultyList: { label: string, value: number }[] = [
-    { label: 'Beginner', value: 1 },
-    { label: 'Intermediate', value: 2 },
-    { label: 'Expert', value: 3 },
+  const programDifficultyList: { label: string, value: string }[] = [
+    { label: 'Beginner', value: '1' },
+    { label: 'Intermediate', value: '2' },
+    { label: 'Expert', value: '3' },
   ]
 
   useEffect(() => {
     if (continueTour && !copilotStarted) {
       const timeout = setTimeout(() => {
-        console.log('STARTING COPILOT ON A NEW SCREEN')
         setCopilotStarted(true)
-        copilot.start('filters')
-      }, 500)
+        copilot.start('programs')
+      }, 400)
 
       return () => clearTimeout(timeout)
     } 
@@ -101,39 +100,8 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [])
 
-  const CopilotFilters = ({ copilot }: any) => (
-    <View {...copilot} className="h-40 p-2">
-      <View className="h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
-        <TextInput 
-          className="px-2 flex-1 h-full text-custom-white text-lg font-BaiJamjuree-Bold"
-          enterKeyHint="search"
-          maxLength={25}
-          selectionColor="#F5F6F3"
-          onChangeText={setSearchString}
-        />
-        <Icon name="magnify" size={30} color="#F5F6F3" />
-      </View>
-      <Text className="mb-1 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
-      <View className="flex-row justify-between">
-        <DropDown 
-          placeholder='Type'
-          listItems={programTypeList}
-          onIndexChange={(index: number) => setTypeSort(programTypeList[index].value)}
-          reset={() => setTypeSort(null)}
-        />
-        <View className="w-2"/>
-        <DropDown 
-          placeholder='Difficulty' 
-          listItems={programDifficultyList} 
-          onIndexChange={(index: number) => setDifficultySort(programDifficultyList[index].value)}
-          reset={() => setDifficultySort(null)}
-        />
-      </View>
-    </View>
-  )
-
   const CopilotProgramList = ({ copilot }: any) => (
-    <View {...copilot} className="flex-1">
+    <View {...copilot} className="flex-1 mb-3 overflow-hidden">
       <ScrollView 
         className="p-2 bg-custom-dark"
         horizontal={false}
@@ -154,14 +122,35 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <ScreenWrapper>
-      <View className="flex-1 mb-3 overflow-hidden">
-        <CopilotStep text="These are the program list filters" order={5} name="filters">
-          <CopilotFilters />
-        </CopilotStep>
-        <CopilotStep text="Here you can view programs subscribe to them or unsubscribe" order={6} name="programs">
-          <CopilotProgramList />
-        </CopilotStep> 
+      <View className="mx-2 h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
+        <TextInput 
+          className="px-2 flex-1 h-full text-custom-white text-lg font-BaiJamjuree-Bold"
+          enterKeyHint="search"
+          maxLength={25}
+          selectionColor="#F5F6F3"
+          onChangeText={setSearchString}
+        />
+        <Icon name="magnify" size={30} color="#F5F6F3" />
       </View>
+      <Text className="px-2 mb-1 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
+      <View className="px-2 mb-3 flex-row justify-between">
+        <DropDown 
+          placeholder='Type'
+          listItems={programTypeList}
+          onIndexChange={(index: number) => setTypeSort(programTypeList[index].value)}
+          reset={() => setTypeSort(null)}
+        />
+        <View className="w-2"/>
+        <DropDown 
+          placeholder='Difficulty' 
+          listItems={programDifficultyList} 
+          onIndexChange={(index: number) => setDifficultySort(programDifficultyList[index].value)}
+          reset={() => setDifficultySort(null)}
+        />
+      </View>
+      <CopilotStep text="Here you can view programs subscribe to them or unsubscribe" order={5} name="programs">
+        <CopilotProgramList />
+      </CopilotStep> 
     </ScreenWrapper>
   )
 }
