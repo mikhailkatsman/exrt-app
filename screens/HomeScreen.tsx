@@ -1,4 +1,4 @@
-import { View, Dimensions, Image, TouchableOpacity } from "react-native"
+import { View, Dimensions, Image, TouchableOpacity, PlatformColor } from "react-native"
 import { useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
@@ -20,27 +20,46 @@ const dateNow: Date = new Date()
 const dayNow = (dateNow.getDay() + 6) % 7
 
 const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
-  const isFirstTime: boolean = route.params.isFirstTime
-
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [dayIds, setDayIds] = useState<number[]>([])
   const [activePrograms, setActivePrograms] = useState<any[]>([])
   const [animationTrigger, setAnimationTrigger] = useState<boolean>(false)
-  const [copilotStarted, setCopilotStarted] = useState<boolean>(false)
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(route.params.isFirstTime)
+  const [copilotActive, setCopilotActive] = useState<boolean>(false)
 
   const copilot = useCopilot()
 
   useEffect(() => {
-    if (isFirstTime && !copilotStarted) {
+    if (isFirstTime && !copilotActive) {
+      const setCopilotAppStatus = () => {
+        setIsFirstTime(false)
+        setCopilotActive(false)
+      }
+
       const timeout = setTimeout(() => {
-        setCopilotStarted(true)
-        setAnimationTrigger(false)
+        setCopilotActive(true)
         copilot.start()
+        copilot.copilotEvents.on('stop', setCopilotAppStatus)
       }, 800)
 
-      return () => clearTimeout(timeout)
+      return () => {
+        clearTimeout(timeout)
+        copilot.copilotEvents.off('stop', setCopilotAppStatus)
+      }
     }
-  }, [copilot, copilotStarted])
+  }, [copilotActive, copilot])
+
+  useEffect(() => {
+    const unsubscribeFocus = navigation.addListener('focus', () => {
+      fetchData()
+      initNotificationsUpdate()
+      setAnimationTrigger(prev => !prev)
+    })
+
+    return () => {
+      unsubscribeFocus()
+    }
+  }, [])
 
   const fetchData = () => {
     DB.sql(`
@@ -56,20 +75,19 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
       DB.sql(`
         SELECT p.id, p.name, p.description,
-               p.thumbnail, p.status,
-               COUNT(pp.phase_id) AS total_phases,
-               COUNT(CASE WHEN ph.status = 'completed' THEN 1 ELSE NULL END) AS completed_phases
-        FROM programs p
-        LEFT JOIN program_phases pp ON p.id = pp.program_id
-        LEFT JOIN phases ph ON pp.phase_id = ph.id
-        WHERE p.status = 'active'
-        GROUP BY p.id;
-      `, [],
-      (_, result) => {
-        setDayIds(dayIdsData)
-        setActivePrograms(result.rows._array)
-      })
-    })
+             p.thumbnail, p.status,
+             COUNT(pp.phase_id) AS total_phases,
+             COUNT(CASE WHEN ph.status = 'completed' THEN 1 ELSE NULL END) AS completed_phases
+      FROM programs p
+      LEFT JOIN program_phases pp ON p.id = pp.program_id
+      LEFT JOIN phases ph ON pp.phase_id = ph.id
+      WHERE p.status = 'active'
+      GROUP BY p.id;
+    `, [],
+    (_, result) => {
+      setDayIds(dayIdsData)
+      setActivePrograms(result.rows._array)
+    })})
   }
 
   const CopilotProgress = ({ copilot }: any) => (
@@ -97,6 +115,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       <AnimatedNavigationButton
         key={'button1'}
         trigger={animationTrigger}
+        isCopilotActive={copilotActive}
         image={icons.ProgramsIcon}
         colorName="custom-purple"
         colorCode="#7D34A7"
@@ -113,6 +132,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       <AnimatedNavigationButton
         key={'button2'}
         trigger={animationTrigger}
+        isCopilotActive={copilotActive}
         image={icons.ExercisesIcon}
         colorName="custom-yellow"
         colorCode="#F7EA40"
@@ -123,20 +143,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       />
     </View>
   )
-
-  useEffect(() => {
-    const unsubscribeFocus = navigation.addListener('focus', () => {
-      fetchData()
-      initNotificationsUpdate()
-      if (!copilotStarted) {
-        setAnimationTrigger(true)
-      }
-    })
-
-    return () => {
-      unsubscribeFocus()
-    }
-  }, [copilotStarted])
 
   return (
     <>

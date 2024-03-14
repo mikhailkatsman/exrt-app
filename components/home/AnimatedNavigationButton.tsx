@@ -6,6 +6,7 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from '
 
 type Props = {
 	trigger: boolean,
+	isCopilotActive: boolean,
 	image: number,
 	colorName: string,
 	colorCode: string,
@@ -18,6 +19,7 @@ type Props = {
 
 const AnimatedNavigationButton: React.FC<Props> = ({ 
 	trigger,
+	isCopilotActive,
 	image, 
 	colorName,
 	colorCode,
@@ -34,10 +36,10 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 
 	const navigation = useNavigation()
 
-	const imageTranslateX = useSharedValue(-100)
-	const imageOpacity = useSharedValue(0)
-	const textTranslateX = useSharedValue(-50)
-	const textOpacity = useSharedValue(0)
+	const imageTranslateX = useSharedValue(isCopilotActive ? 0 : -100)
+	const imageOpacity = useSharedValue(isCopilotActive ? 1 : 0)
+	const textTranslateX = useSharedValue(isCopilotActive ? 0 : -50)
+	const textOpacity = useSharedValue(isCopilotActive ? 1 : 0)
 
 	function pause(ms: number) {
 		return new Promise(resolve => setTimeout(resolve, ms));
@@ -68,20 +70,15 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 	}
 
 	useEffect(() => {
-		if (trigger) {
-			imageTranslateX.value = -100;
-			imageOpacity.value = 0;
-			textTranslateX.value = -50;
-			textOpacity.value = 0;
+		if (!isCopilotActive) {
+			imageTranslateX.value = -100
+			imageOpacity.value = 0
+			textTranslateX.value = -50
+			textOpacity.value = 0
 
 			animationSequence();
-		} else {
-			imageTranslateX.value = 0;
-			imageOpacity.value = 1;
-			textTranslateX.value = 0;
-			textOpacity.value = 1;
 		}
-	}, [trigger])
+	}, [trigger, isCopilotActive])
 
 	const animatedImageStyle = useAnimatedStyle(() => {
 		return {
