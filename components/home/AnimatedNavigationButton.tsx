@@ -5,7 +5,6 @@ import { TouchableOpacity, Text, View } from 'react-native'
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 
 type Props = {
-	trigger: boolean,
 	isCopilotActive: boolean,
 	image: number,
 	colorName: string,
@@ -18,7 +17,6 @@ type Props = {
 }
 
 const AnimatedNavigationButton: React.FC<Props> = ({ 
-	trigger,
 	isCopilotActive,
 	image, 
 	colorName,
@@ -78,7 +76,7 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 
 			animationSequence();
 		}
-	}, [trigger, isCopilotActive])
+	}, [isCopilotActive])
 
 	const animatedImageStyle = useAnimatedStyle(() => {
 		return {

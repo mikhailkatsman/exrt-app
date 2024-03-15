@@ -8,6 +8,7 @@ import { Icon } from "@react-native-material/core"
 import ScreenWrapper from "@components/common/ScreenWrapper"
 import ExerciseCard from "@components/common/ExerciseCard"
 import DropDown from "@components/common/Dropdown"
+import { useIsFocused } from "@react-navigation/native"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ExercisesList'>
 
@@ -23,6 +24,8 @@ const ExerciseListScreen: React.FC<Props> = () => {
   const [typeSort, setTypeSort] = useState<string | null>(null)
   const [styleSort, setStyleSort] = useState<string | null>(null)
   const [difficultySort, setDifficultySort] = useState<number | null>(null)
+
+  const isFocused = useIsFocused()
 
   const muscleGroupList: { label: string, value: string }[] = [
     { label: 'Chest', value: 'middle pectoral' },
@@ -56,7 +59,13 @@ const ExerciseListScreen: React.FC<Props> = () => {
     { label: 'Master', value: 5 }
   ]
 
-  useEffect(() => {
+  const fetchExercises = (
+    searchString: string | null, 
+    muscleSort: string | null,
+    styleSort: string | null,
+    typeSort: string | null,
+    difficultySort: number | null,
+  ) => {
     let sqlQuery = `
       SELECT id, name, thumbnail, difficulty
       FROM exercises
@@ -105,8 +114,12 @@ const ExerciseListScreen: React.FC<Props> = () => {
       sqlQuery,
       parameters,
       (_, result) => setExerciseList(result.rows._array)
-    ) 
-  }, [searchString, muscleSort, typeSort, styleSort, difficultySort])
+    )
+  }
+
+  useEffect(() => {
+    if (isFocused) fetchExercises(searchString, muscleSort, styleSort, typeSort, difficultySort)
+  }, [isFocused, searchString, muscleSort, typeSort, styleSort, difficultySort])
   
   return (
     <ScreenWrapper>

@@ -1,4 +1,4 @@
-import { View, Dimensions, Image, TouchableOpacity, PlatformColor } from "react-native"
+import { View, Dimensions, Image, TouchableOpacity } from "react-native"
 import { useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
@@ -12,6 +12,7 @@ import AnimatedNavigationButton from "@components/home/AnimatedNavigationButton"
 import { initNotificationsUpdate } from '@modules/Notifications'
 import { Icon } from "@react-native-material/core"
 import SplashScreen from "@components/context/SplashScreen"
+import { useIsFocused } from "@react-navigation/native"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
@@ -23,43 +24,35 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [dayIds, setDayIds] = useState<number[]>([])
   const [activePrograms, setActivePrograms] = useState<any[]>([])
-  const [animationTrigger, setAnimationTrigger] = useState<boolean>(false)
   const [isFirstTime, setIsFirstTime] = useState<boolean>(route.params.isFirstTime)
   const [copilotActive, setCopilotActive] = useState<boolean>(false)
 
   const copilot = useCopilot()
+  const isFocused = useIsFocused()
 
   useEffect(() => {
     if (isFirstTime && !copilotActive) {
-      const setCopilotAppStatus = () => {
-        setIsFirstTime(false)
-        setCopilotActive(false)
-      }
 
       const timeout = setTimeout(() => {
         setCopilotActive(true)
         copilot.start()
-        copilot.copilotEvents.on('stop', setCopilotAppStatus)
-      }, 800)
+      }, 1000)
 
       return () => {
         clearTimeout(timeout)
-        copilot.copilotEvents.off('stop', setCopilotAppStatus)
       }
     }
   }, [copilotActive, copilot])
 
   useEffect(() => {
-    const unsubscribeFocus = navigation.addListener('focus', () => {
+    if (isFocused) {
       fetchData()
       initNotificationsUpdate()
-      setAnimationTrigger(prev => !prev)
-    })
-
-    return () => {
-      unsubscribeFocus()
+    } else if (copilotActive) {
+      setIsFirstTime(false)
+      setCopilotActive(false)
     }
-  }, [])
+  }, [isFocused])
 
   const fetchData = () => {
     DB.sql(`
@@ -114,7 +107,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     <View {...copilot} className="h-1/5">
       <AnimatedNavigationButton
         key={'button1'}
-        trigger={animationTrigger}
         isCopilotActive={copilotActive}
         image={icons.ProgramsIcon}
         colorName="custom-purple"
@@ -131,7 +123,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     <View {...copilot} className="h-1/5">
       <AnimatedNavigationButton
         key={'button2'}
-        trigger={animationTrigger}
         isCopilotActive={copilotActive}
         image={icons.ExercisesIcon}
         colorName="custom-yellow"
@@ -146,9 +137,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <>
-      {!isFirstTime &&
-        <SplashScreen isComponentLoaded={isLoaded} />
-      }
+      <SplashScreen isComponentLoaded={isLoaded} />
       <ScreenWrapper>
         <View className="w-full p-2 flex flex-row justify-between items-center">
           <Image 

@@ -8,6 +8,7 @@ import DB from "@modules/DB"
 import ProgramCard from "@components/common/ProgramCard"
 import DropDown from "@components/common/Dropdown"
 import { CopilotStep, useCopilot } from "react-native-copilot"
+import { useIsFocused } from "@react-navigation/native"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProgramsList'>
 
@@ -21,6 +22,7 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
   const [copilotStarted, setCopilotStarted] = useState(false)
 
   const copilot = useCopilot()
+  const isFocused = useIsFocused()
 
   const programTypeList: { label: string, value: string }[] = [
     { label: 'Hypertrophy', value: 'hypertrophy' },
@@ -28,11 +30,16 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
     { label: 'Skills', value: 'skills' },
     { label: 'Mobility', value: 'mobility' },
   ]
+
   const programDifficultyList: { label: string, value: string }[] = [
     { label: 'Beginner', value: '1' },
     { label: 'Intermediate', value: '2' },
     { label: 'Expert', value: '3' },
   ]
+
+  useEffect(() => {
+    if (isFocused) fetchPrograms(searchString, typeSort, difficultySort)
+  }, [isFocused, searchString, typeSort, difficultySort])
 
   useEffect(() => {
     if (continueTour && !copilotStarted) {
@@ -71,7 +78,6 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
 
     parameters = parameters.filter(param => param !== undefined || param !== null)
 
-
     DB.sql(
       sqlQuery,
       parameters,
@@ -87,18 +93,6 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
       setProgramsList(programDetails)
     })
   }
-
-  useEffect(() => {
-    fetchPrograms(searchString, typeSort, difficultySort)
-  }, [searchString, typeSort, difficultySort])
-
-  useEffect(() => {
-    const unsubscribeFocus = navigation.addListener('focus', () => fetchPrograms(searchString, typeSort, difficultySort))
-
-    return () => {
-      unsubscribeFocus()
-    }
-  }, [])
 
   const CopilotProgramList = ({ copilot }: any) => (
     <View {...copilot} className="flex-1 mb-3 overflow-hidden">
