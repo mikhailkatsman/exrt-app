@@ -88,6 +88,13 @@ class DB {
 
               if (daysSinceReset >= 7) {
                 const thisMonday = new Date(dateNow)
+
+                if (dayNow === 0) {
+                  thisMonday.setDate(dateNow.getDate() - 6)
+                } else {
+                  thisMonday.setDate(dateNow.getDate() - (dayNow - 1))
+                }
+
                 thisMonday.setHours(0, 0, 0, 0)
                 const thisMondayISO: string = thisMonday.toISOString()
 
