@@ -1,5 +1,4 @@
 import { hideAsync } from 'expo-splash-screen'
-import { useEffect } from "react"
 import { Image } from "react-native"
 import { icons } from "@modules/AssetPaths"
 import Animated, {

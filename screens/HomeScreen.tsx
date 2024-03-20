@@ -1,4 +1,4 @@
-import { View, Dimensions, Image, TouchableOpacity } from "react-native"
+import { View, Text, Dimensions, Image, TouchableOpacity } from "react-native"
 import { useEffect, useState } from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
@@ -13,6 +13,7 @@ import { initNotificationsUpdate } from '@modules/Notifications'
 import { Icon } from "@react-native-material/core"
 import SplashScreen from "@components/context/SplashScreen"
 import { useIsFocused } from "@react-navigation/native"
+import TutorialModalContainer from "@components/common/TutorialModalContainer"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
@@ -21,11 +22,14 @@ const dateNow: Date = new Date()
 const dayNow = (dateNow.getDay() + 6) % 7
 
 const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
+  const isFirstTimeProp = route.params.isFirstTime
+
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [dayIds, setDayIds] = useState<number[]>([])
   const [activePrograms, setActivePrograms] = useState<any[]>([])
-  const [isFirstTime, setIsFirstTime] = useState<boolean>(route.params.isFirstTime)
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(false)
   const [copilotActive, setCopilotActive] = useState<boolean>(false)
+  const [tutorialModalActive, setTutorialModalActive] = useState<boolean>(false)
 
   const copilot = useCopilot()
   const isFocused = useIsFocused()
@@ -36,13 +40,13 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       const timeout = setTimeout(() => {
         setCopilotActive(true)
         copilot.start()
-      }, 1000)
+      }, 400)
 
       return () => {
         clearTimeout(timeout)
       }
     }
-  }, [copilotActive, copilot])
+  }, [copilotActive, copilot, isFirstTime])
 
   useEffect(() => {
     if (isFocused) {
@@ -53,6 +57,14 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       setCopilotActive(false)
     }
   }, [isFocused])
+
+  useEffect(() => {
+    if (isLoaded && isFirstTimeProp) {
+      setTimeout(() => {
+        setTutorialModalActive(true)
+      }, 1000)
+    }
+  }, [isLoaded])
 
   const fetchData = () => {
     DB.sql(`
@@ -138,6 +150,24 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <>
       <SplashScreen isComponentLoaded={isLoaded} />
+      <TutorialModalContainer active={tutorialModalActive}>
+        <View className="h-[70%] pb-2 px-6 flex justify-between items-center">
+          <Text className='my-3 text-custom-dark font-BaiJamjuree-Regular'>
+            This is the home screen.
+          </Text>
+        </View>
+        <View className="h-[30%] w-full p-2">
+          <TouchableOpacity 
+            className="flex-1 justify-center items-center rounded-lg border border-custom-dark" 
+            onPress={() => {
+              setTutorialModalActive(false)
+              setIsFirstTime(true)
+            }}
+          >
+            <Text className="text-custom-dark font-BaiJamjuree-Bold">Next</Text>
+          </TouchableOpacity>
+        </View>
+      </TutorialModalContainer>
       <ScreenWrapper>
         <View className="w-full p-2 flex flex-row justify-between items-center">
           <Image 
