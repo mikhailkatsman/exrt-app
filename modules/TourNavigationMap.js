@@ -1,19 +1,19 @@
 const tourNavigationMap = {
-  'toEditProgramScreen': {
-    screenName: 'EditProgram',
+  toEditProgramScreen: {
+    screenName: "EditProgram",
     screenProps: {
       programId: 1,
       newProgram: false,
     },
   },
-  'toEditPhaseScreen': { screenName: 'EditPhase' },
-  'toEditSessionScreen': { screenName: 'EditSession' },
-  'toBrowseProgramsScreen': { 
-    screenName: 'ProgramsList',
+  toEditPhaseScreen: { screenName: "EditPhase" },
+  toEditSessionScreen: { screenName: "EditSession" },
+  toBrowseProgramsScreen: {
+    screenName: "ProgramsList",
     screenProps: {
-      continueTour: true,
+      isFirstTime: true,
     },
   },
-}
+};
 
-export default tourNavigationMap
+export default tourNavigationMap;

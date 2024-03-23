@@ -1,5 +1,5 @@
 import ScreenWrapper from "@components/common/ScreenWrapper"
-import { View, ScrollView, Text, TextInput } from "react-native"
+import { TouchableOpacity, ScrollView, View, Text, TextInput } from "react-native"
 import { Icon } from "@react-native-material/core"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
@@ -9,17 +9,20 @@ import ProgramCard from "@components/common/ProgramCard"
 import DropDown from "@components/common/Dropdown"
 import { CopilotStep, useCopilot } from "react-native-copilot"
 import { useIsFocused } from "@react-navigation/native"
+import TutorialModalContainer from "@components/common/TutorialModalContainer"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProgramsList'>
 
 const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
-  const continueTour: boolean | undefined = route.params?.continueTour
+  const isFirstTimeProp: boolean | undefined = route.params?.isFirstTime
 
   const [programsList, setProgramsList] = useState<any[]>([])
   const [searchString, setSearchString] = useState<string | null>(null)
   const [typeSort, setTypeSort] = useState<string | null>(null)
   const [difficultySort, setDifficultySort] = useState<string | null>(null)
-  const [copilotStarted, setCopilotStarted] = useState(false)
+  const [copilotActive, setCopilotActive] = useState(false)
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(false)
+  const [tutorialModalActive, setTutorialModalActive] = useState<boolean>(false)
 
   const copilot = useCopilot()
   const isFocused = useIsFocused()
@@ -38,19 +41,30 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
   ]
 
   useEffect(() => {
-    if (isFocused) fetchPrograms(searchString, typeSort, difficultySort)
-  }, [isFocused, searchString, typeSort, difficultySort])
-
-  useEffect(() => {
-    if (continueTour && !copilotStarted) {
+    if (isFirstTime && !copilotActive) {
       const timeout = setTimeout(() => {
-        setCopilotStarted(true)
+        setCopilotActive(true)
         copilot.start('programs')
       }, 400)
 
       return () => clearTimeout(timeout)
-    } 
-  }, [copilotStarted, copilot])
+    }
+  }, [copilotActive, copilot, isFirstTime])
+
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchPrograms(searchString, typeSort, difficultySort)
+    }
+  }, [isFocused, searchString, typeSort, difficultySort])
+
+  useEffect(() => {
+    if (isFirstTimeProp) {
+      setTimeout(() => {
+        setTutorialModalActive(true)
+      }, 1000)
+    }
+  }, [])
 
   const fetchPrograms = (searchString: string | null, typeSort: string | null, difficultySort: string | null) => {
     let sqlQuery = `SELECT * FROM programs`
@@ -81,29 +95,29 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
     DB.sql(
       sqlQuery,
       parameters,
-    (_, result) => {
-      const programDetails = result.rows._array.map(item => ({
-        id: item.id,
-        name: item.name,
-        description: item.description,
-        thumbnail: item.thumbnail,
-        status: item.status,
-      }))
+      (_, result) => {
+        const programDetails = result.rows._array.map(item => ({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          thumbnail: item.thumbnail,
+          status: item.status,
+        }))
 
-      setProgramsList(programDetails)
-    })
+        setProgramsList(programDetails)
+      })
   }
 
   const CopilotProgramList = ({ copilot }: any) => (
     <View {...copilot} className="flex-1 mb-3 overflow-hidden">
-      <ScrollView 
+      <ScrollView
         className="p-2 bg-custom-dark"
         horizontal={false}
         fadingEdgeLength={200}
       >
         {programsList.map((item, index) => (
           <ProgramCard
-            key={index} 
+            key={index}
             id={item.id}
             name={item.name}
             thumbnail={item.thumbnail}
@@ -115,37 +129,57 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
   )
 
   return (
-    <ScreenWrapper>
-      <View className="mx-2 h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
-        <TextInput 
-          className="px-2 flex-1 h-full text-custom-white text-lg font-BaiJamjuree-Bold"
-          enterKeyHint="search"
-          maxLength={25}
-          selectionColor="#F5F6F3"
-          onChangeText={setSearchString}
-        />
-        <Icon name="magnify" size={30} color="#F5F6F3" />
-      </View>
-      <Text className="px-2 mb-1 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
-      <View className="px-2 mb-3 flex-row justify-between">
-        <DropDown 
-          placeholder='Type'
-          listItems={programTypeList}
-          onIndexChange={(index: number) => setTypeSort(programTypeList[index].value)}
-          reset={() => setTypeSort(null)}
-        />
-        <View className="w-2"/>
-        <DropDown 
-          placeholder='Difficulty' 
-          listItems={programDifficultyList} 
-          onIndexChange={(index: number) => setDifficultySort(programDifficultyList[index].value)}
-          reset={() => setDifficultySort(null)}
-        />
-      </View>
-      <CopilotStep text="Here you can view programs subscribe to them or unsubscribe" order={5} name="programs">
-        <CopilotProgramList />
-      </CopilotStep> 
-    </ScreenWrapper>
+    <>
+      <TutorialModalContainer active={tutorialModalActive}>
+        <View className="h-[70%] pb-2 px-6 flex justify-between items-center">
+          <Text className='my-3 text-custom-dark font-BaiJamjuree-Regular'>
+            This is the Programs List screen.
+          </Text>
+        </View>
+        <View className="h-[30%] w-full p-2">
+          <TouchableOpacity
+            className="flex-1 justify-center items-center rounded-lg border border-custom-dark"
+            onPress={() => {
+              setTutorialModalActive(false)
+              setIsFirstTime(true)
+            }}
+          >
+            <Text className="text-custom-dark font-BaiJamjuree-Bold">Next</Text>
+          </TouchableOpacity>
+        </View>
+      </TutorialModalContainer>
+      <ScreenWrapper>
+        <View className="mx-2 h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
+          <TextInput
+            className="px-2 flex-1 h-full text-custom-white text-lg font-BaiJamjuree-Bold"
+            enterKeyHint="search"
+            maxLength={25}
+            selectionColor="#F5F6F3"
+            onChangeText={setSearchString}
+          />
+          <Icon name="magnify" size={30} color="#F5F6F3" />
+        </View>
+        <Text className="px-2 mb-1 text-custom-grey font-BaiJamjuree-Regular">Sort by</Text>
+        <View className="px-2 mb-3 flex-row justify-between">
+          <DropDown
+            placeholder='Type'
+            listItems={programTypeList}
+            onIndexChange={(index: number) => setTypeSort(programTypeList[index].value)}
+            reset={() => setTypeSort(null)}
+          />
+          <View className="w-2" />
+          <DropDown
+            placeholder='Difficulty'
+            listItems={programDifficultyList}
+            onIndexChange={(index: number) => setDifficultySort(programDifficultyList[index].value)}
+            reset={() => setDifficultySort(null)}
+          />
+        </View>
+        <CopilotStep text="Here you can view programs subscribe to them or unsubscribe" order={5} name="programs">
+          <CopilotProgramList />
+        </CopilotStep>
+      </ScreenWrapper>
+    </>
   )
 }
 

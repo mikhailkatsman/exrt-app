@@ -43,10 +43,10 @@ export type RootStackParamList = {
     isFirstTime: boolean,
   },
   ProgramsList: {
-    continueTour: boolean
+    isFirstTime: boolean,
   } | undefined,
   ExercisesList: undefined,
-  ExerciseDetails : {
+  ExerciseDetails: {
     exerciseId: number,
   },
   Hub: {
@@ -54,7 +54,7 @@ export type RootStackParamList = {
     dayNow: number,
   },
   Settings: undefined,
-  EditSession: { 
+  EditSession: {
     dayId: number,
     sessionId: number,
     sessionName: string,
@@ -62,7 +62,7 @@ export type RootStackParamList = {
     newSession: boolean,
     phaseId: number,
   },
-  NewInstance: { 
+  NewInstance: {
     sessionId: number,
   },
   EditProgram: {
@@ -137,11 +137,11 @@ const App: React.FC = () => {
   useEffect(() => {
 
     const initializeDatabase = async () => {
-      return await DB.initDatabase() 
+      return await DB.initDatabase()
     }
 
     const loadFonts = async () => {
-      return await Font.loadAsync(customFonts) 
+      return await Font.loadAsync(customFonts)
     }
 
     const logAllData = async () => {
@@ -189,7 +189,7 @@ const App: React.FC = () => {
     <GestureHandlerRootView className='flex-1'>
       <SafeAreaProvider>
         <NavigationContainer>
-          <CopilotProvider 
+          <CopilotProvider
             overlay='svg'
             backdropColor='rgba(0,0,0,0.7)'
             verticalOffset={36}
@@ -227,47 +227,47 @@ const App: React.FC = () => {
                   <Stack.Screen
                     name='Welcome'
                     component={WelcomeScreen}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
                   />
                   <Stack.Screen
                     name='Home'
                     component={HomeScreen}
-                    options={{headerShown: false}}
+                    options={{ headerShown: false }}
                   />
                   <Stack.Screen
                     name='ProgramsList'
                     component={ProgramsListScreen}
-                    options={{title: 'Browse Programs'}}
+                    options={{ title: 'Browse Programs' }}
                   />
                   <Stack.Screen
                     name='ExercisesList'
                     component={ExercisesListScreen}
-                    options={{title: 'Browse Exercises'}}
+                    options={{ title: 'Browse Exercises' }}
                   />
                   <Stack.Screen
                     name='ExerciseDetails'
                     component={ExerciseDetailsScreen}
-                    options={{title: 'Exercise Details'}}
+                    options={{ title: 'Exercise Details' }}
                   />
                   <Stack.Screen
                     name='Hub'
                     component={HubScreen}
-                    options={{title: 'Hub'}}
+                    options={{ title: 'Hub' }}
                   />
                   <Stack.Screen
                     name='NewInstance'
                     component={NewInstanceScreen}
-                    options={{title: 'Add exercise'}}
+                    options={{ title: 'Add exercise' }}
                   />
                   <Stack.Screen
                     name='EditSession'
                     component={EditSessionScreen}
-                    options={{title: 'Session Details' }}
+                    options={{ title: 'Session Details' }}
                   />
                   <Stack.Screen
                     name='EditProgram'
                     component={EditProgramScreen}
-                    options={{title: 'Program Details'}}
+                    options={{ title: 'Program Details' }}
                   />
                   <Stack.Screen
                     name='EditPhase'
@@ -280,8 +280,8 @@ const App: React.FC = () => {
                     options={{ title: 'Settings' }}
                   />
                 </Stack.Group>
-                <Stack.Group 
-                  screenOptions={{ 
+                <Stack.Group
+                  screenOptions={{
                     presentation: 'transparentModal',
                     headerShown: false,
                   }}
@@ -319,7 +319,7 @@ const App: React.FC = () => {
                     component={SessionResultsModal}
                   />
                 </Stack.Group>
-                <Stack.Group 
+                <Stack.Group
                   screenOptions={{
                     headerShown: false
                   }}

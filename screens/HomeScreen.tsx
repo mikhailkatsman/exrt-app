@@ -36,15 +36,12 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isFirstTime && !copilotActive) {
-
       const timeout = setTimeout(() => {
         setCopilotActive(true)
         copilot.start()
       }, 400)
 
-      return () => {
-        clearTimeout(timeout)
-      }
+      return () => clearTimeout(timeout)
     }
   }, [copilotActive, copilot, isFirstTime])
 
@@ -74,11 +71,11 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       JOIN program_phases pp ON p.id = pp.phase_id
       JOIN programs pr ON pp.program_id = pr.id
       WHERE pr.status = 'active' AND p.status = 'active';
-    `, [], 
-    (_, result) => {
-      const dayIdsData = result.rows._array.map(item => item.day_id)
+    `, [],
+      (_, result) => {
+        const dayIdsData = result.rows._array.map(item => item.day_id)
 
-      DB.sql(`
+        DB.sql(`
         SELECT p.id, p.name, p.description,
              p.thumbnail, p.status,
              COUNT(pp.phase_id) AS total_phases,
@@ -89,25 +86,26 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       WHERE p.status = 'active'
       GROUP BY p.id;
     `, [],
-    (_, result) => {
-      setDayIds(dayIdsData)
-      setActivePrograms(result.rows._array)
-    })})
+          (_, result) => {
+            setDayIds(dayIdsData)
+            setActivePrograms(result.rows._array)
+          })
+      })
   }
 
   const CopilotProgress = ({ copilot }: any) => (
     <View {...copilot}>
-      <Progress 
-        dayIds={dayIds} 
+      <Progress
+        dayIds={dayIds}
         dayNow={dayNow}
-        screenWidth={dimentions.width} 
+        screenWidth={dimentions.width}
       />
     </View>
   )
 
   const CopilotActivePrograms = ({ copilot }: any) => (
     <View {...copilot} className="flex-1">
-      <ActivePrograms 
+      <ActivePrograms
         activePrograms={activePrograms}
         screenWidth={dimentions.width}
         onLayout={() => setIsLoaded(true)}
@@ -157,8 +155,8 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           </Text>
         </View>
         <View className="h-[30%] w-full p-2">
-          <TouchableOpacity 
-            className="flex-1 justify-center items-center rounded-lg border border-custom-dark" 
+          <TouchableOpacity
+            className="flex-1 justify-center items-center rounded-lg border border-custom-dark"
             onPress={() => {
               setTutorialModalActive(false)
               setIsFirstTime(true)
@@ -170,10 +168,10 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       </TutorialModalContainer>
       <ScreenWrapper>
         <View className="w-full p-2 flex flex-row justify-between items-center">
-          <Image 
-            className="h-6 w-6" 
+          <Image
+            className="h-6 w-6"
             resizeMode="contain"
-            source={icons['Logo' as keyof typeof icons]} 
+            source={icons['Logo' as keyof typeof icons]}
           />
           <TouchableOpacity
             onPress={() => navigation.navigate('Settings')}
@@ -184,26 +182,26 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
         <CopilotStep text='This is your progress tracker' order={1} name="progress">
-           <CopilotProgress /> 
+          <CopilotProgress />
         </CopilotStep>
         <View className="h-8" />
         <CopilotStep text='These are your active programs' order={2} name="activePrograms">
-           <CopilotActivePrograms /> 
+          <CopilotActivePrograms />
         </CopilotStep>
         <View className="h-4" />
         <CopilotStep text='This is where you view all available programs' order={3} name="programs">
           <CopilotProgramsAnimatedButton />
         </CopilotStep>
         <View className="h-4" />
-        <CopilotStep 
+        <CopilotStep
           text={`This is where you view details about all the exercises.
 
 Click "Continue" to navigate
-to programs list.`} 
-          order={4} 
+to programs list.`}
+          order={4}
           name="toBrowseProgramsScreen"
         >
-           <CopilotExercisesAnimatedButton /> 
+          <CopilotExercisesAnimatedButton />
         </CopilotStep>
         <View className="h-5" />
       </ScreenWrapper>

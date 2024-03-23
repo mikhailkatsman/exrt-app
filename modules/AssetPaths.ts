@@ -1,7 +1,7 @@
 export const icons = {
   ProgramsIcon: require('@icons/ProgramsIcon.png'),
   ExercisesIcon: require('@icons/ExercisesIcon.png'),
-  Logo: require('@icons/Logo.png'),
+  Logo: require('@icons/logo.png'),
   SplashLogo: require('@icons/SplashLogo.png')
 }
 

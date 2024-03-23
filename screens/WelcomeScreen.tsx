@@ -28,7 +28,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
           </Text>
         </View>
         <BottomBarWrapper>
-          <TouchableOpacity 
+          <TouchableOpacity
             className="px-3 flex-1 rounded-2xl border-2 border-custom-light-grey flex-row justify-between items-center"
             onPress={() => {
               navigation.replace('Home', { isFirstTime: false })
@@ -41,7 +41,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
             <Icon name="debug-step-over" size={28} color="#A0A0A0" />
           </TouchableOpacity>
           <View className="w-3" />
-          <TouchableOpacity 
+          <TouchableOpacity
             className="px-3 flex-1 rounded-2xl border-2 border-custom-green flex-row justify-between items-center"
             onPress={() => {
               navigation.replace('Home', { isFirstTime: true })
