@@ -17,8 +17,8 @@ class DB {
     const internalDbName: string = 'exrtdata.db'
     const sqlDir: string = FileSystem.documentDirectory + 'SQLite/'
     const dbPath: string = sqlDir + internalDbName
-    
-    const debugClearData = async() => {
+
+    const debugClearData = async () => {
       const temp = SQLite.openDatabase(internalDbName)
       temp.closeAsync()
       temp.deleteAsync()
@@ -64,16 +64,16 @@ class DB {
             if (!lastResetISO) {
               console.log('CREATING NEW RESET DATE')
 
-              const prevMonday = new Date(dateNow) 
+              const prevMonday = new Date(dateNow)
 
-              if(dayNow === 0) {
+              if (dayNow === 0) {
                 prevMonday.setDate(dateNow.getDate() - 6)
-              } else if(dayNow > 1) {
+              } else if (dayNow > 1) {
                 prevMonday.setDate(dateNow.getDate() - (dayNow - 1))
-              } else if(dayNow === 1) {
+              } else if (dayNow === 1) {
                 prevMonday.setDate(dateNow.getDate() - 7)
               }
-              
+
               prevMonday.setHours(0, 0, 0, 0)
               const prevMondayISO: string = prevMonday.toISOString()
 
@@ -103,8 +103,8 @@ class DB {
                 tx.executeSql(`
                   UPDATE metadata 
                   SET value = ?
-                  WHERE key = 'last_reset';`, 
-                [thisMondayISO])
+                  WHERE key = 'last_reset';`,
+                  [thisMondayISO])
 
                 tx.executeSql(`
                   UPDATE sessions
@@ -114,8 +114,8 @@ class DB {
                     FROM phase_session_instances psi
                     JOIN phases p ON psi.phase_id = p.id
                     WHERE p.status = 'active'
-                  );`, 
-                [])
+                  );`,
+                  [])
               }
             }
 
@@ -132,9 +132,9 @@ class DB {
   }
 
   public sql(
-    query: string, 
-    params?: (null | string | number)[], 
-    successCallback?: SQLite.SQLStatementCallback, 
+    query: string,
+    params?: (null | string | number)[],
+    successCallback?: SQLite.SQLStatementCallback,
     errorCallback?: SQLite.SQLStatementErrorCallback,
   ): void {
     if (!this.initialized || !this.db) {
@@ -144,10 +144,10 @@ class DB {
 
     this.db.transaction(tx => {
       tx.executeSql(
-        query, 
-        params || [], 
-        successCallback || undefined, 
-        errorCallback || undefined, 
+        query,
+        params || [],
+        successCallback || undefined,
+        errorCallback || undefined,
       )
     })
   }
@@ -190,14 +190,14 @@ class DB {
       await new Promise<void>((resolve, reject) => {
         this.db!.transaction(tx => {
           tx.executeSql(
-            `SELECT * FROM ${tableName}`, [], 
+            `SELECT * FROM ${tableName}`, [],
             (_, resultSet) => {
               allData[tableName] = []
               for (let i = 0; i < resultSet.rows.length; i++) {
                 allData[tableName].push(resultSet.rows.item(i))
               }
               resolve()
-            }, 
+            },
             (_, error) => {
               console.error(`Error fetching data from ${tableName}:`, error)
               reject(error)
@@ -220,13 +220,13 @@ class DB {
           SELECT value
           FROM metadata
           WHERE key = ?;
-          `, ['first_time'], 
+          `, ['first_time'],
           (_, resultSet) => {
             if (resultSet.rows.item(0).value === 'true') {
               firstTime = true
             }
             resolve()
-          }, 
+          },
           (_, error) => {
             console.error(`Error Checking Meta Data`, error)
             reject(error)
@@ -234,7 +234,7 @@ class DB {
           }
         )
       })
-    })  
+    })
 
     return firstTime
   }

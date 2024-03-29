@@ -1,4 +1,17 @@
 const tourNavigationMap = {
+  toHomeScreenThenHub: {
+    screenName: "Home",
+    screenProps: {
+      isFirstTime: true,
+      copilotStep: 'activePrograms',
+    },
+  },
+  toHubScreen: {
+    screenName: "Hub",
+    screenProps: {
+      isFirstTime: true,
+    },
+  },
   toEditProgramScreen: {
     screenName: "EditProgram",
     screenProps: {

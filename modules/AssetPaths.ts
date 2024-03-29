@@ -16,6 +16,7 @@ export const exerciseBackgrounds = {
 }
 
 export const programThumbnails = {
+  tutorial_program_thumbnail: require('@programThumbnails/tutorial_program_thumbnail.jpg'),
   program_thumbnail_placeholder: require('@programThumbnails/program_thumbnail_placeholder.jpg'),
   fullbody_muscle_building: require('@programThumbnails/fullbody_muscle_building.jpg')
 }

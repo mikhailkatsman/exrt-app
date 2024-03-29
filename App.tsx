@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
 import DB from '@modules/DB'
 import { initNotificationsPermissionsCheck } from '@modules/Notifications'
 import { IconComponentProvider } from '@react-native-material/core'
@@ -41,6 +40,7 @@ export type RootStackParamList = {
   Welcome: undefined,
   Home: {
     isFirstTime: boolean,
+    copilotStep: string | undefined,
   },
   ProgramsList: {
     isFirstTime: boolean,
@@ -50,9 +50,8 @@ export type RootStackParamList = {
     exerciseId: number,
   },
   Hub: {
-    screenWidth: number,
-    dayNow: number,
-  },
+    isFirstTime: boolean,
+  } | undefined,
   Settings: undefined,
   EditSession: {
     dayId: number,
@@ -196,8 +195,7 @@ const App: React.FC = () => {
             tooltipStyle={{
               borderRadius: 16,
               backgroundColor: '#F5F6F3',
-              left: 32,
-              marginRight: 32
+              left: 16,
             }}
             tooltipComponent={(props: any) => <CopilotCustomTooltip {...props} />}
             stepNumberComponent={() => <></>}

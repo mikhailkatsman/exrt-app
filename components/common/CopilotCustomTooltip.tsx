@@ -5,26 +5,34 @@ import tourNavigationMap from '@modules/TourNavigationMap'
 
 const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
   const copilot = useCopilot()
-
   const navigation = useNavigation()
 
-  const handleStop = async () => {
-    void copilot.stop()
-
+  const handlePress = async () => {
     const nextScreen = tourNavigationMap[copilot.currentStep?.name] ?? null
 
     if (nextScreen) {
+      await copilot.stop()
+
       setTimeout(() => {
         navigation.navigate(
-          nextScreen.screenName, 
+          nextScreen.screenName,
           nextScreen.screenProps
         )
       }, 150)
-    }     
-  }
+    } else {
+      if (copilot.isLastStep) {
+        await copilot.stop()
 
-  const handleNext = () => {
-    void copilot.goToNext()
+        setTimeout(() => {
+          navigation.navigate(
+            'Home',
+            { isFirstTime: false }
+          )
+        }, 150)
+      } else {
+        await copilot.goToNext()
+      }
+    }
   }
 
   return (
@@ -35,29 +43,19 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
         </Text>
       </View>
       <View className='my-3 flex-row justify-end'>
-        {!copilot.isLastStep ? (
-          <TouchableOpacity onPress={handleStop} className='p-3'>
-            <Text className='text-custom-light-grey font-BaiJamjuree-Bold'>
-              {labels.skip}
-            </Text>
-          </TouchableOpacity>
-        ) : null}
-        {!copilot.isLastStep ? (
-          <TouchableOpacity onPress={handleNext} className='p-3'>
-            <Text className='text-custom-dark font-BaiJamjuree-Bold'>
-              {labels.next}
-            </Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity 
-              onPress={handleStop} 
-              className='p-3 border-2 rounded-xl border-custom-dark justify-center'
-          >
-            <Text className='text-custom-dark font-BaiJamjuree-Bold'>
-              {tourNavigationMap[copilot.currentStep?.name] ? 'Continue' : labels.finish}
-            </Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          onPress={handlePress}
+          className='p-3 border-2 rounded-xl border-custom-dark justify-center'
+        >
+          <Text className='text-custom-dark font-BaiJamjuree-Bold'>
+            {tourNavigationMap[copilot.currentStep?.name] ?
+              'Continue' :
+              copilot.isLastStep ?
+                labels.finish :
+                labels.next
+            }
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   )

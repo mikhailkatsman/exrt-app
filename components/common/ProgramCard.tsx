@@ -54,18 +54,21 @@ const ProgramCard: React.FC<Props> = ({
     <TouchableOpacity
       className="w-full mb-5 rounded-2xl border-x-2 border-custom-white overflow-hidden"
       style={{ height: (windowWidth * 9) / 16 }}
-      onPress={() => navigation.navigate('EditProgram', { programId: id, newProgram: false })}
+      onPress={() => navigation.navigate('EditProgram', {
+        programId: id,
+        newProgram: false
+      })}
       activeOpacity={0.5}
     >
       <ImageBackground
         className="flex-1 flex-col justify-between"
         resizeMode="cover"
         source={
-          programThumbnails[thumbnail as keyof typeof programThumbnails] || 
-          {uri: thumbnail}
+          programThumbnails[thumbnail as keyof typeof programThumbnails] ||
+          { uri: thumbnail }
         }
       >
-        <LinearGradient 
+        <LinearGradient
           className="absolute h-full w-full"
           colors={['rgba(18, 18, 18, 1)', 'transparent']}
           start={{ x: 0.3, y: 0 }}

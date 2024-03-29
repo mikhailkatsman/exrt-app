@@ -44,7 +44,7 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
     if (isFirstTime && !copilotActive) {
       const timeout = setTimeout(() => {
         setCopilotActive(true)
-        copilot.start('programs')
+        copilot.start('toHomeScreenThenHub')
       }, 400)
 
       return () => clearTimeout(timeout)
@@ -55,6 +55,9 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
   useEffect(() => {
     if (isFocused) {
       fetchPrograms(searchString, typeSort, difficultySort)
+    } else if (copilotActive) {
+      setIsFirstTime(false)
+      setCopilotActive(false)
     }
   }, [isFocused, searchString, typeSort, difficultySort])
 
@@ -62,7 +65,7 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
     if (isFirstTimeProp) {
       setTimeout(() => {
         setTutorialModalActive(true)
-      }, 1000)
+      }, 600)
     }
   }, [])
 
@@ -88,6 +91,9 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
       parameters.push(difficultySort)
     }
 
+    sqlQuery += ' AND id != ?'
+    parameters.push(1)
+
     sqlQuery += ' ORDER BY name;'
 
     parameters = parameters.filter(param => param !== undefined || param !== null)
@@ -108,23 +114,13 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
       })
   }
 
-  const CopilotProgramList = ({ copilot }: any) => (
-    <View {...copilot} className="flex-1 mb-3 overflow-hidden">
-      <ScrollView
-        className="p-2 bg-custom-dark"
-        horizontal={false}
-        fadingEdgeLength={200}
-      >
-        {programsList.map((item, index) => (
-          <ProgramCard
-            key={index}
-            id={item.id}
-            name={item.name}
-            thumbnail={item.thumbnail}
-            status={item.status}
-          />
-        ))}
-      </ScrollView>
+  const CopilotProgramCard = ({ copilot }: any) => (
+    <View {...copilot}>
+      <ProgramCard
+        id={1}
+        name='Your First Exercise Program'
+        thumbnail='tutorial_program_thumbnail'
+      />
     </View>
   )
 
@@ -175,9 +171,33 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
             reset={() => setDifficultySort(null)}
           />
         </View>
-        <CopilotStep text="Here you can view programs subscribe to them or unsubscribe" order={5} name="programs">
-          <CopilotProgramList />
-        </CopilotStep>
+        <View className="flex-1 mb-3 overflow-hidden">
+          <ScrollView
+            className="p-2 bg-custom-dark"
+            horizontal={false}
+            fadingEdgeLength={200}
+          >
+            {isFirstTime &&
+              <CopilotStep
+                text="Let's subscribe to this example program."
+                order={2}
+                name="toHomeScreenThenHub"
+                key={0}
+              >
+                <CopilotProgramCard />
+              </CopilotStep>
+            }
+            {programsList.map((item, index) => (
+              <ProgramCard
+                key={index + 1}
+                id={item.id}
+                name={item.name}
+                thumbnail={item.thumbnail}
+                status={item.status}
+              />
+            ))}
+          </ScrollView>
+        </View>
       </ScreenWrapper>
     </>
   )

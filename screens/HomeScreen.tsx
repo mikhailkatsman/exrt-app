@@ -23,6 +23,7 @@ const dayNow = (dateNow.getDay() + 6) % 7
 
 const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   const isFirstTimeProp = route.params.isFirstTime
+  const copilotStep = route.params.copilotStep ?? 'toBrowseProgramsScreen'
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [dayIds, setDayIds] = useState<number[]>([])
@@ -36,9 +37,10 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isFirstTime && !copilotActive) {
+      console.log('STARTING COPILOT AT ' + copilotStep)
       const timeout = setTimeout(() => {
         setCopilotActive(true)
-        copilot.start()
+        copilot.start(copilotStep)
       }, 400)
 
       return () => clearTimeout(timeout)
@@ -47,6 +49,9 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isFocused) {
+      if (copilotStep !== 'toBrowseProgramsScreen' && isFirstTimeProp) {
+        setIsFirstTime(true)
+      }
       fetchData()
       initNotificationsUpdate()
     } else if (copilotActive) {
@@ -57,9 +62,11 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isLoaded && isFirstTimeProp) {
-      setTimeout(() => {
-        setTutorialModalActive(true)
-      }, 1000)
+      if (copilotStep === 'toBrowseProgramsScreen') {
+        setTimeout(() => {
+          setTutorialModalActive(true)
+        }, 600)
+      }
     }
   }, [isLoaded])
 
@@ -129,22 +136,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     </View>
   )
 
-  const CopilotExercisesAnimatedButton = ({ copilot }: any) => (
-    <View {...copilot} className="h-1/5">
-      <AnimatedNavigationButton
-        key={'button2'}
-        isCopilotActive={copilotActive}
-        image={icons.ExercisesIcon}
-        colorName="custom-yellow"
-        colorCode="#F7EA40"
-        textLine1="Browse"
-        textLine2="Exercises"
-        route="ExercisesList"
-        delay={300}
-      />
-    </View>
-  )
-
   return (
     <>
       <SplashScreen isComponentLoaded={isLoaded} />
@@ -181,28 +172,31 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             <Icon name="cog" size={22} color="#F5F6F3" />
           </TouchableOpacity>
         </View>
-        <CopilotStep text='This is your progress tracker' order={1} name="progress">
+        <CopilotStep text='This is your progress tracker' order={4} name="toHubScreen">
           <CopilotProgress />
         </CopilotStep>
         <View className="h-8" />
-        <CopilotStep text='These are your active programs' order={2} name="activePrograms">
+        <CopilotStep text='These are your active programs' order={3} name="activePrograms">
           <CopilotActivePrograms />
         </CopilotStep>
         <View className="h-4" />
-        <CopilotStep text='This is where you view all available programs' order={3} name="programs">
+        <CopilotStep text='This is where you view all available programs' order={1} name="toBrowseProgramsScreen">
           <CopilotProgramsAnimatedButton />
         </CopilotStep>
         <View className="h-4" />
-        <CopilotStep
-          text={`This is where you view details about all the exercises.
-
-Click "Continue" to navigate
-to programs list.`}
-          order={4}
-          name="toBrowseProgramsScreen"
-        >
-          <CopilotExercisesAnimatedButton />
-        </CopilotStep>
+        <View className="h-1/5">
+          <AnimatedNavigationButton
+            key={'button2'}
+            isCopilotActive={copilotActive}
+            image={icons.ExercisesIcon}
+            colorName="custom-yellow"
+            colorCode="#F7EA40"
+            textLine1="Browse"
+            textLine2="Exercises"
+            route="ExercisesList"
+            delay={300}
+          />
+        </View>
         <View className="h-5" />
       </ScreenWrapper>
     </>
