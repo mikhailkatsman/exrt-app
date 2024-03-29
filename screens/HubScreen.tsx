@@ -86,7 +86,7 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
     if (isFirstTimeProp) {
       setTimeout(() => {
         setTutorialModalActive(true)
-      }, 600)
+      }, 400)
     }
   }, [])
 

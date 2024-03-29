@@ -10,29 +10,19 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
   const handlePress = async () => {
     const nextScreen = tourNavigationMap[copilot.currentStep?.name] ?? null
 
-    if (nextScreen) {
-      await copilot.stop()
-
-      setTimeout(() => {
-        navigation.navigate(
-          nextScreen.screenName,
-          nextScreen.screenProps
-        )
-      }, 150)
-    } else {
-      if (copilot.isLastStep) {
-        await copilot.stop()
-
-        setTimeout(() => {
-          navigation.navigate(
-            'Home',
-            { isFirstTime: false }
-          )
-        }, 150)
-      } else {
-        await copilot.goToNext()
-      }
+    if (!nextScreen && !copilot.isLastStep) {
+      await copilot.goToNext()
+      return
     }
+
+    await copilot.stop()
+
+    setTimeout(() => {
+      navigation.navigate(
+        nextScreen ? nextScreen.screenName : 'Home',
+        nextScreen ? nextScreen.screenProps : { isFirstTime: false }
+      )
+    }, 150)
   }
 
   return (

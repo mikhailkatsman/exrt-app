@@ -65,7 +65,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       if (copilotStep === 'toBrowseProgramsScreen') {
         setTimeout(() => {
           setTutorialModalActive(true)
-        }, 600)
+        }, 400)
       }
     }
   }, [isLoaded])
@@ -136,6 +136,22 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     </View>
   )
 
+  const CopilotExercisesAnimatedButton = () => (
+    <View className="h-1/5">
+      <AnimatedNavigationButton
+        key={'button2'}
+        isCopilotActive={copilotActive}
+        image={icons.ExercisesIcon}
+        colorName="custom-yellow"
+        colorCode="#F7EA40"
+        textLine1="Browse"
+        textLine2="Exercises"
+        route="ExercisesList"
+        delay={300}
+      />
+    </View>
+  )
+
   return (
     <>
       <SplashScreen isComponentLoaded={isLoaded} />
@@ -184,19 +200,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           <CopilotProgramsAnimatedButton />
         </CopilotStep>
         <View className="h-4" />
-        <View className="h-1/5">
-          <AnimatedNavigationButton
-            key={'button2'}
-            isCopilotActive={copilotActive}
-            image={icons.ExercisesIcon}
-            colorName="custom-yellow"
-            colorCode="#F7EA40"
-            textLine1="Browse"
-            textLine2="Exercises"
-            route="ExercisesList"
-            delay={300}
-          />
-        </View>
+        <CopilotExercisesAnimatedButton />
         <View className="h-5" />
       </ScreenWrapper>
     </>
