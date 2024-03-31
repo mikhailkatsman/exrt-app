@@ -7,8 +7,6 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from '
 type Props = {
 	isCopilotActive: boolean,
 	image: number,
-	colorName: string,
-	colorCode: string,
 	textLine1: string,
 	textLine2: string,
 	route: string,
@@ -19,19 +17,11 @@ type Props = {
 const AnimatedNavigationButton: React.FC<Props> = ({ 
 	isCopilotActive,
 	image, 
-	colorName,
-	colorCode,
 	textLine1, 
 	textLine2, 
 	route, 
 	params,
 	delay }) => {
-	const colorValues = {
-		border: `border-${colorName}`,
-		bg: `bg-${colorCode}`,
-		code: colorCode
-	}
-
 	const navigation = useNavigation()
 
 	const imageTranslateX = useSharedValue(isCopilotActive ? 0 : -100)
@@ -39,7 +29,7 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 	const textTranslateX = useSharedValue(isCopilotActive ? 0 : -50)
 	const textOpacity = useSharedValue(isCopilotActive ? 1 : 0)
 
-	function pause(ms: number) {
+	const pause = (ms: number) => {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 

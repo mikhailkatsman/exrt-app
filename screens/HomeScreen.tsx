@@ -126,8 +126,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         key={'button1'}
         isCopilotActive={copilotActive}
         image={icons.ProgramsIcon}
-        colorName="custom-purple"
-        colorCode="#7D34A7"
         textLine1="Browse"
         textLine2="Programs"
         route="ProgramsList"
@@ -142,8 +140,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         key={'button2'}
         isCopilotActive={copilotActive}
         image={icons.ExercisesIcon}
-        colorName="custom-yellow"
-        colorCode="#F7EA40"
         textLine1="Browse"
         textLine2="Exercises"
         route="ExercisesList"
