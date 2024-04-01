@@ -35,6 +35,7 @@ const Calendar: React.FC<Props> = ({
   }
 
   useEffect(() => {
+    console.log('RENDERING CALENDAR')
     const filteredData: any[] = dataArray
       .map(item => {
 	return {

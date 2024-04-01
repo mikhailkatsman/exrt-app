@@ -74,25 +74,23 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
 
     let parameters = []
 
+    sqlQuery += ' WHERE id != ?'
+    parameters.push(1)
+
     if (searchString) {
-      sqlQuery += ' WHERE name LIKE ?'
+      sqlQuery += ' AND name LIKE ?'
       parameters.push(`%${searchString}%`)
     }
 
     if (typeSort) {
-      sqlQuery += searchString ? ' AND' : ' WHERE'
-      sqlQuery += ' type = ?'
+      sqlQuery += ' AND type = ?'
       parameters.push(typeSort)
     }
 
     if (difficultySort) {
-      sqlQuery += searchString || typeSort ? ' AND' : ' WHERE'
-      sqlQuery += ' difficulty = ?'
+      sqlQuery += ' AND difficulty = ?'
       parameters.push(difficultySort)
     }
-
-    sqlQuery += ' AND id != ?'
-    parameters.push(1)
 
     sqlQuery += ' ORDER BY name;'
 
@@ -177,7 +175,7 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
             horizontal={false}
             fadingEdgeLength={200}
           >
-            {isFirstTime &&
+            {isFirstTimeProp &&
               <CopilotStep
                 text="Let's subscribe to this example program."
                 order={2}

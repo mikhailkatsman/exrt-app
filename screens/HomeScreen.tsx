@@ -37,7 +37,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isFirstTime && !copilotActive) {
-      console.log('STARTING COPILOT AT ' + copilotStep)
       const timeout = setTimeout(() => {
         setCopilotActive(true)
         copilot.start(copilotStep)

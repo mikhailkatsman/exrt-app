@@ -17,7 +17,7 @@ const TutorialModalContainer: React.FC<Props> = ({ active, children }) => {
   const animatedModalStyle = useAnimatedStyle(() => {
     return {
       opacity: modalOpacity.value,
-      pointerEvents: modalOpacity.value === 0 ? "none" : "auto"
+      pointerEvents: modalOpacity.value === 0 ? "none" : "auto",
     }
   })
 

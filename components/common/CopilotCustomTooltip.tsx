@@ -2,6 +2,7 @@ import { useCopilot, TooltipProps } from 'react-native-copilot'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import tourNavigationMap from '@modules/TourNavigationMap'
+import DB from '@modules/DB'
 
 const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
   const copilot = useCopilot()
@@ -16,6 +17,46 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
     }
 
     await copilot.stop()
+
+    if (copilot.currentStep?.order === 2) {
+      DB.transaction(tx => {
+        tx.executeSql(`
+          UPDATE programs
+          SET status = 'active'
+          WHERE id = 1;
+        `, [])
+
+        tx.executeSql(`
+          UPDATE phases
+          SET status = 'active'
+          WHERE id = (
+            SELECT phase_id
+            FROM program_phases
+            WHERE program_id = 1
+          );
+        `, [])
+      }, error => console.error('Error updating program status: ' + error))
+    }
+
+    if (copilot.currentStep?.order === 5) {
+      DB.transaction(tx => {
+        tx.executeSql(`
+          UPDATE programs
+          SET status = 'inactive'
+          WHERE id = 1;
+        `, [])
+
+        tx.executeSql(`
+          UPDATE phases
+          SET status = 'upcoming'
+          WHERE id = (
+            SELECT phase_id
+            FROM program_phases
+            WHERE program_id = 1
+          );
+        `, [])
+      }, error => console.error('Error updating program status: ' + error))
+    }
 
     setTimeout(() => {
       navigation.navigate(

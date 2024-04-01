@@ -108,6 +108,7 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isFocused) {
+      console.log('FETCHING HUB DATA')
       fetchRoutineData()
     } else if (copilotActive) {
       setIsFirstTime(false)
@@ -116,15 +117,7 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [isFocused])
 
   const CopilotCalendar = ({ copilot }: any) => (
-    <View {...copilot}>
-      <Calendar
-        dataArray={dataArray}
-        dayNow={dayNow}
-        selectedDay={selectedDay}
-        setSelectedDay={setSelectedDay}
-        screenWidth={screenWidth}
-      />
-    </View>
+    <View className="w-full absolute h-20 z-0" {...copilot} />
   )
 
   return (
@@ -151,6 +144,13 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
         <CopilotStep text="This is the calendar" order={5} name="calendar">
           <CopilotCalendar />
         </CopilotStep>
+        <Calendar
+          dataArray={dataArray}
+          dayNow={dayNow}
+          selectedDay={selectedDay}
+          setSelectedDay={setSelectedDay}
+          screenWidth={screenWidth}
+        />
         <Routine
           dataArray={dataArray}
           selectedDay={selectedDay}
