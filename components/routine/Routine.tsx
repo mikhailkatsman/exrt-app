@@ -12,6 +12,7 @@ import RoutineSlot from "./RoutineSlot"
 import { ScrollView } from "react-native-gesture-handler"
 import { Icon } from "@react-native-material/core"
 import RestDayAnimation from "./RestDayAnimation"
+import { CopilotStep } from "react-native-copilot"
 
 type Props = {
   dataArray: any[],
@@ -113,6 +114,14 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth, mondayD
     })
   }, [intState])
 
+  const CopilotRoutineCard = ({ copilot }: any) => (
+    <View
+      {...copilot}
+      className="h-full absolute z-0" 
+      style={{ width: elementWidth + 16 }} 
+    />
+  )
+
   return (
     <Animated.View style={animatedStyle} className="flex-1 flex-col py-3">
       <View className="h-[10%] mx-2">
@@ -139,6 +148,9 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth, mondayD
             overScrollMode="never"
             bounces={false}
           >
+            <CopilotStep text="Session card" order={6} name="sessionCard">
+              <CopilotRoutineCard />
+            </CopilotStep>
             {sessionsArray.map((session, index) => 
               <RoutineSlot 
                 key={index} 
