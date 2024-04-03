@@ -55,6 +55,12 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
             WHERE program_id = 1
           );
         `, [])
+
+        // tx.executeSql(`
+        //   UPDATE metadata
+        //   SET value = 'false'
+        //   WHERE key = 'first_time';
+        // `, [])
       }, error => console.error('Error updating program status: ' + error))
     }
 
@@ -73,10 +79,11 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
           {copilot.currentStep?.text}
         </Text>
       </View>
-      <View className='my-3 flex-row justify-end'>
+      <View className='flex-row justify-end'>
         <TouchableOpacity
           onPress={handlePress}
-          className='p-3 border-2 rounded-xl border-custom-dark justify-center'
+          className='px-3 pt-5 pb-3 justify-center'
+          activeOpacity={0.6}
         >
           <Text className='text-custom-dark font-BaiJamjuree-Bold'>
             {tourNavigationMap[copilot.currentStep?.name] ?

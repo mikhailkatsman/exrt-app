@@ -1,5 +1,4 @@
-import { ReactNode } from "react"
-import { View } from "react-native"
+import { View, TouchableOpacity, Text } from "react-native"
 import Animated, {
 	useAnimatedStyle, 
 	useSharedValue, 
@@ -8,10 +7,12 @@ import Animated, {
 
 type Props = { 
   active: boolean,
-  children: ReactNode
+  text: string,
+  setTutorialModalActive: (value: boolean) => void,
+  setIsFirstTime: (value: boolean) => void
 }
 
-const TutorialModalContainer: React.FC<Props> = ({ active, children }) => {
+const TutorialModalContainer: React.FC<Props> = ({ active, text, setTutorialModalActive, setIsFirstTime }) => {
   const modalOpacity = useSharedValue(0)
 
   const animatedModalStyle = useAnimatedStyle(() => {
@@ -30,10 +31,26 @@ const TutorialModalContainer: React.FC<Props> = ({ active, children }) => {
   return (
     <Animated.View 
       style={animatedModalStyle}
-      className="absolute w-full h-full bg-custom-dark/60 items-center z-50"
+      className="absolute w-full h-full bg-custom-dark/60 items-center z-50 flex-col justify-center"
     >
-      <View className="mt-[50%] w-2/3 h-1/4 bg-custom-white flex-col justify-between rounded-2xl">
-        { children }
+      <View className="w-3/4 h-fit bg-custom-white flex-col justify-between rounded-2xl">
+	<View className="h-fit px-6 flex justify-between items-center">
+          <Text className='my-3 text-custom-dark font-BaiJamjuree-Regular'>
+	    {text}
+          </Text>
+        </View>
+        <View className="flex-row justify-end">
+          <TouchableOpacity
+            className="px-7 py-3 justify-center"
+            onPress={() => {
+              setTutorialModalActive(false)
+              setIsFirstTime(true)
+            }}
+            activeOpacity={0.6}
+          >
+            <Text className="text-custom-dark font-BaiJamjuree-Bold">Next</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Animated.View>
   )

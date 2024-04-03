@@ -22,8 +22,8 @@ const dateNow: Date = new Date()
 const dayNow = (dateNow.getDay() + 6) % 7
 
 const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
-  const isFirstTimeProp = route.params.isFirstTime
-  const copilotStep = route.params.copilotStep ?? 'toBrowseProgramsScreen'
+  const isFirstTimeProp = route.params?.isFirstTime ?? false
+  const copilotStep = route.params?.copilotStep ?? 'toBrowseProgramsScreen'
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [dayIds, setDayIds] = useState<number[]>([])
@@ -123,12 +123,12 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     <View {...copilot} className="h-1/5">
       <AnimatedNavigationButton
         key={'button1'}
-        isCopilotActive={copilotActive}
+        isOverlayActive={copilotActive || tutorialModalActive}
         image={icons.ProgramsIcon}
         textLine1="Browse"
         textLine2="Programs"
         route="ProgramsList"
-        delay={200}
+        delay={100}
       />
     </View>
   )
@@ -137,12 +137,12 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     <View className="h-1/5">
       <AnimatedNavigationButton
         key={'button2'}
-        isCopilotActive={copilotActive}
+        isOverlayActive={copilotActive || tutorialModalActive}
         image={icons.ExercisesIcon}
         textLine1="Browse"
         textLine2="Exercises"
         route="ExercisesList"
-        delay={300}
+        delay={200}
       />
     </View>
   )
@@ -150,24 +150,12 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <>
       <SplashScreen isComponentLoaded={isLoaded} />
-      <TutorialModalContainer active={tutorialModalActive}>
-        <View className="h-[70%] pb-2 px-6 flex justify-between items-center">
-          <Text className='my-3 text-custom-dark font-BaiJamjuree-Regular'>
-            This is the home screen.
-          </Text>
-        </View>
-        <View className="h-[30%] w-full p-2">
-          <TouchableOpacity
-            className="flex-1 justify-center items-center rounded-lg border border-custom-dark"
-            onPress={() => {
-              setTutorialModalActive(false)
-              setIsFirstTime(true)
-            }}
-          >
-            <Text className="text-custom-dark font-BaiJamjuree-Bold">Next</Text>
-          </TouchableOpacity>
-        </View>
-      </TutorialModalContainer>
+      <TutorialModalContainer 
+        active={tutorialModalActive}
+        text="This is your Home Screen!"
+        setTutorialModalActive={setTutorialModalActive}
+        setIsFirstTime={setIsFirstTime}
+      />
       <ScreenWrapper>
         <View className="w-full p-2 flex flex-row justify-between items-center">
           <Image

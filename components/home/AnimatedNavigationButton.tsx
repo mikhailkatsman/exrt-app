@@ -5,7 +5,7 @@ import { TouchableOpacity, Text, View } from 'react-native'
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 
 type Props = {
-	isCopilotActive: boolean,
+	isOverlayActive: boolean,
 	image: number,
 	textLine1: string,
 	textLine2: string,
@@ -15,7 +15,7 @@ type Props = {
 }
 
 const AnimatedNavigationButton: React.FC<Props> = ({ 
-	isCopilotActive,
+	isOverlayActive,
 	image, 
 	textLine1, 
 	textLine2, 
@@ -24,10 +24,10 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 	delay }) => {
 	const navigation = useNavigation()
 
-	const imageTranslateX = useSharedValue(isCopilotActive ? 0 : -100)
-	const imageOpacity = useSharedValue(isCopilotActive ? 1 : 0)
-	const textTranslateX = useSharedValue(isCopilotActive ? 0 : -50)
-	const textOpacity = useSharedValue(isCopilotActive ? 1 : 0)
+	const imageTranslateX = useSharedValue(isOverlayActive ? 0 : -100)
+	const imageOpacity = useSharedValue(isOverlayActive ? 1 : 0)
+	const textTranslateX = useSharedValue(isOverlayActive ? 0 : -50)
+	const textOpacity = useSharedValue(isOverlayActive ? 1 : 0)
 
 	const pause = (ms: number) => {
 		return new Promise(resolve => setTimeout(resolve, ms));
@@ -58,7 +58,7 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 	}
 
 	useEffect(() => {
-		if (!isCopilotActive) {
+		if (!isOverlayActive) {
 			imageTranslateX.value = -100
 			imageOpacity.value = 0
 			textTranslateX.value = -50
@@ -66,7 +66,7 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 
 			animationSequence();
 		}
-	}, [isCopilotActive])
+	}, [isOverlayActive])
 
 	const animatedImageStyle = useAnimatedStyle(() => {
 		return {

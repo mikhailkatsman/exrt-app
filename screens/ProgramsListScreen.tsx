@@ -124,24 +124,12 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <>
-      <TutorialModalContainer active={tutorialModalActive}>
-        <View className="h-[70%] pb-2 px-6 flex justify-between items-center">
-          <Text className='my-3 text-custom-dark font-BaiJamjuree-Regular'>
-            This is the Programs List screen.
-          </Text>
-        </View>
-        <View className="h-[30%] w-full p-2">
-          <TouchableOpacity
-            className="flex-1 justify-center items-center rounded-lg border border-custom-dark"
-            onPress={() => {
-              setTutorialModalActive(false)
-              setIsFirstTime(true)
-            }}
-          >
-            <Text className="text-custom-dark font-BaiJamjuree-Bold">Next</Text>
-          </TouchableOpacity>
-        </View>
-      </TutorialModalContainer>
+      <TutorialModalContainer 
+        active={tutorialModalActive}
+        text="This is your Programs List Screen!"
+        setTutorialModalActive={setTutorialModalActive}
+        setIsFirstTime={setIsFirstTime}
+      />
       <ScreenWrapper>
         <View className="mx-2 h-14 mb-3 p-2 rounded-2xl border-2 border-custom-white flex justify-between flex-row items-center">
           <TextInput

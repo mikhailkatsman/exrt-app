@@ -40,8 +40,8 @@ export type RootStackParamList = {
   Welcome: undefined,
   Home: {
     isFirstTime: boolean,
-    copilotStep: string | undefined,
-  },
+    copilotStep: string,
+  } | undefined,
   ProgramsList: {
     isFirstTime: boolean,
   } | undefined,

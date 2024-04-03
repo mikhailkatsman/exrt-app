@@ -5,24 +5,24 @@ import DaySessionIndicator from "@components/calendar/DaySessionIndicator"
 import Animated, { Easing, withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 
 type Props = {
-  dataArray: any[]
-  dayNow: number
-  selectedDay: number 
+  isFirstTime: boolean | undefined,
+  dataArray: any[],
+  dayNow: number,
   setSelectedDay: (dayIndex: number ) => void,
   screenWidth: number,
 }
 
 const Calendar: React.FC<Props> = ({
+  isFirstTime,
   dataArray,
   dayNow,
-  selectedDay,
   setSelectedDay,
   screenWidth
 }) => {
   const week: string[] = ["M", "T", "W", "T", "F", "S", "S"]
   const [activeWeekDays, setActiveWeekDays] = useState<any[]>([])
 
-  const selectedDayAnim = useSharedValue(dayNow)
+  const selectedDayAnim = useSharedValue(isFirstTime ? 6 : dayNow)
   const selectedDayStyle = useAnimatedStyle(() => {
     const x = selectedDayAnim.value * ((screenWidth - 16) / 7)
 
@@ -35,7 +35,6 @@ const Calendar: React.FC<Props> = ({
   }
 
   useEffect(() => {
-    console.log('RENDERING CALENDAR')
     const filteredData: any[] = dataArray
       .map(item => {
 	return {
