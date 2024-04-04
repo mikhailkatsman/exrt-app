@@ -117,33 +117,38 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
   )
 
   return (
-    <ScreenWrapper>
+    <>
       <TutorialModalContainer 
         active={tutorialModalActive}
         text="This is your Hub Screen!"
         setTutorialModalActive={setTutorialModalActive}
         setIsFirstTime={setIsFirstTime}
       />
-      <View className="flex-1 mb-3">
-        <CopilotStep text="This is the calendar" order={5} name="calendar">
-          <CopilotCalendar />
-        </CopilotStep>
-        <Calendar
-          isFirstTime={isFirstTimeProp}
-          dataArray={dataArray}
-          dayNow={dayNow}
-          setSelectedDay={setSelectedDay}
-          screenWidth={screenWidth}
-        />
-        <Routine
-          dataArray={dataArray}
-          selectedDay={selectedDay}
-          screenWidth={screenWidth}
-          mondayDate={mondayDate}
-          locale={locale}
-        />
-      </View>
-    </ScreenWrapper>
+      <ScreenWrapper>
+        <View className="flex-1 mb-3">
+          {isFirstTimeProp &&
+            <CopilotStep text="This is the calendar" order={5} name="calendar">
+              <CopilotCalendar />
+            </CopilotStep>
+          }
+          <Calendar
+            isFirstTime={isFirstTimeProp}
+            dataArray={dataArray}
+            dayNow={dayNow}
+            setSelectedDay={setSelectedDay}
+            screenWidth={screenWidth}
+          />
+          <Routine
+            isFirstTime={isFirstTimeProp}
+            dataArray={dataArray}
+            selectedDay={selectedDay}
+            screenWidth={screenWidth}
+            mondayDate={mondayDate}
+            locale={locale}
+          />
+        </View>
+      </ScreenWrapper>
+    </>
   )
 }
 

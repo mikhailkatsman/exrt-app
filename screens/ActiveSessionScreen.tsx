@@ -1,16 +1,19 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react"
+import { useIsFocused } from "@react-navigation/native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
-import { View, Text, TouchableOpacity } from "react-native";
-import { Icon } from "@react-native-material/core";
-import { useKeepAwake } from "expo-keep-awake";
-import DB from "@modules/DB";
-import ScreenWrapper from "@components/common/ScreenWrapper";
-import BottomBarWrapper from "@components/common/BottomBarWrapper";
-import TimeLine from "@components/activeSession/TimeLine";
-import CurrentActivityContainer from "@components/activeSession/CurrentActivityContainer";
-import { exerciseBackgrounds, videoFiles } from "@modules/AssetPaths";
-import Progress from "@components/activeSession/Progress";
+import { View, Text, TouchableOpacity } from "react-native"
+import { Icon } from "@react-native-material/core"
+import { useKeepAwake } from "expo-keep-awake"
+import DB from "@modules/DB"
+import ScreenWrapper from "@components/common/ScreenWrapper"
+import BottomBarWrapper from "@components/common/BottomBarWrapper"
+import TimeLine from "@components/activeSession/TimeLine"
+import CurrentActivityContainer from "@components/activeSession/CurrentActivityContainer"
+import TutorialModalContainer from "@components/common/TutorialModalContainer"
+import { exerciseBackgrounds, videoFiles } from "@modules/AssetPaths"
+import Progress from "@components/activeSession/Progress"
+import { CopilotStep, useCopilot } from "react-native-copilot"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 
@@ -19,6 +22,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const sessionName: string = route.params.sessionName
   const phaseId: number = route.params.phaseId
   const programId: number = route.params.programId
+  const isFirstTimeProp: boolean = route.params.isFirstTime
 
   const sessionTimeRef = useRef<number>(0)
 
@@ -41,6 +45,38 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       type: string
     } | number
   }>()
+  const [copilotActive, setCopilotActive] = useState<boolean>(false)
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(false)
+  const [tutorialModalActive, setTutorialModalActive] = useState<boolean>(false)
+
+  const copilot = useCopilot()
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    if (isFirstTime && !copilotActive) {
+      const timeout = setTimeout(() => {
+        setCopilotActive(true)
+        copilot.start('timeLine')
+      }, 400)
+
+      return () => clearTimeout(timeout)
+    }
+  }, [copilotActive, copilot, isFirstTime])
+
+  useEffect(() => {
+    if (isFirstTimeProp) {
+      setTimeout(() => {
+        setTutorialModalActive(true)
+      }, 400)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isFocused && copilotActive) {
+      setIsFirstTime(false)
+      setCopilotActive(false)
+    }
+  }, [isFocused])
 
   useEffect(() => {
     DB.sql(`
@@ -225,30 +261,54 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
+  const CopilotTimeLine = ({copilot}: any) => (
+    <View {...copilot}>
+      <Progress
+        totalActivities={activities}
+        currentActivity={currentActivityIndex}
+        setTimeRef={handleTimeChange}
+      />
+      <TimeLine 
+        instances={activities} 
+        currentActivityIndex={currentActivityIndex} 
+      />
+    </View>
+  )
+
+  const CopilotActivityContainer = ({copilot}: any) => (
+    <View className="flex-1" {...copilot}>
+      <CurrentActivityContainer 
+        activity={currentActivity} 
+        nextActivity={switchActivity}
+        setActivityStatus={setIsActivityFinished}
+        showActivityTimer={showActivityTimer}
+        setShowActivityTimer={setShowActivityTimer}
+      />
+    </View>
+  )
+
   return currentActivity ? (
-    <ScreenWrapper>
-      <View className="flex-1 mt-5 mb-3">
-        <Progress
-          totalActivities={activities}
-          currentActivity={currentActivityIndex}
-          setTimeRef={handleTimeChange}
-        />
-        <TimeLine 
-          instances={activities} 
-          currentActivityIndex={currentActivityIndex} 
-        />
-        <CurrentActivityContainer 
-          activity={currentActivity} 
-          nextActivity={switchActivity}
-          setActivityStatus={setIsActivityFinished}
-          showActivityTimer={showActivityTimer}
-          setShowActivityTimer={setShowActivityTimer}
-        />
-      </View>
-      <BottomBarWrapper>
-        {renderButtons()}
-      </BottomBarWrapper>
-    </ScreenWrapper>
+    <>
+      <TutorialModalContainer 
+        active={tutorialModalActive}
+        text="This is the Active Session Screen!"
+        setTutorialModalActive={setTutorialModalActive}
+        setIsFirstTime={setIsFirstTime}
+      />
+      <ScreenWrapper>
+        <View className="flex-1 mt-5 mb-3">
+          <CopilotStep order={8} text="This is the timeline to help you keep track of what exercises to complete and for how long to rest" name="timeLine">
+            <CopilotTimeLine />
+          </CopilotStep>
+          <CopilotStep order={9} text="This is an activity container that holds all the relevant info about the current exercise" name="activity">
+            <CopilotActivityContainer />
+          </CopilotStep>
+        </View>
+        <BottomBarWrapper>
+          {renderButtons()}
+        </BottomBarWrapper>
+      </ScreenWrapper>
+    </>
   ) : (
     <View className="bg-custom-dark flex-1" />
   )

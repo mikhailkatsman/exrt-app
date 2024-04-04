@@ -19,6 +19,16 @@ const tourNavigationMap = {
       newProgram: false,
     },
   },
+  toGetReadyScreen: {
+    screenName: "GetReady",
+    screenProps: {
+      sessionId: 1,
+      sessionName: 'Tutorial Session',
+      phaseId: 1,
+      programId: 1,
+      isFirstTime: true,
+    },
+  },
   toEditPhaseScreen: { screenName: "EditPhase" },
   toEditSessionScreen: { screenName: "EditSession" },
   toBrowseProgramsScreen: {

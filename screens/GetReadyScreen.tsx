@@ -13,6 +13,7 @@ const GetReadyScreen: React.FC<Props> = ({ navigation, route }) => {
   const sessionName = route.params.sessionName
   const phaseId = route.params.phaseId
   const programId = route.params.programId
+  const isFirstTimeProp = route.params.isFirstTime ?? false
 
   return (
     <ScreenWrapper>
@@ -26,6 +27,7 @@ const GetReadyScreen: React.FC<Props> = ({ navigation, route }) => {
           sessionName: sessionName,
           phaseId: phaseId,
           programId: programId,
+          isFirstTime: isFirstTimeProp,
         })}
         screenWidth={screenWidth}
       />

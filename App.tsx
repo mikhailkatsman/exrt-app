@@ -82,12 +82,14 @@ export type RootStackParamList = {
     sessionName: string,
     phaseId: number,
     programId: number,
+    isFirstTime: boolean | undefined,
   },
   ActiveSession: {
     sessionId: number,
     sessionName: string,
     phaseId: number,
     programId: number,
+    isFirstTime: boolean,
   },
   EndSession: {
     sessionId: number,

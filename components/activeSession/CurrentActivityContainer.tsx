@@ -30,7 +30,7 @@ const CurrentActivityContainer: React.FC<Props> = ({
 	setShowActivityTimer
 }) => {
 	return (
-		<View className="flex-1 rounded-xl object-contain">
+		<View className="flex-1 mt-2 rounded-xl object-contain">
 			{activity.type === 'exercise' ? 
 				<CurrentExercise 
 					name={activity.data?.name}

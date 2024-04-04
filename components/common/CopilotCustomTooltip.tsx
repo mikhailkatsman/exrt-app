@@ -38,7 +38,7 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
       }, error => console.error('Error updating program status: ' + error))
     }
 
-    if (copilot.currentStep?.order === 6) {
+    if (copilot.currentStep?.order === 9) {
       DB.transaction(tx => {
         tx.executeSql(`
           UPDATE programs

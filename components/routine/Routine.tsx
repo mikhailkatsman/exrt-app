@@ -15,6 +15,7 @@ import RestDayAnimation from "./RestDayAnimation"
 import { CopilotStep } from "react-native-copilot"
 
 type Props = {
+  isFirstTime: boolean | undefined,
   dataArray: any[],
   selectedDay: number, 
   screenWidth: number,
@@ -22,7 +23,8 @@ type Props = {
   locale: string,
 }
 
-const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth, mondayDate, locale }) => {
+const Routine: React.FC<Props> = ({ isFirstTime, dataArray, selectedDay, screenWidth, mondayDate, locale }) => {
+
   const [intState, setIntState] = useState(selectedDay)
   const [sessionsArray, setSessionsArray] = useState<any[]>([])
   const [dateString, setDateString] = useState<string | undefined>('')
@@ -122,6 +124,14 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth, mondayD
     />
   )
 
+  const CopilotStartSessionButton = ({ copilot }: any) => (
+    <View
+      {...copilot}
+      className="h-[12%] absolute bottom-4 left-6 z-0" 
+      style={{ width: elementWidth - 24 }} 
+    />
+  )
+
   return (
     <Animated.View style={animatedStyle} className="flex-1 flex-col py-3">
       <View className="h-[10%] mx-2">
@@ -148,9 +158,16 @@ const Routine: React.FC<Props> = ({ dataArray, selectedDay, screenWidth, mondayD
             overScrollMode="never"
             bounces={false}
           >
-            <CopilotStep text="Session card" order={6} name="sessionCard">
-              <CopilotRoutineCard />
-            </CopilotStep>
+            {isFirstTime &&
+              <CopilotStep text="This is a session card that shows all the details about the session for the selected day." order={6} name="sessionCard">
+                <CopilotRoutineCard />
+              </CopilotStep>
+            }
+            {isFirstTime &&
+              <CopilotStep text="Let's start this session" order={7} name="toGetReadyScreen">
+                <CopilotStartSessionButton />
+              </CopilotStep>
+            }
             {sessionsArray.map((session, index) => 
               <RoutineSlot 
                 key={index} 
