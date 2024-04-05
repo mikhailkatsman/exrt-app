@@ -262,29 +262,11 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const CopilotTimeLine = ({copilot}: any) => (
-    <View {...copilot}>
-      <Progress
-        totalActivities={activities}
-        currentActivity={currentActivityIndex}
-        setTimeRef={handleTimeChange}
-      />
-      <TimeLine 
-        instances={activities} 
-        currentActivityIndex={currentActivityIndex} 
-      />
-    </View>
+    <View className="absolute w-full h-40 z-0" {...copilot} />
   )
 
   const CopilotActivityContainer = ({copilot}: any) => (
-    <View className="flex-1" {...copilot}>
-      <CurrentActivityContainer 
-        activity={currentActivity} 
-        nextActivity={switchActivity}
-        setActivityStatus={setIsActivityFinished}
-        showActivityTimer={showActivityTimer}
-        setShowActivityTimer={setShowActivityTimer}
-      />
-    </View>
+    <View className="absolute w-full top-40 -bottom-22 z-0" {...copilot} />
   )
 
   return currentActivity ? (
@@ -297,12 +279,32 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       />
       <ScreenWrapper>
         <View className="flex-1 mt-5 mb-3">
-          <CopilotStep order={8} text="This is the timeline to help you keep track of what exercises to complete and for how long to rest" name="timeLine">
-            <CopilotTimeLine />
-          </CopilotStep>
-          <CopilotStep order={9} text="This is an activity container that holds all the relevant info about the current exercise" name="activity">
-            <CopilotActivityContainer />
-          </CopilotStep>
+          {isFirstTimeProp &&
+            <CopilotStep order={8} text="This is the timeline to help you keep track of what exercises to complete and for how long to rest" name="timeLine">
+              <CopilotTimeLine />
+            </CopilotStep>
+          }
+          {isFirstTimeProp &&
+            <CopilotStep order={9} text="This is an activity container that holds all the relevant info about the current exercise" name="activity">
+              <CopilotActivityContainer />
+            </CopilotStep>
+          }
+          <Progress
+            totalActivities={activities}
+            currentActivity={currentActivityIndex}
+            setTimeRef={handleTimeChange}
+          />
+          <TimeLine 
+            instances={activities} 
+            currentActivityIndex={currentActivityIndex} 
+          />
+          <CurrentActivityContainer 
+            activity={currentActivity} 
+            nextActivity={switchActivity}
+            setActivityStatus={setIsActivityFinished}
+            showActivityTimer={showActivityTimer}
+            setShowActivityTimer={setShowActivityTimer}
+          />
         </View>
         <BottomBarWrapper>
           {renderButtons()}

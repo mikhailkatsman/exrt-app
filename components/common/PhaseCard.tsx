@@ -16,9 +16,9 @@ const PhaseCard: React.FC<Props> = ({ id, programId, name, custom, order, status
 
   const renderStatus = () => {
     if (status === 'active') {
-      return <Text className="mr-2 py-1 px-2 text-center text-custom-white border rounded-xl border-custom-white text-xs font-BaiJamjuree-LightItalic">In Progress</Text>
+      return <Text className="mr-1 py-1 px-2 text-center text-custom-white border rounded-xl border-custom-white text-[10px] font-BaiJamjuree-LightItalic">In Progress</Text>
     } else if (status === 'completed') {
-      return <Text className="mr-2 py-1 px-2 text-center text-custom-green border rounded-xl border-custom-green text-xs font-BaiJamjuree-LightItalic">Completed</Text>
+      return <Text className="mr-1 py-1 px-2 text-center text-custom-green border rounded-xl border-custom-green text-[10px] font-BaiJamjuree-LightItalic">Completed</Text>
     }
     return
   }
