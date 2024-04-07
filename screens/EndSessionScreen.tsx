@@ -7,10 +7,14 @@ import { muscleGroups } from "@modules/AssetPaths"
 import DB from "@modules/DB";
 import ScreenWrapper from "@components/common/ScreenWrapper";
 import BottomBarWrapper from "@components/common/BottomBarWrapper";
+import TutorialModalContainer from "@components/common/TutorialModalContainer";
+import { CopilotStep, useCopilot } from "react-native-copilot";
+import { useIsFocused } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EndSession'>
 
 const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
+  const isFirstTimeProp: boolean = route.params.isFirstTime
   const sessionId: number = route.params.sessionId
   const sessionName: string = route.params.sessionName
   const timeTotal: number = route.params.timeTotal
@@ -25,6 +29,12 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   }[]>([])
   const [phaseCompleted, setPhaseCompleted] = useState<boolean>(false)
   const [programCompleted, setProgramCompleted] = useState<boolean>(false)
+  const [copilotActive, setCopilotActive] = useState<boolean>(false)
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(false)
+  const [tutorialModalActive, setTutorialModalActive] = useState<boolean>(false)
+
+  const copilot = useCopilot()
+  const isFocused = useIsFocused()
 
   const formatTime = (totalSeconds: number) => {
     const hours = Math.floor(totalSeconds / 3600)
@@ -232,33 +242,77 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
+  const CopilotTest = ({copilot}: any) => (
+    <View className="absolute w-full h-40 z-0" {...copilot} />
+  )
+
   useEffect(() => {
     fetchMuscleGroups()
     checkPhaseStatus()
   }, [])
 
+  useEffect(() => {
+    if (isFirstTime && !copilotActive) {
+      const timeout = setTimeout(() => {
+        setCopilotActive(true)
+        copilot.start('test')
+      }, 400)
+
+      return () => clearTimeout(timeout)
+    }
+
+  }, [copilotActive, copilot, isFirstTime])
+
+  useEffect(() => {
+    if (isFirstTimeProp) {
+      setTimeout(() => {
+        setTutorialModalActive(true)
+      }, 400)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isFocused && copilotActive) {
+      setIsFirstTime(false)
+      setCopilotActive(false)
+    }
+  }, [isFocused])
+
   return (
-    <ScreenWrapper>
-      <View className="flex-1 flex-col items-center">
-        <Text className="my-10 font-BaiJamjuree-Bold text-4xl text-custom-green">Completed!</Text>
-        <Text className="font-BaiJamjuree-BoldItalic text-custom-grey">Session</Text>
-        <Text className="mb-5 font-BaiJamjuree-Bold text-xl text-custom-white">{sessionName}</Text>
-        <Text className="font-BaiJamjuree-BoldItalic text-custom-grey">Time</Text>
-        <Text className="mb-5 font-BaiJamjuree-Bold text-lg text-custom-white">{formatTime(timeTotal)}</Text>
-        <Text className="mb-5 font-BaiJamjuree-BoldItalic text-custom-grey">Activated Muscle Groups:</Text>
-        <View className="h-64 w-full mb-8 relative">
-          <Image className="absolute w-full h-full" resizeMode="contain" 
-            source={muscleGroups['base' as keyof typeof muscleGroups]}
-          />
-          {activatedMuscleGroups.map((muscle, index) => {
-            const fileName = `${muscle.group}-${muscle.load}` as keyof typeof muscleGroups
-            return <Image key={index} className="absolute w-full h-full" resizeMode="contain" source={muscleGroups[fileName]} />
-          })}
+    <>
+      <TutorialModalContainer 
+        active={tutorialModalActive}
+        text="This is the End Session Screen!"
+        setTutorialModalActive={setTutorialModalActive}
+        setIsFirstTime={setIsFirstTime}
+      />
+      <ScreenWrapper>
+        <View className="flex-1 flex-col items-center">
+          {isFirstTimeProp &&
+            <CopilotStep order={10} text="Test" name="test">
+              <CopilotTest />
+            </CopilotStep>
+          }
+          <Text className="my-10 font-BaiJamjuree-Bold text-4xl text-custom-green">Completed!</Text>
+          <Text className="font-BaiJamjuree-BoldItalic text-custom-grey">Session</Text>
+          <Text className="mb-5 font-BaiJamjuree-Bold text-xl text-custom-white">{sessionName}</Text>
+          <Text className="font-BaiJamjuree-BoldItalic text-custom-grey">Time</Text>
+          <Text className="mb-5 font-BaiJamjuree-Bold text-lg text-custom-white">{formatTime(timeTotal)}</Text>
+          <Text className="mb-5 font-BaiJamjuree-BoldItalic text-custom-grey">Activated Muscle Groups:</Text>
+          <View className="h-64 w-full mb-8 relative">
+            <Image className="absolute w-full h-full" resizeMode="contain" 
+              source={muscleGroups['base' as keyof typeof muscleGroups]}
+            />
+            {activatedMuscleGroups.map((muscle, index) => {
+              const fileName = `${muscle.group}-${muscle.load}` as keyof typeof muscleGroups
+              return <Image key={index} className="absolute w-full h-full" resizeMode="contain" source={muscleGroups[fileName]} />
+            })}
+          </View>
         </View>
-      </View>
-      {renderMessage()}
-      {renderBottomBarWrapper()}
-    </ScreenWrapper>
+        {renderMessage()}
+        {renderBottomBarWrapper()}
+      </ScreenWrapper>
+    </>
   )
 }
 

@@ -92,6 +92,7 @@ export type RootStackParamList = {
     isFirstTime: boolean,
   },
   EndSession: {
+    isFirstTime: boolean,
     sessionId: number,
     sessionName: string,
     timeTotal: number,

@@ -14,6 +14,7 @@ import TutorialModalContainer from "@components/common/TutorialModalContainer"
 import { exerciseBackgrounds, videoFiles } from "@modules/AssetPaths"
 import Progress from "@components/activeSession/Progress"
 import { CopilotStep, useCopilot } from "react-native-copilot"
+import TutorialActiveSessionModalContainer from "@components/activeSession/TutorialActiveSessionModalContainer"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 
@@ -48,6 +49,8 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const [copilotActive, setCopilotActive] = useState<boolean>(false)
   const [isFirstTime, setIsFirstTime] = useState<boolean>(false)
   const [tutorialModalActive, setTutorialModalActive] = useState<boolean>(false)
+  const [tutorialActiveSessionModalActive, setTutorialActiveSessionModalActive] = 
+    useState<boolean>(false)
 
   const copilot = useCopilot()
   const isFocused = useIsFocused()
@@ -59,8 +62,14 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         copilot.start('timeLine')
       }, 400)
 
-      return () => clearTimeout(timeout)
+      copilot.copilotEvents.on('stop', () => setTutorialActiveSessionModalActive(true))
+
+      return () => {
+        clearTimeout(timeout)
+        copilot.copilotEvents.off('stop', () => setTutorialActiveSessionModalActive(true))
+      }
     }
+
   }, [copilotActive, copilot, isFirstTime])
 
   useEffect(() => {
@@ -168,6 +177,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     `, [sessionId], 
     () => 
       navigation.replace('EndSession', { 
+        isFirstTime: isFirstTimeProp ?? false,
         sessionId: sessionId, 
         sessionName: sessionName,
         exerciseIds: exerciseInstances.map(instance => instance.exerciseId), 
@@ -276,6 +286,11 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         text="This is the Active Session Screen!"
         setTutorialModalActive={setTutorialModalActive}
         setIsFirstTime={setIsFirstTime}
+      />
+      <TutorialActiveSessionModalContainer
+        active={tutorialActiveSessionModalActive}
+        setTutorialActiveSessionModalActive={setTutorialActiveSessionModalActive}
+        finishSession={finishSession}
       />
       <ScreenWrapper>
         <View className="flex-1 mt-5 mb-3">

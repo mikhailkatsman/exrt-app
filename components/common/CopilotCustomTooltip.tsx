@@ -38,7 +38,7 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
       }, error => console.error('Error updating program status: ' + error))
     }
 
-    if (copilot.currentStep?.order === 9) {
+    if (copilot.currentStep?.order === 10) {
       DB.transaction(tx => {
         tx.executeSql(`
           UPDATE programs
@@ -64,12 +64,14 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
       }, error => console.error('Error updating program status: ' + error))
     }
 
-    setTimeout(() => {
-      navigation.navigate(
-        nextScreen ? nextScreen.screenName : 'Home',
-        nextScreen ? nextScreen.screenProps : { isFirstTime: false }
-      )
-    }, 150)
+    if (copilot.currentStep?.order !== 9) {
+      setTimeout(() => {
+        navigation.navigate(
+          nextScreen ? nextScreen.screenName : 'Home',
+          nextScreen ? nextScreen.screenProps : { isFirstTime: false }
+        )
+      }, 150)
+    }
   }
 
   return (
@@ -88,7 +90,7 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
           <Text className='text-custom-dark font-BaiJamjuree-Bold'>
             {tourNavigationMap[copilot.currentStep?.name] ?
               'Continue' :
-              copilot.isLastStep ?
+              copilot.isLastStep && copilot.currentStep?.order !== 9 ?
                 labels.finish :
                 labels.next
             }
