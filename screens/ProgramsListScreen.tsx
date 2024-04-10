@@ -122,11 +122,33 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
     </View>
   )
 
+  const modalText = [
+    { text: 'This is ' },
+    { text: 'bold', bold: true },
+    { text: ' text, ' },
+    { text: 'italic', italic: true },
+    { text: ' text, ' },
+    { text: 'colored', color: 'green' },
+    { text: ' text, and ' },
+    { text: 'text with an icon ', icon: <Icon name="rocket" size={20} color="#121212" /> },
+  ]
+
+  const copilotText2 = [
+    { text: 'This is ' },
+    { text: 'bold', bold: true },
+    { text: ' text, ' },
+    { text: 'italic', italic: true },
+    { text: ' text, ' },
+    { text: 'colored', color: 'green' },
+    { text: ' text, and ' },
+    { text: 'text with an icon ', icon: <Icon name="rocket" size={20} color="#121212" /> },
+  ]
+
   return (
     <>
       <TutorialModalContainer 
         active={tutorialModalActive}
-        text="This is your Programs List Screen!"
+        text={modalText}
         setTutorialModalActive={setTutorialModalActive}
         setIsFirstTime={setIsFirstTime}
       />
@@ -165,7 +187,7 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
           >
             {isFirstTimeProp &&
               <CopilotStep
-                text="Let's subscribe to this example program."
+                text={copilotText2}
                 order={2}
                 name="toHomeScreenThenHub"
                 key={0}

@@ -1,3 +1,4 @@
+import { ReactNode } from "react"
 import { View, TouchableOpacity, Text } from "react-native"
 import Animated, {
 	useAnimatedStyle, 
@@ -5,9 +6,17 @@ import Animated, {
 	withTiming 
 } from "react-native-reanimated"
 
+type TextSegment = {
+  text: string,
+  bold?: boolean,
+  italic?: boolean,
+  color?: string,
+  icon?: ReactNode,
+}
+
 type Props = { 
   active: boolean,
-  text: string,
+  text: TextSegment[],
   setTutorialModalActive: (value: boolean) => void,
   setIsFirstTime: (value: boolean) => void
 }
@@ -35,8 +44,19 @@ const TutorialModalContainer: React.FC<Props> = ({ active, text, setTutorialModa
     >
       <View className="w-3/4 h-fit bg-custom-white flex-col justify-between rounded-2xl">
 	<View className="h-fit px-6 flex justify-between items-center">
-          <Text className='my-3 text-custom-dark font-BaiJamjuree-Regular'>
-	    {text}
+          <Text className='my-3 flex-row'>
+	    {text.map((segment, index) => (
+              <Text
+                key={index}
+                className={`
+                  font-BaiJamjuree-${segment.bold ? 'Bold' : 'Regular'}${segment.italic ? 'Italic ' : ' '}
+                  text-custom-${segment.color || 'dark'}
+                `}
+              >
+                {segment.text}
+                {segment.icon}
+              </Text>
+            ))}
           </Text>
         </View>
         <View className="flex-row justify-end">

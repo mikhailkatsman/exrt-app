@@ -191,19 +191,20 @@ const App: React.FC = () => {
     <GestureHandlerRootView className='flex-1'>
       <SafeAreaProvider>
         <NavigationContainer>
-          <CopilotProvider
-            overlay='svg'
-            backdropColor='rgba(0,0,0,0.7)'
-            verticalOffset={36}
-            tooltipStyle={{
-              borderRadius: 16,
-              backgroundColor: '#F5F6F3',
-              left: 16,
-            }}
-            tooltipComponent={(props: any) => <CopilotCustomTooltip {...props} />}
-            stepNumberComponent={() => <></>}
-          >
-            <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+          <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+            <CopilotProvider
+              // easing={(value) => value * 10}
+              overlay='svg'
+              backdropColor='rgba(0,0,0,0.7)'
+              verticalOffset={36}
+              tooltipStyle={{
+                borderRadius: 16,
+                backgroundColor: '#F5F6F3',
+                left: 16,
+              }}
+              tooltipComponent={(props: any) => <CopilotCustomTooltip {...props} />}
+              stepNumberComponent={() => <></>}
+            >
               <Stack.Navigator initialRouteName={initScreen}>
                 <Stack.Group
                   screenOptions={{
@@ -346,8 +347,8 @@ const App: React.FC = () => {
                   />
                 </Stack.Group>
               </Stack.Navigator>
-            </IconComponentProvider>
-          </CopilotProvider>
+            </CopilotProvider>
+          </IconComponentProvider>
         </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>
