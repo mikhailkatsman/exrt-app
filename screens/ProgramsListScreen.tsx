@@ -10,6 +10,7 @@ import DropDown from "@components/common/Dropdown"
 import { CopilotStep, useCopilot } from "react-native-copilot"
 import { useIsFocused } from "@react-navigation/native"
 import TutorialModalContainer from "@components/common/TutorialModalContainer"
+import tourTextData from "@modules/TourTextData"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProgramsList'>
 
@@ -122,33 +123,11 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
     </View>
   )
 
-  const modalText = [
-    { text: 'This is ' },
-    { text: 'bold', bold: true },
-    { text: ' text, ' },
-    { text: 'italic', italic: true },
-    { text: ' text, ' },
-    { text: 'colored', color: 'green' },
-    { text: ' text, and ' },
-    { text: 'text with an icon ', icon: <Icon name="rocket" size={20} color="#121212" /> },
-  ]
-
-  const copilotText2 = [
-    { text: 'This is ' },
-    { text: 'bold', bold: true },
-    { text: ' text, ' },
-    { text: 'italic', italic: true },
-    { text: ' text, ' },
-    { text: 'colored', color: 'green' },
-    { text: ' text, and ' },
-    { text: 'text with an icon ', icon: <Icon name="rocket" size={20} color="#121212" /> },
-  ]
-
   return (
     <>
       <TutorialModalContainer 
         active={tutorialModalActive}
-        text={modalText}
+        text={tourTextData.programsListScreenModalText}
         setTutorialModalActive={setTutorialModalActive}
         setIsFirstTime={setIsFirstTime}
       />
@@ -187,7 +166,7 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
           >
             {isFirstTimeProp &&
               <CopilotStep
-                text={copilotText2}
+                text={tourTextData.copilotStepText2}
                 order={2}
                 name="toHomeScreenThenHub"
                 key={0}

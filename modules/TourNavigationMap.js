@@ -37,6 +37,6 @@ const tourNavigationMap = {
       isFirstTime: true,
     },
   },
-};
+}
 
-export default tourNavigationMap;
+export default tourNavigationMap

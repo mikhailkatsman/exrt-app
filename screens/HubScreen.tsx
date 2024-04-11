@@ -10,6 +10,7 @@ import type { RootStackParamList } from "App";
 import ScreenWrapper from "@components/common/ScreenWrapper";
 import TutorialModalContainer from "@components/common/TutorialModalContainer";
 import { CopilotStep, useCopilot } from "react-native-copilot";
+import tourTextData from "@modules/TourTextData";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Hub'>
 
@@ -120,14 +121,14 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
     <>
       <TutorialModalContainer 
         active={tutorialModalActive}
-        text="This is your Hub Screen!"
+        text={tourTextData.hubScreenModalText}
         setTutorialModalActive={setTutorialModalActive}
         setIsFirstTime={setIsFirstTime}
       />
       <ScreenWrapper>
         <View className="flex-1 mb-3">
           {isFirstTimeProp &&
-            <CopilotStep text="This is the calendar" order={5} name="calendar">
+            <CopilotStep text={tourTextData.copilotStepText5} order={5} name="calendar">
               <CopilotCalendar />
             </CopilotStep>
           }

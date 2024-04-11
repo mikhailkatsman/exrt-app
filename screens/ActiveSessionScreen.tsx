@@ -15,6 +15,7 @@ import { exerciseBackgrounds, videoFiles } from "@modules/AssetPaths"
 import Progress from "@components/activeSession/Progress"
 import { CopilotStep, useCopilot } from "react-native-copilot"
 import TutorialActiveSessionModalContainer from "@components/activeSession/TutorialActiveSessionModalContainer"
+import tourTextData from "@modules/TourTextData"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ActiveSession'>
 
@@ -283,7 +284,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     <>
       <TutorialModalContainer 
         active={tutorialModalActive}
-        text="This is the Active Session Screen!"
+        text={tourTextData.activeSessionScreenModalText}
         setTutorialModalActive={setTutorialModalActive}
         setIsFirstTime={setIsFirstTime}
       />
@@ -295,12 +296,12 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       <ScreenWrapper>
         <View className="flex-1 mt-5 mb-3">
           {isFirstTimeProp &&
-            <CopilotStep order={8} text="This is the timeline to help you keep track of what exercises to complete and for how long to rest" name="timeLine">
+            <CopilotStep order={8} text={tourTextData.copilotStepText8} name="timeLine">
               <CopilotTimeLine />
             </CopilotStep>
           }
           {isFirstTimeProp &&
-            <CopilotStep order={9} text="This is an activity container that holds all the relevant info about the current exercise" name="activity">
+            <CopilotStep order={9} text={tourTextData.copilotStepText9} name="activity">
               <CopilotActivityContainer />
             </CopilotStep>
           }

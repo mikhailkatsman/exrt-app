@@ -14,6 +14,7 @@ import { Icon } from "@react-native-material/core"
 import SplashScreen from "@components/context/SplashScreen"
 import { useIsFocused } from "@react-navigation/native"
 import TutorialModalContainer from "@components/common/TutorialModalContainer"
+import tourTextData from "@modules/TourTextData"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
@@ -147,34 +148,12 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     </View>
   )
 
-  const modalText = [
-    { text: 'This is ' },
-    { text: 'bold', bold: true },
-    { text: ' text, ' },
-    { text: 'italic', italic: true },
-    { text: ' text, ' },
-    { text: 'colored', color: 'green' },
-    { text: ' text, and ' },
-    { text: 'text with an icon ', icon: <Icon name="rocket" size={20} color="#121212" /> },
-  ]
-
-  const copilotText1 = [
-    { text: 'This is ' },
-    { text: 'bold', bold: true },
-    { text: ' text, ' },
-    { text: 'italic', italic: true },
-    { text: ' text, ' },
-    { text: 'colored', color: 'green' },
-    { text: ' text, and ' },
-    { text: 'text with an icon ', icon: <Icon name="rocket" size={20} color="#121212" /> },
-  ]
-
   return (
     <>
       <SplashScreen isComponentLoaded={isLoaded} />
       <TutorialModalContainer 
         active={tutorialModalActive}
-        text={modalText}
+        text={tourTextData.homeScreenModalText}
         setTutorialModalActive={setTutorialModalActive}
         setIsFirstTime={setIsFirstTime}
       />
@@ -193,15 +172,15 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             <Icon name="cog" size={22} color="#F5F6F3" />
           </TouchableOpacity>
         </View>
-        <CopilotStep text={copilotText1} order={4} name="toHubScreen">
+        <CopilotStep text={tourTextData.copilotStepText4} order={4} name="toHubScreen">
           <CopilotProgress />
         </CopilotStep>
         <View className="h-8" />
-        <CopilotStep text={copilotText1} order={3} name="activePrograms">
+        <CopilotStep text={tourTextData.copilotStepText3} order={3} name="activePrograms">
           <CopilotActivePrograms />
         </CopilotStep>
         <View className="h-4" />
-        <CopilotStep text={copilotText1} order={1} name="toBrowseProgramsScreen">
+        <CopilotStep text={tourTextData.copilotStepText1} order={1} name="toBrowseProgramsScreen">
           <CopilotProgramsAnimatedButton />
         </CopilotStep>
         <View className="h-4" />

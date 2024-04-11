@@ -13,6 +13,7 @@ import { ScrollView } from "react-native-gesture-handler"
 import { Icon } from "@react-native-material/core"
 import RestDayAnimation from "./RestDayAnimation"
 import { CopilotStep } from "react-native-copilot"
+import tourTextData from "@modules/TourTextData"
 
 type Props = {
   isFirstTime: boolean | undefined,
@@ -159,12 +160,12 @@ const Routine: React.FC<Props> = ({ isFirstTime, dataArray, selectedDay, screenW
             bounces={false}
           >
             {isFirstTime &&
-              <CopilotStep text="This is a session card that shows all the details about the session for the selected day." order={6} name="sessionCard">
+              <CopilotStep text={tourTextData.copilotStepText6} order={6} name="sessionCard">
                 <CopilotRoutineCard />
               </CopilotStep>
             }
             {isFirstTime &&
-              <CopilotStep text="Let's start this session" order={7} name="toGetReadyScreen">
+              <CopilotStep text={tourTextData.copilotStepText7} order={7} name="toGetReadyScreen">
                 <CopilotStartSessionButton />
               </CopilotStep>
             }

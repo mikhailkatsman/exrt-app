@@ -8,8 +8,11 @@ import DB from "@modules/DB";
 import ScreenWrapper from "@components/common/ScreenWrapper";
 import BottomBarWrapper from "@components/common/BottomBarWrapper";
 import TutorialModalContainer from "@components/common/TutorialModalContainer";
+import EndSessionModalContainer from "@components/endSession/EndSessionModalContainer";
 import { CopilotStep, useCopilot } from "react-native-copilot";
 import { useIsFocused } from "@react-navigation/native";
+import tourTextData from "@modules/TourTextData";
+import TutorialEndSessionModalContainer from "@components/endSession/EndSessionModalContainer";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EndSession'>
 
@@ -32,6 +35,8 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const [copilotActive, setCopilotActive] = useState<boolean>(false)
   const [isFirstTime, setIsFirstTime] = useState<boolean>(false)
   const [tutorialModalActive, setTutorialModalActive] = useState<boolean>(false)
+  const [tutorialEndSessionModalActive, setTutorialEndSessionModalActive] =
+    useState<boolean>(false)
 
   const copilot = useCopilot()
   const isFocused = useIsFocused()
@@ -242,6 +247,37 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     )
   }
 
+  const endTutorial = () => {
+    DB.transaction(tx => {
+      tx.executeSql(`
+        UPDATE programs
+        SET status = 'inactive'
+        WHERE id = 1;
+      `, [])
+
+      tx.executeSql(`
+        UPDATE phases
+        SET status = 'upcoming'
+        WHERE id = (
+          SELECT phase_id
+          FROM program_phases
+          WHERE program_id = 1
+        );
+      `, [])
+
+      // tx.executeSql(`
+      //   UPDATE metadata
+      //   SET value = 'false'
+      //   WHERE key = 'first_time';
+      // `, [])
+    }, error => console.error('Error updating program status: ' + error))
+
+    setTutorialEndSessionModalActive(false)
+    setTimeout(() => {
+      navigation.replace('Home', { isFirstTime: false })
+    }, 150)
+  }
+
   const CopilotTest = ({copilot}: any) => (
     <View className="absolute w-full h-40 z-0" {...copilot} />
   )
@@ -258,7 +294,12 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         copilot.start('test')
       }, 400)
 
-      return () => clearTimeout(timeout)
+      copilot.copilotEvents.on('stop', () => setTutorialEndSessionModalActive(true))
+
+      return () => {
+        clearTimeout(timeout)
+        copilot.copilotEvents.off('stop', () => setTutorialEndSessionModalActive(true))
+      }
     }
 
   }, [copilotActive, copilot, isFirstTime])
@@ -282,14 +323,18 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     <>
       <TutorialModalContainer 
         active={tutorialModalActive}
-        text="This is the End Session Screen!"
+        text={tourTextData.endSessionScreenModalText}
         setTutorialModalActive={setTutorialModalActive}
         setIsFirstTime={setIsFirstTime}
+      />
+      <TutorialEndSessionModalContainer
+        active={tutorialEndSessionModalActive}
+        endTutorial={endTutorial}
       />
       <ScreenWrapper>
         <View className="flex-1 flex-col items-center">
           {isFirstTimeProp &&
-            <CopilotStep order={10} text="Test" name="test">
+            <CopilotStep order={10} text={tourTextData.copilotStepText10} name="test">
               <CopilotTest />
             </CopilotStep>
           }

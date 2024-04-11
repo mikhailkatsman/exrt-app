@@ -38,38 +38,9 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
       }, error => console.error('Error updating program status: ' + error))
     }
 
-    if (copilot.currentStep?.order === 10) {
-      DB.transaction(tx => {
-        tx.executeSql(`
-          UPDATE programs
-          SET status = 'inactive'
-          WHERE id = 1;
-        `, [])
-
-        tx.executeSql(`
-          UPDATE phases
-          SET status = 'upcoming'
-          WHERE id = (
-            SELECT phase_id
-            FROM program_phases
-            WHERE program_id = 1
-          );
-        `, [])
-
-        // tx.executeSql(`
-        //   UPDATE metadata
-        //   SET value = 'false'
-        //   WHERE key = 'first_time';
-        // `, [])
-      }, error => console.error('Error updating program status: ' + error))
-    }
-
-    if (copilot.currentStep?.order !== 9) {
+    if (copilot.currentStep?.order !== 9 && copilot.currentStep?.order !== 10) {
       setTimeout(() => {
-        navigation.navigate(
-          nextScreen ? nextScreen.screenName : 'Home',
-          nextScreen ? nextScreen.screenProps : { isFirstTime: false }
-        )
+        navigation.navigate(nextScreen.screenName, nextScreen.screenProps)
       }, 150)
     }
   }
