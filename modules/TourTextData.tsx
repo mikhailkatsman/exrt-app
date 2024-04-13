@@ -11,14 +11,12 @@ type TextSegment = {
 
 const tourTextData: { [key: string]: TextSegment[] } = {
   homeScreenModalText: [
-    { text: 'This is ' },
-    { text: 'bold', bold: true },
-    { text: ' text, ' },
-    { text: 'italic', italic: true },
-    { text: ' text, ' },
-    { text: 'colored', color: 'green' },
-    { text: ' text, and ' },
-    { text: 'text with an icon ', icon: <Icon name="rocket" size={20} color="#121212" /> },
+    { text: 'This is the your ' },
+    { text: 'Home Screen.', bold: true },
+    { text: '' },
+    { text: 'Next paragraph.' },
+    { text: 'Next paragraph.' },
+    { text: 'Next paragraph.' },
   ],
   programsListScreenModalText: [
     { text: 'This is ' },

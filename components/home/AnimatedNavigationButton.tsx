@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { useCallback } from 'react'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import { Icon } from "@react-native-material/core"
 import { TouchableOpacity, Text, View } from 'react-native'
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
@@ -57,16 +57,17 @@ const AnimatedNavigationButton: React.FC<Props> = ({
 		})
 	}
 
-	useEffect(() => {
-		if (!isOverlayActive) {
-			imageTranslateX.value = -100
-			imageOpacity.value = 0
-			textTranslateX.value = -50
-			textOpacity.value = 0
-
-			animationSequence();
-		}
-	}, [isOverlayActive])
+	useFocusEffect(
+		useCallback(() => {
+			if (!isOverlayActive) {
+				imageTranslateX.value = -100
+				imageOpacity.value = 0
+				textTranslateX.value = -50
+				textOpacity.value = 0
+				animationSequence()
+			}
+		}, [isOverlayActive])
+	)
 
 	const animatedImageStyle = useAnimatedStyle(() => {
 		return {
