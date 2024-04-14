@@ -51,7 +51,7 @@ Or you can skip it to proceed to the completion screen.
             onPress={finishSession}
             activeOpacity={0.6}
           >
-            <Text className="text-custom-grey font-BaiJamjuree-Bold">Skip</Text>
+            <Text className="text-custom-light-grey font-BaiJamjuree-Bold">Skip</Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="pl-3 pr-7 py-3 justify-center"

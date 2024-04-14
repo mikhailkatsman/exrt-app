@@ -273,11 +273,11 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const CopilotTimeLine = ({copilot}: any) => (
-    <View className="absolute w-full h-40 z-0" {...copilot} />
+    <View className="absolute w-full h-[164px] z-0" {...copilot} />
   )
 
   const CopilotActivityContainer = ({copilot}: any) => (
-    <View className="absolute w-full top-40 -bottom-22 z-0" {...copilot} />
+    <View className="absolute w-full top-[164px] bottom-0 z-0" {...copilot} />
   )
 
   return currentActivity ? (
