@@ -11,15 +11,21 @@ type TextSegment = {
 
 const tourTextData: { [key: string]: TextSegment[] } = {
   homeScreenModalText: [
-    { text: 'This is the your ' },
-    { text: 'Home Screen.', bold: true },
+    { text: 'Welcome to the ' },
+    { text: 'Home Screen', bold: true },
+    { text: '.' },
     { text: '' },
-    { text: 'Next paragraph.' },
-    { text: 'Next paragraph.' },
-    { text: 'Next paragraph.' },
+    { text: 'This is the default screen' },
+    { text: 'of the application.' },
+    { text: '' },
+    { text: 'From this screen you can:' },
+    { text: '- View your active programs', bold: true },
+    { text: '- Check your weekly status       ', bold: true },
+    { text: '- ', bold: true },
+    { text: 'Browse all programs and exercises', bold: true },
   ],
   programsListScreenModalText: [
-    { text: 'This is ' },
+    { text: "Let's start by subscribing to an existing program" },
     { text: 'bold', bold: true },
     { text: ' text, ' },
     { text: 'italic', italic: true },
@@ -59,14 +65,7 @@ const tourTextData: { [key: string]: TextSegment[] } = {
     { text: 'text with an icon ', icon: <Icon name="rocket" size={20} color="#121212" /> },
   ],
   copilotStepText1: [
-    { text: 'This is ' },
-    { text: 'bold', bold: true },
-    { text: ' text, ' },
-    { text: 'italic', italic: true },
-    { text: ' text, ' },
-    { text: 'colored', color: 'green' },
-    { text: ' text, and ' },
-    { text: 'text with an icon ', icon: <Icon name="rocket" size={20} color="#121212" /> },
+    { text: "Let's start by browsing existing programs." },
   ],
   copilotStepText2: [
     { text: 'This is ' },

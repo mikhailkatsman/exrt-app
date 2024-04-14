@@ -46,9 +46,9 @@ const TutorialModalContainer: React.FC<Props> = ({ active, text, setTutorialModa
         <View className='my-3 mx-6 flex-row flex-wrap'>
           {text.map((segment, index) => (
             segment.text === '' ? (
-              <View key={index} className="h-6 w-full" />
+              <View key={index} className="h-3 w-full" />
             ) : (
-              <View key={index} className="h-6">
+              <View key={index}>
                 <Text
                   className={`
                     font-BaiJamjuree-${segment.bold ? 'Bold' : 'Regular'}${segment.italic ? 'Italic ' : ' '}
