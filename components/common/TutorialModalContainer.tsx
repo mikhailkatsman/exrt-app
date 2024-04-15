@@ -43,25 +43,20 @@ const TutorialModalContainer: React.FC<Props> = ({ active, text, setTutorialModa
       className="absolute w-full h-full bg-custom-dark/60 items-center z-50 flex-col justify-center"
     >
       <View className="w-4/5 h-fit bg-custom-white flex-col justify-between rounded-2xl">
-        <View className='my-3 mx-6 flex-row flex-wrap'>
+        <Text className='my-3 mx-6'>
           {text.map((segment, index) => (
-            segment.text === '' ? (
-              <View key={index} className="h-3 w-full" />
-            ) : (
-              <View key={index}>
-                <Text
-                  className={`
-                    font-BaiJamjuree-${segment.bold ? 'Bold' : 'Regular'}${segment.italic ? 'Italic ' : ' '}
-                    text-custom-${segment.color || 'dark'}
-                  `}
-                >
-                  {segment.text}
-                  {segment.icon}
-                </Text>
-              </View>
-            )
+            <Text
+              key={index}
+              className={`
+                font-BaiJamjuree-${segment.bold ? 'Bold' : 'Regular'}${segment.italic ? 'Italic ' : ' '}
+                text-custom-${segment.color || 'dark'}
+              `}
+            >
+              {segment.text}
+              {segment.icon}
+            </Text>
           ))}
-        </View>
+        </Text>
         <View className="flex-row justify-end">
           <TouchableOpacity
             className="px-7 py-3 justify-center"

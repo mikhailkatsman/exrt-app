@@ -193,11 +193,11 @@ const App: React.FC = () => {
         <NavigationContainer>
           <IconComponentProvider IconComponent={MaterialCommunityIcons}>
             <CopilotProvider
-              // easing={(value) => value * 10}
               overlay='svg'
-              backdropColor='rgba(0,0,0,0.7)'
+              backdropColor='rgba(0,0,0,0.6)'
               verticalOffset={36}
               tooltipStyle={{
+                width: '80%',
                 borderRadius: 16,
                 backgroundColor: '#F5F6F3',
                 left: 16,

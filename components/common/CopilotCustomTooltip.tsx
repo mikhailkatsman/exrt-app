@@ -47,7 +47,7 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
 
   return (
     <View>
-      <Text className='mb-3 flex-row'>
+      <Text className='mb-3'>
         {copilot.currentStep?.text.map((segment, index) => (
           <Text
             key={index}
@@ -64,7 +64,7 @@ const CopilotCustomTooltip: React.FC<TooltipProps> = ({ labels }) => {
       <View className='flex-row justify-end'>
         <TouchableOpacity
           onPress={handlePress}
-          className='px-3 pt-5 pb-3 justify-center'
+          className='px-3 pt-3 pb-3 justify-center'
           activeOpacity={0.6}
         >
           <Text className='text-custom-dark font-BaiJamjuree-Bold'>
