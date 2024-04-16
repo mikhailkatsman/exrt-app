@@ -194,7 +194,7 @@ const App: React.FC = () => {
           <IconComponentProvider IconComponent={MaterialCommunityIcons}>
             <CopilotProvider
               overlay='svg'
-              backdropColor='rgba(0,0,0,0.6)'
+              backdropColor='rgba(0,0,0,0.8)'
               verticalOffset={36}
               tooltipStyle={{
                 width: '80%',
