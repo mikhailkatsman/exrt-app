@@ -41,7 +41,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       const timeout = setTimeout(() => {
         setCopilotActive(true)
         copilot.start(copilotStep)
-      }, 400)
+      }, 300)
 
       return () => clearTimeout(timeout)
     }

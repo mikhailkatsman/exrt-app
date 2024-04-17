@@ -184,7 +184,7 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       suggestion = "Would you like to move on to the next phase of the program?"
     } else if (programCompleted) {
       message = "You have completed all the phases of this program!"
-      suggestion = "Would you like mark this program as completed?"
+      suggestion = "Would you like to mark this program as completed?"
     }
     
     return (
@@ -214,7 +214,7 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       renderrightButton = true
     } else if (programCompleted) {
       leftButtonText = 'Stay on this phase'
-      rightButtonText = 'Finish program'
+      rightButtonText = 'Complete program'
       rightButtonIcon = 'flag-checkered'
       rightButtonAction = changeProgramStatus
       renderrightButton = true
@@ -278,8 +278,8 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     }, 150)
   }
 
-  const CopilotTest = ({copilot}: any) => (
-    <View className="absolute w-full h-40 z-0" {...copilot} />
+  const CopilotButtonWrapper = ({copilot}: any) => (
+    <View className="absolute w-full h-52 bottom-0" {...copilot} />
   )
 
   useEffect(() => {
@@ -291,8 +291,8 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
     if (isFirstTime && !copilotActive) {
       const timeout = setTimeout(() => {
         setCopilotActive(true)
-        copilot.start('test')
-      }, 400)
+        copilot.start('buttonWrapper')
+      }, 300)
 
       copilot.copilotEvents.on('stop', () => setTutorialEndSessionModalActive(true))
 
@@ -331,13 +331,13 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         active={tutorialEndSessionModalActive}
         endTutorial={endTutorial}
       />
+      {isFirstTimeProp &&
+        <CopilotStep order={10} text={tourTextData.copilotStepText10} name="buttonWrapper">
+          <CopilotButtonWrapper />
+        </CopilotStep>
+      }
       <ScreenWrapper>
         <View className="flex-1 flex-col items-center">
-          {isFirstTimeProp &&
-            <CopilotStep order={10} text={tourTextData.copilotStepText10} name="test">
-              <CopilotTest />
-            </CopilotStep>
-          }
           <Text className="my-10 font-BaiJamjuree-Bold text-4xl text-custom-green">Completed!</Text>
           <Text className="font-BaiJamjuree-BoldItalic text-custom-grey">Session</Text>
           <Text className="mb-5 font-BaiJamjuree-Bold text-xl text-custom-white">{sessionName}</Text>

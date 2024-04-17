@@ -10,6 +10,13 @@ type Props = {
   endTutorial: () => void,
 }
 
+type TextSegment = {
+  text?: string,
+  bold?: boolean,
+  italic?: boolean,
+  color?: string,
+}
+
 const TutorialEndSessionModalContainer: React.FC<Props> = ({
   active, 
   endTutorial,
@@ -29,6 +36,13 @@ const TutorialEndSessionModalContainer: React.FC<Props> = ({
     modalOpacity.value = withTiming(0, { duration: 300 })
   }
 
+  const text: TextSegment[] = [
+    { text: 'Thank you for completing\nthe tutorial!\n\n' },
+    { text: 'If you want to view it again, you can find this and all the other tutorials in the\n' },
+    { text: 'Settings screen', bold: true },
+    { text: '.' },
+  ]
+
   return (
     <Animated.View 
       style={animatedModalStyle}
@@ -36,10 +50,18 @@ const TutorialEndSessionModalContainer: React.FC<Props> = ({
     >
       <View className="w-3/4 h-fit bg-custom-white flex-col justify-between rounded-2xl">
 	<View className="h-fit px-6 flex justify-between items-center">
-          <Text className='my-3 text-custom-dark font-BaiJamjuree-Regular'>
-Tutorial ended
-
-Redirecting to home screen!
+          <Text className='my-3'>
+            {text.map((segment, index) => (
+              <Text
+                key={index}
+                className={`
+                  font-BaiJamjuree-${segment.bold ? 'Bold' : 'Regular'}${segment.italic ? 'Italic ' : ' '}
+                  text-custom-${segment.color || 'dark'}
+                `}
+              >
+                {segment.text}
+              </Text>
+            ))}
           </Text>
         </View>
         <View className="flex-row justify-end">

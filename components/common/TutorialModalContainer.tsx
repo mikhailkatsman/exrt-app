@@ -7,7 +7,7 @@ import Animated, {
 } from "react-native-reanimated"
 
 type TextSegment = {
-  text: string,
+  text?: string,
   bold?: boolean,
   italic?: boolean,
   color?: string,

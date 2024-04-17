@@ -46,7 +46,7 @@ const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
       const timeout = setTimeout(() => {
         setCopilotActive(true)
         copilot.start('toHomeScreenThenHub')
-      }, 400)
+      }, 300)
 
       return () => clearTimeout(timeout)
     }

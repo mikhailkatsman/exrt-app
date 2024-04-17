@@ -61,7 +61,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       const timeout = setTimeout(() => {
         setCopilotActive(true)
         copilot.start('timeLine')
-      }, 400)
+      }, 300)
 
       copilot.copilotEvents.on('stop', () => setTutorialActiveSessionModalActive(true))
 

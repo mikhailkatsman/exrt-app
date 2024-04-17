@@ -12,6 +12,13 @@ type Props = {
   finishSession: () => void,
 }
 
+type TextSegment = {
+  text?: string,
+  bold?: boolean,
+  italic?: boolean,
+  color?: string,
+}
+
 const TutorialActiveSessionModalContainer: React.FC<Props> = ({
 	active, 
 	setTutorialActiveSessionModalActive,
@@ -32,6 +39,15 @@ const TutorialActiveSessionModalContainer: React.FC<Props> = ({
     modalOpacity.value = withTiming(0, { duration: 300 })
   }
 
+  const text: TextSegment[] = [
+    { text: 'You can continue this ' },
+    { text: 'Exercise Session', bold: true },
+    { text: ' to see how everything works in practice.\n\n' },
+    { text: 'Or you can skip if you want to navigate straight to the ' },
+    { text: 'Completion Screen', bold: true },
+    { text: '.' },
+  ]
+
   return (
     <Animated.View 
       style={animatedModalStyle}
@@ -39,10 +55,18 @@ const TutorialActiveSessionModalContainer: React.FC<Props> = ({
     >
       <View className="w-3/4 h-fit bg-custom-white flex-col justify-between rounded-2xl">
 	<View className="h-fit px-6 flex justify-between items-center">
-          <Text className='my-3 text-custom-dark font-BaiJamjuree-Regular'>
-You can continue this exercise session if you want.
-
-Or you can skip it to proceed to the completion screen.
+          <Text className='my-3'>
+            {text.map((segment, index) => (
+              <Text
+                key={index}
+                className={`
+                  font-BaiJamjuree-${segment.bold ? 'Bold' : 'Regular'}${segment.italic ? 'Italic ' : ' '}
+                  text-custom-${segment.color || 'dark'}
+                `}
+              >
+                {segment.text}
+              </Text>
+            ))}
           </Text>
         </View>
         <View className="flex-row justify-end">

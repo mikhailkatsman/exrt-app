@@ -77,7 +77,7 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
       const timeout = setTimeout(() => {
         setCopilotActive(true)
         copilot.start('calendar')
-      }, 400)
+      }, 300)
 
       return () => clearTimeout(timeout)
     }
