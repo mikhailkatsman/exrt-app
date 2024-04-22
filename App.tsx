@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { StatusBar } from 'react-native'
 import DB from '@modules/DB'
 import { initNotificationsPermissionsCheck } from '@modules/Notifications'
 import { IconComponentProvider } from '@react-native-material/core'
@@ -195,7 +196,7 @@ const App: React.FC = () => {
             <CopilotProvider
               overlay='svg'
               backdropColor='rgba(0,0,0,0.8)'
-              verticalOffset={36}
+              verticalOffset={StatusBar.currentHeight}
               tooltipStyle={{
                 width: '80%',
                 borderRadius: 16,

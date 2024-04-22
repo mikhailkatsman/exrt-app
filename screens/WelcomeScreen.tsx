@@ -2,10 +2,11 @@ import BottomBarWrapper from "@components/common/BottomBarWrapper"
 import ScreenWrapper from "@components/common/ScreenWrapper"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { View, Text, TouchableOpacity } from "react-native"
 import { Icon } from "@react-native-material/core"
 import SplashScreen from "@components/context/SplashScreen"
+import DB from "@modules/DB"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>
 
@@ -31,7 +32,12 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
           <TouchableOpacity
             className="px-3 flex-1 rounded-2xl border-2 border-custom-light-grey flex-row justify-between items-center"
             onPress={() => {
-              navigation.replace('Home', { isFirstTime: false })
+              DB.sql(`
+                UPDATE metadata
+                SET value = 'false'
+                WHERE key = 'first_time';
+              `, [],
+              () => navigation.replace('Home', { isFirstTime: false }))
             }}
             activeOpacity={0.6}
           >

@@ -258,18 +258,20 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       tx.executeSql(`
         UPDATE phases
         SET status = 'upcoming'
-        WHERE id = (
-          SELECT phase_id
-          FROM program_phases
-          WHERE program_id = 1
-        );
+        WHERE id = 1;
       `, [])
 
-      // tx.executeSql(`
-      //   UPDATE metadata
-      //   SET value = 'false'
-      //   WHERE key = 'first_time';
-      // `, [])
+      tx.executeSql(`
+        UPDATE sessions
+        SET status = 'upcoming'
+        WHERE id = 1;
+      `, [])
+
+      tx.executeSql(`
+        UPDATE metadata
+        SET value = 'false'
+        WHERE key = 'first_time';
+      `, [])
     }, error => console.error('Error updating program status: ' + error))
 
     setTutorialEndSessionModalActive(false)

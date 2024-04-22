@@ -1,10 +1,15 @@
 import ScreenWrapper from "@components/common/ScreenWrapper"
 import ScrollPicker from "@components/common/ScrollPicker"
+import type { NativeStackScreenProps } from "@react-navigation/native-stack"
+import type { RootStackParamList } from 'App'
 import DB from "@modules/DB"
 import { useEffect, useState } from "react"
-import { Text, View, Switch } from "react-native"
+import { Text, View, Switch, TouchableOpacity } from "react-native"
+import { Icon } from "@react-native-material/core"
 
-const SettingsScreen: React.FC = () => {
+type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>
+
+const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(true)
   const [notificationsHour, setNotificationsHour] = useState<number | null>(null)
   const [notificationsMinute, setNotificationsMinute] = useState<number | null>(null)
@@ -51,10 +56,14 @@ const SettingsScreen: React.FC = () => {
   return (
     <ScreenWrapper>
       <View className="px-2 flex-1">
-        <Text className="text-custom-white font-BaiJamjuree-BoldItalic mb-10">Notifications:</Text>
+        <Text className="text-custom-white font-BaiJamjuree-BoldItalic mb-8">
+          Notifications:
+        </Text>
         <View className="flex flex-row justify-between items-start mb-8">
           <View className="w-2/3">
-            <Text className="text-custom-white font-BaiJamjuree-Regular text-lg">Enable Notifications</Text>
+            <Text className="text-custom-white font-BaiJamjuree-Regular text-lg">
+              Enable Notifications
+            </Text>
             <Text className="text-custom-grey font-BaiJamjuree-Regular text-xs w-[90%]">
               Enable or disable session notifications for this device
             </Text>
@@ -69,7 +78,9 @@ const SettingsScreen: React.FC = () => {
         </View>
         <View className="flex flex-row justify-between items-start mb-8">
           <View className="w-2/3">
-            <Text className="text-custom-white font-BaiJamjuree-Regular text-lg">Notification Time</Text>
+            <Text className="text-custom-white font-BaiJamjuree-Regular text-lg">
+              Notification Time
+            </Text>
             <Text className="text-custom-grey font-BaiJamjuree-Regular text-xs w-[90%]">
               Set time at which you want EXRT to send you notifications
             </Text>
@@ -93,6 +104,53 @@ const SettingsScreen: React.FC = () => {
           )}
         </View>
         <View className="border-b border-custom-grey my-3 mx-6" />
+        <Text className="text-custom-white font-BaiJamjuree-BoldItalic mt-6 mb-8">
+          Tutorials:
+        </Text>
+        <View className="flex flex-row justify-between items-start mb-8">
+          <View className="w-2/3">
+            <Text className="text-custom-white font-BaiJamjuree-Regular text-lg">
+              Basic Operations
+            </Text>
+            <Text className="text-custom-grey font-BaiJamjuree-Regular text-xs w-[90%]">
+              How to subscribe to a program, navigate your hub and start an exercise session
+            </Text>
+          </View>
+          <TouchableOpacity
+            className="px-3 w-1/3 rounded-2xl border-2 border-custom-green flex-row justify-between items-center"
+            onPress={() => {
+              navigation.replace('Home', { isFirstTime: true })
+            }}
+            activeOpacity={0.6}
+          >
+            <Text className="w-[70%] text-custom-green font-BaiJamjuree-Bold capitalize">
+              Start
+            </Text>
+            <Icon name="chevron-right" size={28} color="#74AC5D" />
+          </TouchableOpacity>
+        </View>
+        <View className="flex flex-row justify-between items-start mb-8">
+          <View className="w-2/3">
+            <Text className="text-custom-white font-BaiJamjuree-Regular text-lg">
+              Custom Programs
+            </Text>
+            <Text className="text-custom-grey font-BaiJamjuree-Regular text-xs w-[90%]">
+              How to create your own custom exercise program
+            </Text>
+          </View>
+          <TouchableOpacity
+            className="px-3 w-1/3 rounded-2xl border-2 border-custom-green flex-row justify-between items-center"
+            onPress={() => {
+              navigation.replace('Home', { isFirstTime: true })
+            }}
+            activeOpacity={0.6}
+          >
+            <Text className="w-[70%] text-custom-green font-BaiJamjuree-Bold capitalize">
+              Start
+            </Text>
+            <Icon name="chevron-right" size={28} color="#74AC5D" />
+          </TouchableOpacity>
+        </View>
       </View>
     </ScreenWrapper>
   )
