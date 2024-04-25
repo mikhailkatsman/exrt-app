@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native"
 // import { getLocales } from 'react-native-localize';
-import { View, Dimensions, Text, TouchableOpacity } from "react-native";
+import { View, Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Calendar from "@components/calendar/Calendar";
 import Routine from "@components/routine/Routine";
@@ -19,7 +19,7 @@ const dateNow: Date = new Date()
 const dayNow = (dateNow.getDay() + 6) % 7
 
 const HubScreen: React.FC<Props> = ({ navigation, route }) => {
-  const isFirstTimeProp = route.params?.isFirstTime
+  const isFirstTimeProp = route.params?.isFirstTime ?? false
 
   const [dataArray, setDataArray] = useState<any[]>([])
   const [selectedDay, setSelectedDay] = useState<number>(0)

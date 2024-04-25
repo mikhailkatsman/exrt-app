@@ -15,7 +15,7 @@ import tourTextData from "@modules/TourTextData"
 type Props = NativeStackScreenProps<RootStackParamList, 'ProgramsList'>
 
 const ProgramsListScreen: React.FC<Props> = ({ navigation, route }) => {
-  const isFirstTimeProp: boolean | undefined = route.params?.isFirstTime
+  const isFirstTimeProp: boolean | undefined = route.params?.isFirstTime ?? false
 
   const [programsList, setProgramsList] = useState<any[]>([])
   const [searchString, setSearchString] = useState<string | null>(null)

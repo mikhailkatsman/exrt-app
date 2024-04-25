@@ -11,7 +11,7 @@ const ScreenWrapper: React.FC<Props> = ({ children }) => {
 
   return (
     <SafeAreaView 
-      className="flex-1 px-2 bg-custom-dark" 
+      className="flex-1 px-2 bg-custom-dark"
       style={{ paddingBottom: insets.bottom }}
     >
       {children}

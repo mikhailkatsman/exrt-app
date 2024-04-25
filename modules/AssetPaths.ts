@@ -5,6 +5,10 @@ export const icons = {
   SplashLogo: require('@icons/SplashLogo.png')
 }
 
+export const backgrounds = {
+  WelcomeScreenBackground: require('@images/background/welcome_screen_background.webp')
+}
+
 export const exerciseThumbnails = {
   thumbnail_placeholder: require('@exerciseThumbnails/thumbnail_placeholder.webp'),
   pushup: require('@exerciseThumbnails/pushup.webp'),

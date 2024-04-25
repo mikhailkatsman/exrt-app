@@ -3,10 +3,11 @@ import ScreenWrapper from "@components/common/ScreenWrapper"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
 import { useState } from "react"
-import { View, Text, TouchableOpacity } from "react-native"
+import { View, Text, TouchableOpacity, ImageBackground } from "react-native"
 import { Icon } from "@react-native-material/core"
 import SplashScreen from "@components/context/SplashScreen"
 import DB from "@modules/DB"
+import { backgrounds } from "@modules/AssetPaths"
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>
 
@@ -16,8 +17,15 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <>
       <SplashScreen isComponentLoaded={isLoaded} />
-      <ScreenWrapper>
-        <View className="flex-1 flex justify-center items-center" onLayout={() => setIsLoaded(true)}>
+      <ImageBackground
+        source={backgrounds.WelcomeScreenBackground}
+        className="flex-1 px-2"
+        resizeMode="cover"
+      >
+        <View 
+          className="flex-1 flex justify-center items-center" 
+          onLayout={() => setIsLoaded(true)}
+        >
           <Text className="text-custom-white font-BaiJamjuree-Bold text-4xl mb-10">
             WELCOME!
           </Text>
@@ -60,7 +68,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
             <Icon name="chevron-right" size={28} color="#74AC5D" />
           </TouchableOpacity>
         </BottomBarWrapper>
-      </ScreenWrapper>
+      </ImageBackground>
     </>
   )
 }

@@ -17,7 +17,7 @@ import TutorialEndSessionModalContainer from "@components/endSession/EndSessionM
 type Props = NativeStackScreenProps<RootStackParamList, 'EndSession'>
 
 const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
-  const isFirstTimeProp: boolean = route.params.isFirstTime
+  const isFirstTimeProp: boolean = route.params.isFirstTime ?? false
   const sessionId: number = route.params.sessionId
   const sessionName: string = route.params.sessionName
   const timeTotal: number = route.params.timeTotal

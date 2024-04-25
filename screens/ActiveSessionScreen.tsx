@@ -24,7 +24,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
   const sessionName: string = route.params.sessionName
   const phaseId: number = route.params.phaseId
   const programId: number = route.params.programId
-  const isFirstTimeProp: boolean = route.params.isFirstTime
+  const isFirstTimeProp: boolean = route.params.isFirstTime ?? false
 
   const sessionTimeRef = useRef<number>(0)
 

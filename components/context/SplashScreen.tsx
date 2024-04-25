@@ -38,7 +38,7 @@ const SplashScreen: React.FC<Props> = ({ isComponentLoaded }) => {
 				onLoad={loadHandler}
 				resizeMode="center"
 				className="scale-[1.055]"
-				source={icons['SplashLogo' as keyof typeof icons]}
+				source={icons.SplashLogo}
 				fadeDuration={0}
 			/>
 		</Animated.View>

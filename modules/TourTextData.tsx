@@ -19,7 +19,7 @@ const tourTextData: { [key: string]: TextSegment[] } = {
     { text: 'From this screen you can:\n' },
     { text: '-  View your active programs\n', bold: true },
     { text: '-  Check your weekly progress\n', bold: true },
-    { text: '-  Browse all available\n   programs or exercises', bold: true },
+    { text: '-  Browse all available\n   programs and exercises', bold: true },
   ],
   programsListScreenModalText: [
     { text: 'This is the ' },
