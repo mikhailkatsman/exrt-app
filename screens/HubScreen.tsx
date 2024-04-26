@@ -18,7 +18,7 @@ const screenWidth = Dimensions.get('screen').width
 const dateNow: Date = new Date()
 const dayNow = (dateNow.getDay() + 6) % 7
 
-const HubScreen: React.FC<Props> = ({ navigation, route }) => {
+const HubScreen: React.FC<Props> = ({ route }) => {
   const isFirstTimeProp = route.params?.isFirstTime ?? false
 
   const [dataArray, setDataArray] = useState<any[]>([])
@@ -114,7 +114,7 @@ const HubScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [isFocused])
 
   const CopilotCalendar = ({ copilot }: any) => (
-    <View className="w-full absolute h-20 z-0" {...copilot} />
+    <View className="w-full absolute h-24 z-50 border border-custom-green" {...copilot} />
   )
 
   return (

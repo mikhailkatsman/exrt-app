@@ -14,7 +14,7 @@ const Progress: React.FC<Props> = ({ dayIds, dayNow, screenWidth }) => {
 
 	return (
 		<TouchableOpacity
-			className="px-2 w-full bg-custom-dark"
+			className="px-2 w-full"
 			onPress={() => navigation.navigate('Hub', {
 				dayNow: dayNow, 
 				screenWidth: screenWidth 

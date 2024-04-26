@@ -101,51 +101,19 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const CopilotProgress = ({ copilot }: any) => (
-    <View {...copilot}>
-      <Progress
-        dayIds={dayIds}
-        dayNow={dayNow}
-        screenWidth={dimentions.width}
-      />
-    </View>
+    <View {...copilot} className="w-full h-[106px] mt-12 z-0" />
   )
 
   const CopilotActivePrograms = ({ copilot }: any) => (
-    <View {...copilot} className="flex-1">
-      <ActivePrograms
-        activePrograms={activePrograms}
-        screenWidth={dimentions.width}
-        onLayout={() => setIsLoaded(true)}
-      />
-    </View>
+    <View {...copilot} className="w-full flex-1 z-0 border" />
   )
 
   const CopilotProgramsAnimatedButton = ({ copilot }: any) => (
-    <View {...copilot} className="h-1/5">
-      <AnimatedNavigationButton
-        key={'button1'}
-        isOverlayActive={copilotActive || tutorialModalActive}
-        image={icons.ProgramsIcon}
-        textLine1="Browse"
-        textLine2="Programs"
-        route="ProgramsList"
-        delay={100}
-      />
-    </View>
+    <View {...copilot} className="w-full h-1/5 mb-4 z-0" />
   )
 
-  const CopilotExercisesAnimatedButton = () => (
-    <View className="h-1/5">
-      <AnimatedNavigationButton
-        key={'button2'}
-        isOverlayActive={copilotActive || tutorialModalActive}
-        image={icons.ExercisesIcon}
-        textLine1="Browse"
-        textLine2="Exercises"
-        route="ExercisesList"
-        delay={200}
-      />
-    </View>
+  const CopiloExercisesAnimatedButton = ({ copilot }: any) => (
+    <View {...copilot} className="w-full h-1/5 mb-4 z-0" />
   )
 
   return (
@@ -172,19 +140,54 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             <Icon name="cog" size={22} color="#F5F6F3" />
           </TouchableOpacity>
         </View>
-        <CopilotStep text={tourTextData.copilotStepText4} order={4} name="toHubScreen">
-          <CopilotProgress />
-        </CopilotStep>
-        <View className="h-8" />
-        <CopilotStep text={tourTextData.copilotStepText3} order={3} name="activePrograms">
-          <CopilotActivePrograms />
-        </CopilotStep>
+        {isFirstTimeProp && (
+          <View className="absolute top-0 left-2 w-full h-full">
+            <CopilotStep text={tourTextData.copilotStepText4} order={4} name="toHubScreen">
+              <CopilotProgress />
+            </CopilotStep>
+            <CopilotStep text={tourTextData.copilotStepText3} order={3} name="activePrograms">
+              <CopilotActivePrograms />
+            </CopilotStep>
+            <CopilotStep text={tourTextData.copilotStepText1} order={1} name="toBrowseProgramsScreen">
+              <CopilotProgramsAnimatedButton />
+            </CopilotStep>
+            <CopiloExercisesAnimatedButton />
+          </View>
+        )}
+        <Progress
+          dayIds={dayIds}
+          dayNow={dayNow}
+          screenWidth={dimentions.width}
+        />
         <View className="h-4" />
-        <CopilotStep text={tourTextData.copilotStepText1} order={1} name="toBrowseProgramsScreen">
-          <CopilotProgramsAnimatedButton />
-        </CopilotStep>
+        <ActivePrograms
+          activePrograms={activePrograms}
+          screenWidth={dimentions.width}
+          onLayout={() => setIsLoaded(true)}
+        />
+        <View className="h-1/5">
+          <AnimatedNavigationButton
+            key={'button1'}
+            isOverlayActive={copilotActive || tutorialModalActive}
+            image={icons.ProgramsIcon}
+            textLine1="Browse"
+            textLine2="Programs"
+            route="ProgramsList"
+            delay={100}
+          />
+        </View>
         <View className="h-4" />
-        <CopilotExercisesAnimatedButton />
+        <View className="h-1/5">
+          <AnimatedNavigationButton
+            key={'button2'}
+            isOverlayActive={copilotActive || tutorialModalActive}
+            image={icons.ExercisesIcon}
+            textLine1="Browse"
+            textLine2="Exercises"
+            route="ExercisesList"
+            delay={200}
+          />
+        </View>
         <View className="h-5" />
       </ScreenWrapper>
     </>

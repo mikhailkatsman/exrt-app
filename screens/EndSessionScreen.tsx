@@ -8,7 +8,6 @@ import DB from "@modules/DB";
 import ScreenWrapper from "@components/common/ScreenWrapper";
 import BottomBarWrapper from "@components/common/BottomBarWrapper";
 import TutorialModalContainer from "@components/common/TutorialModalContainer";
-import EndSessionModalContainer from "@components/endSession/EndSessionModalContainer";
 import { CopilotStep, useCopilot } from "react-native-copilot";
 import { useIsFocused } from "@react-navigation/native";
 import tourTextData from "@modules/TourTextData";
