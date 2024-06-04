@@ -1,6 +1,8 @@
-import * as SQLite from 'expo-sqlite'
+import * as SQLite from 'expo-sqlite/legacy'
 import * as FileSystem from 'expo-file-system'
 import { Asset } from 'expo-asset'
+import axios from 'axios'
+import { API_DATA_URL } from 'config'
 
 class DB {
   private db: SQLite.WebSQLDatabase | null
@@ -41,10 +43,89 @@ class DB {
 
       this.db = SQLite.openDatabase(internalDbName)
       this.initialized = true
+
+      await this.syncWithRemoteServer()
     } catch (error) {
       console.error('Error initializing database:', error)
     }
   }
+
+
+  public async syncWithRemoteServer(): Promise<void> {
+    if (!this.initialized || !this.db) {
+      console.error('Database not initialized')
+      return
+    }
+
+    try {
+      const { exercisesVersion, programsVersion } = await this.fetchVersions()
+
+      const response = await axios.post(API_DATA_URL, {
+        exercisesVersion, programsVersion
+      })
+      
+      await this.seedDatabase(response.data)
+    } catch (error) {
+      console.error('Error syncing with remote server: ', error)
+    }
+  }
+
+  private async fetchVersions(): Promise<{ exercisesVersion: Number, programsVersion: Number }> {
+    return new Promise((resolve, reject) => {
+      this.db!.transaction(tx => {
+        tx.executeSql(
+          `SELECT value FROM metadata WHERE key IN ('exercises_version', 'programs_version')`,
+          [],
+          (_, result) => resolve({ exercisesVersion: result.rows.item(0).value, programsVersion: result.rows.item(1).value }),
+          (_, error) => {
+            console.error(`Error fetching versions:`, error)
+            reject(error)
+            return true
+          }
+        )
+      })
+    })
+  }
+
+  private async seedDatabase(data: any): Promise<void> {
+    if (data.exercises.length > 0) {
+      const exerciseQuery = `
+        INSERT INTO exercises (id, name, type, style, difficulty, description, execution, thumbnail, video, background)
+        VALUES ${data.exercises.map(() => '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').join(', ')}
+      `
+
+      const exerciseParams = data.exercises.flatMap((exercise: any) => [
+        exercise.id,
+        exercise.name,
+        exercise.type,
+        exercise.style,
+        exercise.difficulty,
+        exercise.description,
+        exercise.execution,
+        exercise.thumbnail,
+        exercise.video,
+        exercise.background,
+      ])
+
+      // execute exercise seed query
+
+      const muscleGroupQuery = `
+        INSERT INTO exercise_muscle_groups (exercise_id, muscle_group_id, load)
+        VALUES ${data.exercises.flatMap((exercise: any) => exercise.muscle_groups.map(() => '(?, ?, ?)')).join(', ')}
+      `
+      const muscleGroupParams = data.exercises.flatMap((exercise: any) =>
+        exercise.muscle_groups.flatMap((muscleGroup: any) => [exercise.id, muscleGroup.id, muscleGroup.load])
+      )
+
+      // execute muscle groups seed query
+    }
+
+    if (data.programs.length > 0) {
+
+    }
+    
+    return console.log('SEEDING FINISHED')
+  } 
 
   public async setResetDate(): Promise<void> {
     if (!this.initialized || !this.db) {

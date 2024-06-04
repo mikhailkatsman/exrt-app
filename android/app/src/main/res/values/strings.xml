@@ -2,4 +2,5 @@
   <string name="app_name">exrt</string>
   <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
   <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
+  <string name="heroku_url">https://sheltered-atoll-85981-1e8d375a9ba9.herokuapp.com/data</string>
 </resources>

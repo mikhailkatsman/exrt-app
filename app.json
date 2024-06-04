@@ -44,11 +44,13 @@
     "plugins": [
       "expo-image-picker",
       [
-      "expo-notifications",
+        "expo-notifications",
         {
           "icon": "./assets/icon.png"
         }
-      ]
+      ],
+      "expo-asset",
+      "expo-font"
     ],
     "extra": {
       "eas": {
