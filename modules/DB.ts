@@ -58,10 +58,10 @@ class DB {
     }
 
     try {
-      const { exercisesVersion, programsVersion } = await this.fetchVersions()
+      const { userExercisesVersion, userProgramsVersion } = await this.fetchVersions()
 
       const response = await axios.post(API_DATA_URL, {
-        exercisesVersion, programsVersion
+        userExercisesVersion, userProgramsVersion
       })
       
       await this.seedDatabase(response.data)
@@ -70,13 +70,16 @@ class DB {
     }
   }
 
-  private async fetchVersions(): Promise<{ exercisesVersion: Number, programsVersion: Number }> {
+  private async fetchVersions(): Promise<{ userExercisesVersion: Number, userProgramsVersion: Number }> {
     return new Promise((resolve, reject) => {
       this.db!.transaction(tx => {
         tx.executeSql(
           `SELECT value FROM metadata WHERE key IN ('exercises_version', 'programs_version')`,
           [],
-          (_, result) => resolve({ exercisesVersion: result.rows.item(0).value, programsVersion: result.rows.item(1).value }),
+          (_, result) => resolve({
+            userExercisesVersion: parseInt(result.rows.item(0).value), 
+            userProgramsVersion: parseInt(result.rows.item(1).value)
+          }),
           (_, error) => {
             console.error(`Error fetching versions:`, error)
             reject(error)
@@ -88,13 +91,15 @@ class DB {
   }
 
   private async seedDatabase(data: any): Promise<void> {
-    if (data.exercises.length > 0) {
-      const exerciseQuery = `
-        INSERT INTO exercises (id, name, type, style, difficulty, description, execution, thumbnail, video, background)
-        VALUES ${data.exercises.map(() => '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').join(', ')}
-      `
+    const exercises = data.exercises
+    const programs = data.programs
 
-      const exerciseParams = data.exercises.flatMap((exercise: any) => [
+    if (exercises.length > 0) {
+      const exerciseQuery = `
+        INSERT INTO exercises (id, name, type, style, difficulty, description, execution, thumbnail, video, background, custom)
+        VALUES ${exercises.map(() => '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)').join(', ')}
+      `
+      const exerciseParams = exercises.flatMap((exercise: any) => [
         exercise.id,
         exercise.name,
         exercise.type,
@@ -106,25 +111,108 @@ class DB {
         exercise.video,
         exercise.background,
       ])
-
-      // execute exercise seed query
+      await new Promise(resolve => this.sql(exerciseQuery, exerciseParams, (_, result) => resolve(result)))
 
       const muscleGroupQuery = `
         INSERT INTO exercise_muscle_groups (exercise_id, muscle_group_id, load)
-        VALUES ${data.exercises.flatMap((exercise: any) => exercise.muscle_groups.map(() => '(?, ?, ?)')).join(', ')}
+        VALUES ${exercises.flatMap((exercise: any) => exercise.muscle_groups.map(() => '(?, ?, ?)')).join(', ')}
       `
-      const muscleGroupParams = data.exercises.flatMap((exercise: any) =>
+      const muscleGroupParams = exercises.flatMap((exercise: any) =>
         exercise.muscle_groups.flatMap((muscleGroup: any) => [exercise.id, muscleGroup.id, muscleGroup.load])
       )
+      await new Promise(resolve => this.sql(muscleGroupQuery, muscleGroupParams, (_, result) => resolve(result)))
 
-      // execute muscle groups seed query
+      const setExercisesVersionQuery = `UPDATE metadata SET value = ? WHERE key = 'exercises_version'`
+      await new Promise(resolve => this.sql(setExercisesVersionQuery, [data.versions.exercises_version], (_, result) => resolve(result)))
+
+      console.log('EXERCISES SEEDING COMPLETE')
     }
 
-    if (data.programs.length > 0) {
+    if (programs.length > 0) {
+      const programQuery = `
+        INSERT INTO programs (id, name, description, thumbnail, difficulty, type, status, custom)
+        VALUES ${programs.map(() => "(?, ?, ?, ?, ?, ?, 'inactive', 0)").join(', ')}
+      `
+      const programParams = programs.flatMap((program: any) => [
+        program.id,
+        program.name,
+        program.description,
+        program.thumbnail,
+        program.difficulty,
+        program.type,
+      ])
+      await new Promise(resolve => this.sql(programQuery, programParams, (_, result) => resolve(result)))
 
+      const phaseQuery = `
+        INSERT INTO phases (id, name, description, status, custom)
+        VALUES ${programs.flatMap((program: any) => program.phases.map(() => "(?, ?, ?, 'upcoming', 0)")).join(', ')}
+      `
+      const phaseParams = programs.flatMap((program: any) =>
+        program.phases.flatMap((phase: any) => [phase.id, phase.name, phase.description])
+      )
+      await new Promise(resolve => this.sql(phaseQuery, phaseParams, (_, result) => resolve(result)))
+
+      const programPhasesQuery = `
+        INSERT INTO program_phases (program_id, phase_id, phase_order)
+        VALUES ${programs.flatMap((program: any) => 
+          program.phases.map((phase: any, index: number) => `(${program.id}, ${phase.id}, ${index + 1})`))
+        .join(', ')}
+      `
+      await new Promise(resolve => this.sql(programPhasesQuery, [], (_, result) => resolve(result)))
+
+      const sessions = programs
+        .flatMap((program: any) => program.phases)
+        .flatMap((phase: any) => phase.sessions)
+        .map((session: any) => ({ id: session.id, name: session.name, exercises: session.exercises }))
+      const sessionQuery = `
+        INSERT INTO sessions (id, name, status, custom)
+        VALUES ${sessions.map(() => "(?, ?, 'upcoming', 0)").join(', ')}
+      `
+      const sessionParams = sessions.flatMap((session: any) => [session.id, session.name])
+      await new Promise(resolve => this.sql(sessionQuery, sessionParams, (_, result) => resolve(result)))
+
+      const phaseSessionQuery = `
+        INSERT INTO phase_session_instances (day_id, session_id, phase_id)
+        VALUES ${programs.flatMap((program: any) => 
+          program.phases.flatMap((phase: any) => 
+            phase.sessions.map((session: any) => 
+              `(${session.day_id}, ${session.id}, ${phase.id})`)))
+        .join(', ')}
+      `
+      await new Promise(resolve => this.sql(phaseSessionQuery, [], (_, result) => resolve(result)))
+
+      const exerciseInstances = sessions.flatMap((session: any) => session.exercises)
+      const exerciseInstancesQuery = `
+        INSERT INTO exercise_instances (id, exercise_id, sets, reps, minuteDuration, secondDuration, weight)
+        VALUES ${exerciseInstances.map(() => "(?, ?, ?, ?, ?, ?, ?)").join(', ')}
+      `
+      const exerciseInstancesParams = exerciseInstances.flatMap((instance: any) => [
+        instance.id,
+        instance.exercise_id,
+        instance.sets,
+        instance.reps,
+        instance.minuteDuration,
+        instance.secondDuration,
+        instance.weight
+      ])
+      await new Promise(resolve => this.sql(exerciseInstancesQuery, exerciseInstancesParams, (_, result) => resolve(result)))
+      
+      const sessionExercisesQuery = `
+        INSERT INTO session_exercise_instances (session_id, exercise_instance_id, instance_order)
+        VALUES ${sessions.flatMap((session: any) => session.exercises.map(() => "(?, ?, ?)")).join(', ')}
+      `
+      const sessionExercisesParams = sessions.flatMap((session: any) =>
+        session.exercises.flatMap((exercise: any, index: number) => 
+          [session.id, exercise.id, index + 1]))
+      await new Promise(resolve => this.sql(sessionExercisesQuery, sessionExercisesParams, (_, result) => resolve(result)))
+
+      const setProgramsVersionQuery = `UPDATE metadata SET value = ? WHERE key = 'programs_version'`
+      await new Promise(resolve => this.sql(setProgramsVersionQuery, [data.versions.programs_version], (_, result) => resolve(result)))
+      
+      console.log('PROGRAMS SEEDING COMPLETE')
     }
-    
-    return console.log('SEEDING FINISHED')
+
+    return console.log('SEEDING CHECK COMPLETE')
   } 
 
   public async setResetDate(): Promise<void> {
