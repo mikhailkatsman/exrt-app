@@ -108,7 +108,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           Tutorials:
         </Text>
         <View className="flex flex-row justify-between items-start mb-8">
-          <View className="w-2/3">
+          <View className="flex-1">
             <Text className="text-custom-white font-BaiJamjuree-Regular text-lg">
               Basic Operations
             </Text>
@@ -117,7 +117,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
             </Text>
           </View>
           <TouchableOpacity
-            className="px-3 w-1/3 rounded-2xl border-2 border-custom-green flex-row justify-between items-center"
+            className="pl-3 pr-1 w-[100px] rounded-2xl border-2 border-custom-green flex-row justify-between items-center"
             onPress={() => {
               navigation.replace('Home', { isFirstTime: true })
             }}
@@ -130,7 +130,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <View className="flex flex-row justify-between items-start mb-8">
-          <View className="w-2/3">
+          <View className="flex-1">
             <Text className="text-custom-white font-BaiJamjuree-Regular text-lg">
               Custom Programs
             </Text>
@@ -139,7 +139,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
             </Text>
           </View>
           <TouchableOpacity
-            className="px-3 w-1/3 rounded-2xl border-2 border-custom-green flex-row justify-between items-center"
+            className="pl-3 pr-1 w-[100px] rounded-2xl border-2 border-custom-green flex-row justify-between items-center"
             onPress={() => {
               navigation.replace('Home', { isFirstTime: true })
             }}

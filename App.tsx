@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'react-native'
+import { NativeWindStyleSheet } from 'nativewind'
 import DB from '@modules/DB'
 import { initNotificationsPermissionsCheck } from '@modules/Notifications'
 import { IconComponentProvider } from '@react-native-material/core'

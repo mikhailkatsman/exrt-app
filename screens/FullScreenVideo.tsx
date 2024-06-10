@@ -27,7 +27,7 @@ const FullScreenVideoScreen: React.FC<Props> = ({ route, navigation }) => {
       <Animated.View className='flex-1' style={videoStyle}>
         <Video 
           className="h-full w-full"
-          source={videoFiles[videoSource as keyof typeof videoFiles]}
+          source={videoFiles[videoSource as keyof typeof videoFiles] || { uri: videoSource }}
           resizeMode={"cover" as ResizeMode}
           isMuted={true}
           shouldPlay={true}

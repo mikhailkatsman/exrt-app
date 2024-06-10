@@ -165,6 +165,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           screenWidth={dimentions.width}
           onLayout={() => setIsLoaded(true)}
         />
+        <View className="h-4" />
         <View className="h-1/5">
           <AnimatedNavigationButton
             key={'button1'}

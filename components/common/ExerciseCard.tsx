@@ -84,7 +84,7 @@ const ExerciseCard: React.FC<Props> = ({ id, selectedId, setSelectedId, name, th
       <Image
         className={`w-1/6 h-full rounded-lg ${selectedId === id || !selectedId ? '' : 'opacity-50'}`}
         resizeMode="contain" 
-        source={exerciseThumbnails[thumbnail]} 
+        source={exerciseThumbnails[thumbnail] || { uri: thumbnail }} 
       />
       <View className="w-2/3 pl-3 flex-col justify-center">
         <Text className={`${selectedId === id || !selectedId ? 'text-custom-white' : 'text-custom-grey'} font-BaiJamjuree-Regular text-lg`}>

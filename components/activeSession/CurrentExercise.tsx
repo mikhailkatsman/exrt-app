@@ -63,7 +63,7 @@ const CurrentExercise: React.FC<Props> = ({
 					<Image
 						className="absolute h-full w-full top-0 rounded-2xl"
 						resizeMode="cover"
-						source={exerciseBackgrounds[background]} 
+						source={exerciseBackgrounds[background] || { uri: background }} 
 					/>
 					<LinearGradient 
 						className="absolute h-full w-full top-0"

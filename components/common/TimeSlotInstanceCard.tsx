@@ -27,7 +27,7 @@ const TimeSlotInstanceCard: React.FC<Props> = ({
       <Image
         className="w-[22%] h-full rounded-xl"
         resizeMode="contain" 
-        source={exerciseThumbnails[thumbnail]} 
+        source={exerciseThumbnails[thumbnail] || { uri: thumbnail }} 
       />
       <View className="w-[75%] pl-2 flex-col justify-center">
         <Text className="mb-1 text-custom-white text-xs font-BaiJamjuree-Bold">{name.charAt(0).toUpperCase() + name.slice(1)}</Text>

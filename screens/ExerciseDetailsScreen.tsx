@@ -246,7 +246,7 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
           <Image
             className="h-96 w-full mb-8 rounded-2xl"
             resizeMode="cover"
-            source={exerciseBackgrounds[exerciseData.background]} 
+            source={exerciseBackgrounds[exerciseData.background] || { uri: exerciseData.background }} 
           />
           <TouchableOpacity
             className="absolute top-3 right-6"

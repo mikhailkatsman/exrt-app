@@ -70,7 +70,6 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         copilot.copilotEvents.off('stop', () => setTutorialActiveSessionModalActive(true))
       }
     }
-
   }, [copilotActive, copilot, isFirstTime])
 
   useEffect(() => {

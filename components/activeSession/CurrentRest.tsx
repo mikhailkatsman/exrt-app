@@ -78,7 +78,7 @@ const CurrentRest: React.FC<Props> = ({ duration, endRest, screenWidth }) => {
 				/>
 				<Text className={`absolute top-[43%]
 					text-8xl font-BaiJamjuree-Light
-					${remaining> 10 ? 'text-custom-white' : 'text-custom-red'}
+					${remaining > 10 ? 'text-custom-white' : 'text-custom-red'}
 				`}
 				>
 					{remaining.toString()}
@@ -96,7 +96,7 @@ const CurrentRest: React.FC<Props> = ({ duration, endRest, screenWidth }) => {
 						- 10"
 					</Text>
 				</TouchableOpacity>
-        <View className="w-3" />
+				<View className="w-3" />
 				<TouchableOpacity className="flex-1 items-center 
 					justify-center rounded-xl border-2 border-custom-white"
 					onPress={() => {
