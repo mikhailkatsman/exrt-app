@@ -3,7 +3,7 @@ import { Icon } from "@react-native-material/core"
 import { LinearGradient } from "expo-linear-gradient"
 import { Image, Text, View, TouchableOpacity } from "react-native"
 import Animated, { Easing, FadeOut, useSharedValue, withTiming, withDelay, useAnimatedStyle } from "react-native-reanimated"
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useNavigation } from "@react-navigation/native"
 import ActivityTimer from "./ActivityTimer"
 
@@ -49,7 +49,7 @@ const CurrentExercise: React.FC<Props> = ({
 	})
 
 	return (
-		<Animated.View style={animatedStyle} exiting={FadeOut} className="w-full h-full">
+		<Animated.View style={animatedStyle} className="w-full h-full">
 			{showTimer ? (
 				<ActivityTimer 
 					duration={totalTimeInSeconds} 

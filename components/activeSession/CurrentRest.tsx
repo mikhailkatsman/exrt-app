@@ -66,11 +66,7 @@ const CurrentRest: React.FC<Props> = ({ duration, endRest, screenWidth }) => {
 	}, [remaining])
 
 	return (
-		<Animated.View
-			className="flex-1"
-			exiting={FadeOut}
-			style={animatedStyle}
-		>
+		<Animated.View className="flex-1" style={animatedStyle}>
 			<View className="flex-1 justify-center items-center">
 				<RemainingTimeIndicator 
 					totalSeconds={total}

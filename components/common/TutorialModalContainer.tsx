@@ -1,10 +1,6 @@
 import { ReactNode } from "react"
 import { View, TouchableOpacity, Text } from "react-native"
-import Animated, {
-	useAnimatedStyle, 
-	useSharedValue, 
-	withTiming 
-} from "react-native-reanimated"
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 
 type TextSegment = {
   text?: string,

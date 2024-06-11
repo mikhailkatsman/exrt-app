@@ -1,10 +1,5 @@
-
 import { View, TouchableOpacity, Text } from "react-native"
-import Animated, {
-	useAnimatedStyle, 
-	useSharedValue, 
-	withTiming 
-} from "react-native-reanimated"
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 
 type Props = { 
   active: boolean,
