@@ -119,7 +119,14 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <TouchableOpacity
             className="pl-3 pr-1 w-[100px] rounded-2xl border-2 border-custom-green flex-row justify-between items-center"
             onPress={() => {
-              navigation.replace('Home', { isFirstTime: true })
+              navigation.reset({
+                routes: [
+                  {
+                    name: 'Home',
+                    params: { isFirstTime: true }
+                  },
+                ],
+              })
             }}
             activeOpacity={0.6}
           >
@@ -141,7 +148,14 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <TouchableOpacity
             className="pl-3 pr-1 w-[100px] rounded-2xl border-2 border-custom-green flex-row justify-between items-center"
             onPress={() => {
-              navigation.replace('Home', { isFirstTime: true })
+              navigation.reset({
+                routes: [
+                  {
+                    name: 'Home',
+                    params: { isFirstTime: true }
+                  },
+                ],
+              })
             }}
             activeOpacity={0.6}
           >

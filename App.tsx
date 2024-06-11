@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'react-native'
-import { NativeWindStyleSheet } from 'nativewind'
 import DB from '@modules/DB'
 import { initNotificationsPermissionsCheck } from '@modules/Notifications'
 import { IconComponentProvider } from '@react-native-material/core'
@@ -37,6 +36,25 @@ import FullScreenVideoScreen from '@screens/FullScreenVideo'
 import EndSessionScreen from '@screens/EndSessionScreen'
 import WelcomeScreen from '@screens/WelcomeScreen'
 import CopilotCustomTooltip from '@components/common/CopilotCustomTooltip'
+
+const getScreenNamesFromState = (state: any) => {
+  if (!state) return [];
+
+  const screensData: any[] = [];
+  if (state.routes) {
+    state.routes.forEach((route: any) => {
+      const screenData = {
+        name: route.name,
+        props: route.params,
+      };
+      screensData.push(screenData);
+      if (route.state) {
+        screensData.push(...getScreenNamesFromState(route.state));
+      }
+    });
+  }
+  return screensData;
+};
 
 export type RootStackParamList = {
   Welcome: undefined,
@@ -138,6 +156,11 @@ const App: React.FC = () => {
 
   const Stack = createNativeStackNavigator<RootStackParamList>()
 
+  const handleNavigationStateChange = (state: any) => {
+    const screenNames = getScreenNamesFromState(state);
+    console.log('Navigation Tree:', JSON.stringify(screenNames, null, 2));
+  };
+
   useEffect(() => {
 
     const initializeDatabase = async () => {
@@ -192,7 +215,7 @@ const App: React.FC = () => {
   return isInitialized ? (
     <GestureHandlerRootView className='flex-1'>
       <SafeAreaProvider>
-        <NavigationContainer>
+        <NavigationContainer onStateChange={handleNavigationStateChange}>
           <IconComponentProvider IconComponent={MaterialCommunityIcons}>
             <CopilotProvider
               overlay='svg'

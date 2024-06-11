@@ -7,7 +7,7 @@ type Props = {
 	screenWidth: number,
 }
 
-const Progress: React.FC<Props> = ({ dayIds, dayNow, screenWidth }) => {
+const Progress: React.FC<Props> = ({ dayIds, dayNow }) => {
 	const week: string[] = ["M", "T", "W", "T", "F", "S", "S"]
 
 	const navigation = useNavigation()
@@ -15,10 +15,7 @@ const Progress: React.FC<Props> = ({ dayIds, dayNow, screenWidth }) => {
 	return (
 		<TouchableOpacity
 			className="px-2 w-full"
-			onPress={() => navigation.navigate('Hub', {
-				dayNow: dayNow, 
-				screenWidth: screenWidth 
-			})}
+			onPress={() => navigation.navigate('Hub')}
 			activeOpacity={0.6}
 		>
 			<Text className="h-8 mb-1 text-custom-white font-BaiJamjuree-BoldItalic">Continue Your Progress</Text>

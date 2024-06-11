@@ -29,8 +29,12 @@ const tourNavigationMap = {
       isFirstTime: true,
     },
   },
-  toEditPhaseScreen: { screenName: "EditPhase" },
-  toEditSessionScreen: { screenName: "EditSession" },
+  toEditPhaseScreen: { 
+    screenName: "EditPhase"
+  },
+  toEditSessionScreen: {
+    screenName: "EditSession"
+  },
   toBrowseProgramsScreen: {
     screenName: "ProgramsList",
     screenProps: {

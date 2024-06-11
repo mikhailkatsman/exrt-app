@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native"
-// import { getLocales } from 'react-native-localize';
 import { View, Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Calendar from "@components/calendar/Calendar";
@@ -67,8 +66,6 @@ const HubScreen: React.FC<Props> = ({ route }) => {
         })
 
         setDataArray(resultArray)
-
-
       })
   }
 
@@ -114,7 +111,7 @@ const HubScreen: React.FC<Props> = ({ route }) => {
   }, [isFocused])
 
   const CopilotCalendar = ({ copilot }: any) => (
-    <View className="w-full absolute h-24 z-50 border border-custom-green" {...copilot} />
+    <View className="w-full absolute h-24 z-50" {...copilot} />
   )
 
   return (

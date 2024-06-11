@@ -275,7 +275,7 @@ const EndSessionScreen: React.FC<Props> = ({ navigation, route }) => {
 
     setTutorialEndSessionModalActive(false)
     setTimeout(() => {
-      navigation.replace('Home', { isFirstTime: false })
+      navigation.reset({ routes: [{ name: 'Home' }] })
     }, 150)
   }
 

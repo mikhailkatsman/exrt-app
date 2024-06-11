@@ -61,12 +61,10 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [isFocused])
 
   useEffect(() => {
-    if (isLoaded && isFirstTimeProp) {
-      if (copilotStep === 'toBrowseProgramsScreen') {
-        setTimeout(() => {
-          setTutorialModalActive(true)
-        }, 400)
-      }
+    if (isLoaded && isFirstTimeProp && copilotStep === 'toBrowseProgramsScreen') {
+      setTimeout(() => {
+        setTutorialModalActive(true)
+      }, 400)
     }
   }, [isLoaded])
 
