@@ -68,6 +68,7 @@ export type RootStackParamList = {
   ExercisesList: undefined,
   ExerciseDetails: {
     exerciseId: number,
+    fromActiveSession: boolean | undefined
   },
   Hub: {
     isFirstTime: boolean,

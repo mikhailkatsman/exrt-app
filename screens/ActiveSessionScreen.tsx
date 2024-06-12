@@ -43,6 +43,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
       background: keyof typeof exerciseBackgrounds,
       video: keyof typeof videoFiles,
       description: string,
+      execution: string,
       style: string,
       type: string
     } | number
@@ -99,6 +100,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
              exercises.name AS name,
              exercises.background AS background,
              exercises.style AS style,
+             exercises.execution AS execution,
              exercises.video AS video,
              exercises.description AS description,
              exercises.type AS type
@@ -118,6 +120,7 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
         background: row.background,
         video: row.video,
         style: row.style,
+        execution: row.execution.split('\n'),
         type: row.type,
         description: row.description,
         sets: row.sets,

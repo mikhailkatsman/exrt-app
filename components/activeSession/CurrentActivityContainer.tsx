@@ -7,8 +7,10 @@ type Props = {
 	activity: { 
 		type: string, 
 		data: {
+			exerciseId: number,
 			name: string,
 			style: string,
+			execution: string[],
 			totalTimeInSeconds: number,
 			background: keyof typeof exerciseBackgrounds,
 			video: keyof typeof videoFiles,
@@ -33,8 +35,10 @@ const CurrentActivityContainer: React.FC<Props> = ({
 		<View className="flex-1 mt-2 rounded-xl object-contain">
 			{activity.type === 'exercise' ? 
 				<CurrentExercise 
+					exerciseId={activity.data?.exerciseId}
 					name={activity.data?.name}
 					style={activity.data?.style}
+					execution={activity?.data.execution}
 					totalTimeInSeconds={activity.data?.totalTimeInSeconds}
 					background={activity.data?.background}
 					video={activity.data?.video}

@@ -14,8 +14,9 @@ const windowWidth = Dimensions.get('window').width - 16
 
 const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const exerciseId = route.params.exerciseId
+  const fromActiveSession = route.params.fromActiveSession ?? false
 
-  const [selectedTab, setSelectedTab] = useState<number>(0)
+  const [selectedTab, setSelectedTab] = useState<number>(fromActiveSession ? 1 : 0)
   const [isTabPressed, setIsTabPressed] = useState<boolean>(false)
   const [exerciseData, setExerciseData] = useState<{
     name: string,
@@ -24,8 +25,8 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
     difficulty: number,
     description: string,
     execution: string[],
-    video: keyof typeof videoFiles,
-    background: keyof typeof exerciseBackgrounds,
+    video: keyof typeof videoFiles | string,
+    background: keyof typeof exerciseBackgrounds | string,
     custom: number
   }>({
     name: '',
@@ -46,7 +47,7 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const scrollRef = useRef<ScrollView>(null)
 
-  const selectedTabAnim = useSharedValue(0)
+  const selectedTabAnim = useSharedValue(fromActiveSession ? 1 : 0)
 
   const selectedTabStyle = useAnimatedStyle(() => {
     const x = selectedTabAnim.value * (windowWidth - 20) / 3
