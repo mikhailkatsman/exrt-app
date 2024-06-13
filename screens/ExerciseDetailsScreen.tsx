@@ -16,7 +16,7 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const exerciseId = route.params.exerciseId
   const fromActiveSession = route.params.fromActiveSession ?? false
 
-  const [selectedTab, setSelectedTab] = useState<number>(fromActiveSession ? 1 : 0)
+  const [selectedTab, setSelectedTab] = useState<number>(0)
   const [isTabPressed, setIsTabPressed] = useState<boolean>(false)
   const [exerciseData, setExerciseData] = useState<{
     name: string,
@@ -47,7 +47,7 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const scrollRef = useRef<ScrollView>(null)
 
-  const selectedTabAnim = useSharedValue(fromActiveSession ? 1 : 0)
+  const selectedTabAnim = useSharedValue(0)
 
   const selectedTabStyle = useAnimatedStyle(() => {
     const x = selectedTabAnim.value * (windowWidth - 20) / 3
@@ -73,6 +73,7 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
     const currentIndex = Math.round(scrollPosition / windowWidth)
     
     if (currentIndex !== selectedTab) {
+      scrollRef.current?.scrollTo({ x: windowWidth, animated: false });
       handleTabPress(currentIndex)
     }
   }
@@ -133,6 +134,11 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   useEffect(() => {
     fetchMuscleGroups()
     fetchExerciseData()
+
+    if(fromActiveSession) {
+      selectedTabAnim.value = withTiming(1, { duration: 0 });
+      scrollRef.current?.scrollTo({ x: windowWidth, animated: false });
+    }
   }, [])
 
   const renderDifficulty = () => {
@@ -244,11 +250,16 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
           fadingEdgeLength={100}
           showsVerticalScrollIndicator={false}
         >
-          <Image
-            className="h-96 w-full mb-8 rounded-2xl"
-            resizeMode="cover"
-            source={exerciseBackgrounds[exerciseData.background] || { uri: exerciseData.background }} 
-          />
+          {exerciseData.background &&
+            <Image
+              className="h-96 w-full mb-8 rounded-2xl"
+              resizeMode="cover"
+              source={
+                exerciseBackgrounds[exerciseData.background as keyof typeof exerciseBackgrounds] || 
+                { uri: exerciseData.background }
+              } 
+            />
+          }
           <TouchableOpacity
             className="absolute top-3 right-6"
             onPress={() => navigation.navigate('FullScreenVideo', { videoSource: exerciseData.video })}
