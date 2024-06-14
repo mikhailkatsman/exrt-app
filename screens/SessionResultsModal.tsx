@@ -6,9 +6,9 @@ type Props = NativeStackScreenProps<RootStackParamList, 'SessionResultsModal'>
 
 const SessionResultsModal: React.FC<Props> = ({ navigation, route }) => {
   return (
-    <ModalContainer>
+  <ModalContainer>
 
-    </ModalContainer>
+  </ModalContainer>
   )
 }
 

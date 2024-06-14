@@ -42,16 +42,16 @@ const getScreenNamesFromState = (state: any) => {
 
   const screensData: any[] = [];
   if (state.routes) {
-    state.routes.forEach((route: any) => {
-      const screenData = {
-        name: route.name,
-        props: route.params,
-      };
-      screensData.push(screenData);
-      if (route.state) {
-        screensData.push(...getScreenNamesFromState(route.state));
-      }
-    });
+  state.routes.forEach((route: any) => {
+    const screenData = {
+    name: route.name,
+    props: route.params,
+    };
+    screensData.push(screenData);
+    if (route.state) {
+    screensData.push(...getScreenNamesFromState(route.state));
+    }
+  });
   }
   return screensData;
 };
@@ -59,95 +59,95 @@ const getScreenNamesFromState = (state: any) => {
 export type RootStackParamList = {
   Welcome: undefined,
   Home: {
-    isFirstTime: boolean,
-    copilotStep: string | undefined,
+  isFirstTime: boolean,
+  copilotStep: string | undefined,
   } | undefined,
   ProgramsList: {
-    isFirstTime: boolean,
+  isFirstTime: boolean,
   } | undefined,
   ExercisesList: undefined,
   ExerciseDetails: {
-    exerciseId: number,
-    fromActiveSession: boolean | undefined
+  exerciseId: number,
+  fromActiveSession: boolean | undefined
   },
   Hub: {
-    isFirstTime: boolean,
+  isFirstTime: boolean,
   } | undefined,
   Settings: undefined,
   EditSession: {
-    dayId: number,
-    sessionId: number,
-    sessionName: string,
-    sessionCustom: number,
-    newSession: boolean,
-    phaseId: number,
+  dayId: number,
+  sessionId: number,
+  sessionName: string,
+  sessionCustom: number,
+  newSession: boolean,
+  phaseId: number,
   },
   NewInstance: {
-    sessionId: number,
+  sessionId: number,
   },
   EditProgram: {
-    programId: number,
-    newProgram: boolean,
+  programId: number,
+  newProgram: boolean,
   },
   EditPhase: {
-    phaseId: number,
-    programId: number,
-    phaseName: string,
-    phaseCustom: number,
-    phaseOrder: number,
-    phaseStatus: string,
-    newPhase: boolean,
+  phaseId: number,
+  programId: number,
+  phaseName: string,
+  phaseCustom: number,
+  phaseOrder: number,
+  phaseStatus: string,
+  newPhase: boolean,
   },
   GetReady: {
-    sessionId: number,
-    sessionName: string,
-    phaseId: number,
-    programId: number,
-    isFirstTime: boolean | undefined,
+  sessionId: number,
+  sessionName: string,
+  phaseId: number,
+  programId: number,
+  isFirstTime: boolean | undefined,
   },
   ActiveSession: {
-    sessionId: number,
-    sessionName: string,
-    phaseId: number,
-    programId: number,
-    isFirstTime: boolean,
+  sessionId: number,
+  sessionName: string,
+  phaseId: number,
+  programId: number,
+  isFirstTime: boolean,
   },
   EndSession: {
-    isFirstTime: boolean,
-    sessionId: number,
-    sessionName: string,
-    timeTotal: number,
-    exerciseIds: any[],
-    phaseId: number,
-    programId: number,
+  isFirstTime: boolean,
+  sessionId: number,
+  sessionName: string,
+  timeTotal: number,
+  exerciseIds: any[],
+  phaseId: number,
+  programId: number,
   },
   SessionResultsModal: {
-    sessionId: number,
+  sessionId: number,
   },
   ErrorModal: {
-    title: string,
-    message: string,
+  title: string,
+  message: string,
   },
   ConfirmModal: {
-    text: string,
-    eventId: string,
+  text: string,
+  eventId: string,
   },
   DismissModal: {
-    eventId: string,
+  eventId: string,
   },
   SelectDayModal: {
-    phaseId: number,
+  phaseId: number,
   },
   SetPhaseNameModal: {
-    programId: number,
+  programId: number,
   },
   SetProgramNameModal: undefined,
   ChangeProgramStatusModal: {
-    status: string,
-    programId: number,
+  status: string,
+  programId: number,
   },
   FullScreenVideo: {
-    videoSource: string,
+  videoSource: string,
   },
 }
 
@@ -158,226 +158,226 @@ const App: React.FC = () => {
   const Stack = createNativeStackNavigator<RootStackParamList>()
 
   const handleNavigationStateChange = (state: any) => {
-    const screenNames = getScreenNamesFromState(state);
-    console.log('Navigation Tree:', JSON.stringify(screenNames, null, 2));
+  const screenNames = getScreenNamesFromState(state);
+  console.log('Navigation Tree:', JSON.stringify(screenNames, null, 2));
   };
 
   useEffect(() => {
 
-    const initializeDatabase = async () => {
-      return await DB.initDatabase()
+  const initializeDatabase = async () => {
+    return await DB.initDatabase()
+  }
+
+  const loadFonts = async () => {
+    return await Font.loadAsync(customFonts)
+  }
+
+  const logAllData = async () => {
+    return await DB.logAllDataAsJson()
+  }
+
+  const setResetDate = async () => {
+    return await DB.setResetDate()
+  }
+
+  const setInitialScreen = async () => {
+    const isFirstTimeLaunch = await DB.checkMetaFirstTime()
+
+    if (isFirstTimeLaunch) {
+    setInitScreen('Welcome' as keyof RootStackParamList)
     }
+  }
 
-    const loadFonts = async () => {
-      return await Font.loadAsync(customFonts)
+  const loadAllAppAssets = async () => {
+    try {
+    await Promise.all([
+      initializeDatabase(),
+      loadFonts(),
+    ])
+
+    await initNotificationsPermissionsCheck()
+
+    // await logAllData()
+
+    await setResetDate()
+
+    await setInitialScreen()
+    } catch (error) {
+    console.log('Error Initializing: ' + error)
+    } finally {
+    setIsInitialized(true)
     }
+  }
 
-    const logAllData = async () => {
-      return await DB.logAllDataAsJson()
-    }
-
-    const setResetDate = async () => {
-      return await DB.setResetDate()
-    }
-
-    const setInitialScreen = async () => {
-      const isFirstTimeLaunch = await DB.checkMetaFirstTime()
-
-      if (isFirstTimeLaunch) {
-        setInitScreen('Welcome' as keyof RootStackParamList)
-      }
-    }
-
-    const loadAllAppAssets = async () => {
-      try {
-        await Promise.all([
-          initializeDatabase(),
-          loadFonts(),
-        ])
-
-        await initNotificationsPermissionsCheck()
-
-        // await logAllData()
-
-        await setResetDate()
-
-        await setInitialScreen()
-      } catch (error) {
-        console.log('Error Initializing: ' + error)
-      } finally {
-        setIsInitialized(true)
-      }
-    }
-
-    preventAutoHideAsync()
-    loadAllAppAssets()
+  preventAutoHideAsync()
+  loadAllAppAssets()
   }, [])
 
   return isInitialized ? (
-    <GestureHandlerRootView className='flex-1'>
-      <SafeAreaProvider>
-        <NavigationContainer onStateChange={handleNavigationStateChange}>
-          <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-            <CopilotProvider
-              overlay='svg'
-              backdropColor='rgba(0,0,0,0.8)'
-              verticalOffset={StatusBar.currentHeight}
-              tooltipStyle={{
-                width: '80%',
-                borderRadius: 16,
-                backgroundColor: '#F5F6F3',
-                left: 16,
-              }}
-              tooltipComponent={(props: any) => <CopilotCustomTooltip {...props} />}
-              stepNumberComponent={() => <></>}
-            >
-              <Stack.Navigator initialRouteName={initScreen}>
-                <Stack.Group
-                  screenOptions={{
-                    presentation: 'card',
-                    statusBarHidden: false,
-                    statusBarColor: '#121212',
-                    cardStyle: {
-                      backgroundColor: '#121212',
-                    },
-                    headerStyle: {
-                      backgroundColor: 'transparent',
-                    },
-                    headerShadowVisible: false,
-                    headerTitleStyle: {
-                      color: '#F5F6F3',
-                      fontFamily: 'BaiJamjuree-Bold',
-                      fontSize: 16,
-                    },
-                    headerTintColor: '#F5F6F3'
-                  }}
-                >
-                  <Stack.Screen
-                    name='Welcome'
-                    component={WelcomeScreen}
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name='Home'
-                    component={HomeScreen}
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name='ProgramsList'
-                    component={ProgramsListScreen}
-                    options={{ title: 'Browse Programs' }}
-                  />
-                  <Stack.Screen
-                    name='ExercisesList'
-                    component={ExercisesListScreen}
-                    options={{ title: 'Browse Exercises' }}
-                  />
-                  <Stack.Screen
-                    name='ExerciseDetails'
-                    component={ExerciseDetailsScreen}
-                    options={{ title: 'Exercise Details' }}
-                  />
-                  <Stack.Screen
-                    name='Hub'
-                    component={HubScreen}
-                    options={{ title: 'Hub' }}
-                  />
-                  <Stack.Screen
-                    name='NewInstance'
-                    component={NewInstanceScreen}
-                    options={{ title: 'Add exercise' }}
-                  />
-                  <Stack.Screen
-                    name='EditSession'
-                    component={EditSessionScreen}
-                    options={{ title: 'Session Details' }}
-                  />
-                  <Stack.Screen
-                    name='EditProgram'
-                    component={EditProgramScreen}
-                    options={{ title: 'Program Details' }}
-                  />
-                  <Stack.Screen
-                    name='EditPhase'
-                    component={EditPhaseScreen}
-                    options={{ title: 'Phase Details' }}
-                  />
-                  <Stack.Screen
-                    name='Settings'
-                    component={SettingsScreen}
-                    options={{ title: 'Settings' }}
-                  />
-                </Stack.Group>
-                <Stack.Group
-                  screenOptions={{
-                    presentation: 'transparentModal',
-                    headerShown: false,
-                  }}
-                >
-                  <Stack.Screen
-                    name='ErrorModal'
-                    component={ErrorModal}
-                  />
-                  <Stack.Screen
-                    name='ConfirmModal'
-                    component={ConfirmModal}
-                  />
-                  <Stack.Screen
-                    name='DismissModal'
-                    component={DismissModal}
-                  />
-                  <Stack.Screen
-                    name='SelectDayModal'
-                    component={SelectDayModal}
-                  />
-                  <Stack.Screen
-                    name='SetPhaseNameModal'
-                    component={SetPhaseNameModal}
-                  />
-                  <Stack.Screen
-                    name='SetProgramNameModal'
-                    component={SetProgramNameModal}
-                  />
-                  <Stack.Screen
-                    name='ChangeProgramStatusModal'
-                    component={ChangeProgramStatusModal}
-                  />
-                  <Stack.Screen
-                    name='SessionResultsModal'
-                    component={SessionResultsModal}
-                  />
-                </Stack.Group>
-                <Stack.Group
-                  screenOptions={{
-                    headerShown: false
-                  }}
-                >
-                  <Stack.Screen
-                    name='GetReady'
-                    component={GetReadyScreen}
-                  />
-                  <Stack.Screen
-                    name='ActiveSession'
-                    component={ActiveSessionScreen}
-                  />
-                  <Stack.Screen
-                    name='EndSession'
-                    component={EndSessionScreen}
-                  />
-                  <Stack.Screen
-                    name='FullScreenVideo'
-                    component={FullScreenVideoScreen}
-                    options={{
-                      animation: 'fade',
-                    }}
-                  />
-                </Stack.Group>
-              </Stack.Navigator>
-            </CopilotProvider>
-          </IconComponentProvider>
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+  <GestureHandlerRootView className='flex-1'>
+    <SafeAreaProvider>
+    <NavigationContainer onStateChange={handleNavigationStateChange}>
+      <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+      <CopilotProvider
+        overlay='svg'
+        backdropColor='rgba(0,0,0,0.8)'
+        verticalOffset={StatusBar.currentHeight}
+        tooltipStyle={{
+        width: '80%',
+        borderRadius: 16,
+        backgroundColor: '#F5F6F3',
+        left: 16,
+        }}
+        tooltipComponent={(props: any) => <CopilotCustomTooltip {...props} />}
+        stepNumberComponent={() => <></>}
+      >
+        <Stack.Navigator initialRouteName={initScreen}>
+        <Stack.Group
+          screenOptions={{
+          presentation: 'card',
+          statusBarHidden: false,
+          statusBarColor: '#121212',
+          cardStyle: {
+            backgroundColor: '#121212',
+          },
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            color: '#F5F6F3',
+            fontFamily: 'BaiJamjuree-Bold',
+            fontSize: 16,
+          },
+          headerTintColor: '#F5F6F3'
+          }}
+        >
+          <Stack.Screen
+          name='Welcome'
+          component={WelcomeScreen}
+          options={{ headerShown: false }}
+          />
+          <Stack.Screen
+          name='Home'
+          component={HomeScreen}
+          options={{ headerShown: false }}
+          />
+          <Stack.Screen
+          name='ProgramsList'
+          component={ProgramsListScreen}
+          options={{ title: 'Browse Programs' }}
+          />
+          <Stack.Screen
+          name='ExercisesList'
+          component={ExercisesListScreen}
+          options={{ title: 'Browse Exercises' }}
+          />
+          <Stack.Screen
+          name='ExerciseDetails'
+          component={ExerciseDetailsScreen}
+          options={{ title: 'Exercise Details' }}
+          />
+          <Stack.Screen
+          name='Hub'
+          component={HubScreen}
+          options={{ title: 'Hub' }}
+          />
+          <Stack.Screen
+          name='NewInstance'
+          component={NewInstanceScreen}
+          options={{ title: 'Add exercise' }}
+          />
+          <Stack.Screen
+          name='EditSession'
+          component={EditSessionScreen}
+          options={{ title: 'Session Details' }}
+          />
+          <Stack.Screen
+          name='EditProgram'
+          component={EditProgramScreen}
+          options={{ title: 'Program Details' }}
+          />
+          <Stack.Screen
+          name='EditPhase'
+          component={EditPhaseScreen}
+          options={{ title: 'Phase Details' }}
+          />
+          <Stack.Screen
+          name='Settings'
+          component={SettingsScreen}
+          options={{ title: 'Settings' }}
+          />
+        </Stack.Group>
+        <Stack.Group
+          screenOptions={{
+          presentation: 'transparentModal',
+          headerShown: false,
+          }}
+        >
+          <Stack.Screen
+          name='ErrorModal'
+          component={ErrorModal}
+          />
+          <Stack.Screen
+          name='ConfirmModal'
+          component={ConfirmModal}
+          />
+          <Stack.Screen
+          name='DismissModal'
+          component={DismissModal}
+          />
+          <Stack.Screen
+          name='SelectDayModal'
+          component={SelectDayModal}
+          />
+          <Stack.Screen
+          name='SetPhaseNameModal'
+          component={SetPhaseNameModal}
+          />
+          <Stack.Screen
+          name='SetProgramNameModal'
+          component={SetProgramNameModal}
+          />
+          <Stack.Screen
+          name='ChangeProgramStatusModal'
+          component={ChangeProgramStatusModal}
+          />
+          <Stack.Screen
+          name='SessionResultsModal'
+          component={SessionResultsModal}
+          />
+        </Stack.Group>
+        <Stack.Group
+          screenOptions={{
+          headerShown: false
+          }}
+        >
+          <Stack.Screen
+          name='GetReady'
+          component={GetReadyScreen}
+          />
+          <Stack.Screen
+          name='ActiveSession'
+          component={ActiveSessionScreen}
+          />
+          <Stack.Screen
+          name='EndSession'
+          component={EndSessionScreen}
+          />
+          <Stack.Screen
+          name='FullScreenVideo'
+          component={FullScreenVideoScreen}
+          options={{
+            animation: 'fade',
+          }}
+          />
+        </Stack.Group>
+        </Stack.Navigator>
+      </CopilotProvider>
+      </IconComponentProvider>
+    </NavigationContainer>
+    </SafeAreaProvider>
+  </GestureHandlerRootView>
   ) : null
 }
 

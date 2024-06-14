@@ -38,24 +38,24 @@ const ActiveProgramsCard: React.FC<Props> = ({
 			activeOpacity={0.6}
 		>
 			<ImageBackground
-        className="flex-1 flex-col justify-between"
-        resizeMode="cover"
-        source={
-          programThumbnails[thumbnail as keyof typeof programThumbnails] || 
-          {uri: thumbnail}
-        }
-      >
-        <LinearGradient 
-          className="absolute h-full w-full"
-          colors={['rgba(0,0,0,1)', 'transparent']}
+    className="flex-1 flex-col justify-between"
+    resizeMode="cover"
+    source={
+      programThumbnails[thumbnail as keyof typeof programThumbnails] || 
+      {uri: thumbnail}
+    }
+    >
+    <LinearGradient 
+      className="absolute h-full w-full"
+      colors={['rgba(0,0,0,1)', 'transparent']}
 	  // start={{ x: 0, y: 0 }}
 	  // end={{ x: 0.8, y: 1 }}
-        />
-        <View className="flex-1 p-3">
-          <Text className="capitalize text-custom-white text-xl font-BaiJamjuree-Bold" style={{ lineHeight: 24 }}>
-            {name}
-          </Text>
-        </View>
+    />
+    <View className="flex-1 p-3">
+      <Text className="capitalize text-custom-white text-xl font-BaiJamjuree-Bold" style={{ lineHeight: 24 }}>
+      {name}
+      </Text>
+    </View>
 				<View className="h-[28%] pb-3 px-3">
 					<View className="flex-1 flex-row bg-twothird-transparent rounded-xl overflow-hidden">
 						<View className="absolute z-10 w-full h-full justify-center items-center">
@@ -72,7 +72,7 @@ const ActiveProgramsCard: React.FC<Props> = ({
 
 					</View>
 				</View>
-      </ImageBackground>
+    </ImageBackground>
 		</TouchableOpacity>
 	)
 }

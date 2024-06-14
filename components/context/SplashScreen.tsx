@@ -15,14 +15,14 @@ const SplashScreen: React.FC<Props> = ({ isComponentLoaded }) => {
   const splashOpacity = useSharedValue(1)
 
   const animatedSplashStyle = useAnimatedStyle(() => {
-    return {
-      opacity: splashOpacity.value,
-      pointerEvents: "none"
-    }
+  return {
+    opacity: splashOpacity.value,
+    pointerEvents: "none"
+  }
   })
 
   const loadHandler = async() => {
-    hideAsync()  
+  hideAsync()  
   }
 
 	if (isComponentLoaded) {

@@ -10,12 +10,12 @@ const ScreenWrapper: React.FC<Props> = ({ children }) => {
   const insets = useSafeAreaInsets()
 
   return (
-    <SafeAreaView 
-      className="flex-1 px-2 bg-custom-dark"
-      style={{ paddingBottom: insets.bottom }}
-    >
-      {children}
-    </SafeAreaView>
+  <SafeAreaView 
+    className="flex-1 px-2 bg-custom-dark"
+    style={{ paddingBottom: insets.bottom }}
+  >
+    {children}
+  </SafeAreaView>
   )
 }
 
