@@ -1,7 +1,7 @@
-import { View, TouchableOpacity, Text, ScrollView, Dimensions, Image } from "react-native"
+import { View, TouchableOpacity, Text, ScrollView, Dimensions, Image, ImageBackground } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import type { RootStackParamList } from 'App'
-import Animated, { Easing, withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
+import Animated, { Easing, withTiming, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 import { Icon } from "@react-native-material/core"
 import ScreenWrapper from "@components/common/ScreenWrapper"
 import { muscleGroups, exerciseBackgrounds, videoFiles } from "@modules/AssetPaths"
@@ -44,10 +44,36 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
     group: number,
     load: number 
   }[]>([])
+	const [parentHeight, setParentHeight] = useState(0);
+	const topViewHeightPercentage = 70;
+	const topViewMinHeightPercentage = 20;
 
   const scrollRef = useRef<ScrollView>(null)
 
   const selectedTabAnim = useSharedValue(0)
+	const topViewHeight = useSharedValue(0)
+	const scrollY = useSharedValue(0)
+
+	const topViewAnimatedStyle = useAnimatedStyle(() => {
+    const minHeight = parentHeight * (topViewMinHeightPercentage / 100);
+    const height = Math.max(
+      minHeight,
+      parentHeight * (topViewHeightPercentage / 100) - scrollY.value
+    );
+    return { height: withTiming(height, { duration: 50, easing: Easing.linear }) };
+  });
+
+	const handleScroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+    },
+  });
+
+	const handleParentLayout = (event: any) => {
+    const { height } = event.nativeEvent.layout;
+    setParentHeight(height);
+    topViewHeight.value = height * (topViewHeightPercentage / 100);
+  };
 
   const selectedTabStyle = useAnimatedStyle(() => {
     const x = selectedTabAnim.value * (windowWidth - 20) / 3
@@ -244,38 +270,46 @@ const ExerciseDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
         overScrollMode="never"
         bounces={false}
       >
-        <ScrollView 
-          className='px-3'
-          style={{ width: windowWidth }}
-          fadingEdgeLength={100}
-          showsVerticalScrollIndicator={false}
-        >
-          {exerciseData.background &&
-            <Image
-              className="h-96 w-full mb-8 rounded-2xl"
-              resizeMode="cover"
-              source={
-                exerciseBackgrounds[exerciseData.background as keyof typeof exerciseBackgrounds] || 
-                { uri: exerciseData.background }
-              } 
-            />
-          }
-          <TouchableOpacity
-            className="absolute top-3 right-6"
-            onPress={() => navigation.navigate('FullScreenVideo', { videoSource: exerciseData.video })}
+        <View style={{ width: windowWidth }} onLayout={handleParentLayout}>
+          <Animated.View style={topViewAnimatedStyle} className="rounded-2xl overflow-hidden">
+            {exerciseData.background &&
+              <ImageBackground
+                className="flex-1"
+                resizeMode="cover"
+                source={
+                  exerciseBackgrounds[exerciseData.background as keyof typeof exerciseBackgrounds] || 
+                  { uri: exerciseData.background }
+                } 
+              >
+                <TouchableOpacity
+                  className="justify-end self-end p-4"
+                  onPress={() => navigation.navigate('FullScreenVideo', { videoSource: exerciseData.video })}
+                >
+                  <Icon name='video-outline' size={40} color="#F5F6F3" />
+                </TouchableOpacity>
+              </ImageBackground>
+            }
+          </Animated.View>
+          <Animated.ScrollView 
+            className='flex-1'
+            style={{ width: windowWidth }}
+            fadingEdgeLength={100}
+            showsVerticalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
           >
-            <Icon name='video-outline' size={40} color="#F5F6F3" />
-          </TouchableOpacity>
-          <View className='w-2/3 -mt-1 mb-3'>
-            <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Step By Step:</Text>
-          </View>
-          {exerciseData.execution.map((paragraph, index) => (
-            <View key={index} className="w-full flex flex-row gap-3 mb-3">
-              <Text className="w-[10%] pt-0.5 text-custom-red font-BaiJamjuree-Bold text-lg">{index + 1}</Text>
-              <Text className="w-[80%] text-custom-white font-BaiJamjuree-Regular">{paragraph}</Text>
+            
+            <View className='p-4'>
+              <Text className="text-custom-grey font-BaiJamjuree-MediumItalic">Step By Step:</Text>
             </View>
-          ))}
-        </ScrollView>
+            {exerciseData.execution.map((paragraph, index) => (
+              <View key={index} className="flex flex-row pb-3 px-4">
+                <Text className="w-[10%] pt-0.5 text-custom-red font-BaiJamjuree-Bold text-lg">{index + 1}</Text>
+                <Text className="w-[80%] text-custom-white font-BaiJamjuree-Regular">{paragraph}</Text>
+              </View>
+            ))}
+          </Animated.ScrollView>
+        </View>
         <ScrollView 
           className='px-3'
           style={{ width: windowWidth }}
