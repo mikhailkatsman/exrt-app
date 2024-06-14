@@ -8,25 +8,25 @@ type Props = {
 }
 
 const Progress: React.FC<Props> = ({ totalActivities, currentActivity, setTimeRef }) => {
-  const [sessionTime, setSessionTime] = useState<number>(0)
+	const [sessionTime, setSessionTime] = useState<number>(0)
 
-  const formatTime = (totalSeconds: number) => {
-    const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0')
-    const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0')
-    const seconds = (totalSeconds % 60).toString().padStart(2, '0')
-    return `${hours}:${minutes}:${seconds}`
-  }
+	const formatTime = (totalSeconds: number) => {
+		const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0')
+		const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0')
+		const seconds = (totalSeconds % 60).toString().padStart(2, '0')
+		return `${hours}:${minutes}:${seconds}`
+	}
 
 	useEffect(() => {
-    const timeValue = setInterval(() => {
-      setSessionTime(prev => {
+		const timeValue = setInterval(() => {
+			setSessionTime(prev => {
 				const newTime = prev + 1
 				setTimeRef(newTime)
 				return newTime
 			})
-    }, 1000)
+		}, 1000)
 
-    return () => clearInterval(timeValue)
+		return () => clearInterval(timeValue)
 	}, [])
 
 	return (
@@ -38,8 +38,15 @@ const Progress: React.FC<Props> = ({ totalActivities, currentActivity, setTimeRe
 				{totalActivities.map((_, index) => (
 					<View 
 						key={index} 
-						className=
-							{`flex-1 ${index < currentActivity ? 'bg-custom-green h-0.5' : index === currentActivity ? 'bg-custom-red h-1.5 rounded-xl' : 'bg-custom-grey h-0.5'}`} 
+						className={`
+							flex-1 
+							${index < currentActivity ? 
+								'bg-custom-green h-0.5' :
+								index === currentActivity ?
+								'bg-custom-red h-1.5 rounded-xl' :
+								'bg-custom-grey h-0.5'
+							}
+						`} 
 					/>
 				))}
 			</View>

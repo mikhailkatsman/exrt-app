@@ -1,6 +1,6 @@
 import { exerciseBackgrounds, videoFiles } from "@modules/AssetPaths"
 import { Icon } from "@react-native-material/core"
-import { ImageBackground, Text, View, TouchableOpacity, ScrollView } from "react-native"
+import { ImageBackground, Text, View, TouchableOpacity } from "react-native"
 import Animated, { Easing, useSharedValue, withTiming, withDelay, useAnimatedScrollHandler, useAnimatedStyle } from "react-native-reanimated"
 import { useEffect, useState } from "react"
 import { useNavigation } from "@react-navigation/native"
@@ -59,25 +59,25 @@ const CurrentExercise: React.FC<Props> = ({
 	})
 
 	const topViewAnimatedStyle = useAnimatedStyle(() => {
-    const minHeight = parentHeight * (topViewMinHeightPercentage / 100);
-    const height = Math.max(
-      minHeight,
-      parentHeight * (topViewHeightPercentage / 100) - scrollY.value
-    );
-    return { height: withTiming(height, { duration: 50, easing: Easing.linear }) };
-  });
+		const minHeight = parentHeight * (topViewMinHeightPercentage / 100);
+		const height = Math.max(
+			minHeight,
+			parentHeight * (topViewHeightPercentage / 100) - scrollY.value
+		);
+		return { height: withTiming(height, { duration: 50, easing: Easing.linear }) };
+	});
 
 	const handleScroll = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      scrollY.value = event.contentOffset.y;
-    },
-  });
+		onScroll: (event) => {
+			scrollY.value = event.contentOffset.y;
+		},
+	});
 
 	const handleParentLayout = (event: any) => {
-    const { height } = event.nativeEvent.layout;
-    setParentHeight(height);
-    topViewHeight.value = height * (topViewHeightPercentage / 100);
-  };
+		const { height } = event.nativeEvent.layout;
+		setParentHeight(height);
+		topViewHeight.value = height * (topViewHeightPercentage / 100);
+	};
 
 	return (
 		<Animated.View style={animatedStyle} className="w-full h-full">

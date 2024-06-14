@@ -89,7 +89,7 @@ const ActivityTimer: React.FC<Props> = ({ duration, endTimer }) => {
 						- 10"
 					</Text>
 				</TouchableOpacity>
-        <View className="w-3" />
+				<View className="w-3" />
 				<TouchableOpacity className="flex-1 items-center 
 					justify-center rounded-xl border-2 border-custom-white"
 					onPress={() => {
@@ -101,7 +101,6 @@ const ActivityTimer: React.FC<Props> = ({ duration, endTimer }) => {
 						+ 10"
 					</Text>
 				</TouchableOpacity>
-
 			</View>
 		</View>
 	)

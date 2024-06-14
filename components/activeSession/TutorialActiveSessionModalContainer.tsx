@@ -15,9 +15,9 @@ type TextSegment = {
 }
 
 const TutorialActiveSessionModalContainer: React.FC<Props> = ({
-	active, 
-	setTutorialActiveSessionModalActive,
-	finishSession
+  active, 
+  setTutorialActiveSessionModalActive,
+  finishSession
 }) => {
   const modalOpacity = useSharedValue(0)
 
@@ -49,7 +49,7 @@ const TutorialActiveSessionModalContainer: React.FC<Props> = ({
       className="absolute w-full h-full bg-custom-dark/60 items-center z-50 flex-col justify-center"
     >
       <View className="w-3/4 h-fit bg-custom-white flex-col justify-between rounded-2xl">
-	<View className="h-fit px-6 flex justify-between items-center">
+        <View className="h-fit px-6 flex justify-between items-center">
           <Text className='my-3'>
             {text.map((segment, index) => (
               <Text

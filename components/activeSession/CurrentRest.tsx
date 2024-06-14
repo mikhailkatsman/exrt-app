@@ -104,7 +104,6 @@ const CurrentRest: React.FC<Props> = ({ duration, endRest, screenWidth }) => {
 						+ 10"
 					</Text>
 				</TouchableOpacity>
-
 			</View>
 		</Animated.View>
 	)

@@ -1,14 +1,14 @@
 import { Text, View } from "react-native"
 
 type Props = {
-  type: string,
-  data: {
+	type: string,
+	data: {
 	name?: string,
 	minuteDuration?: number,
 	secondDuration?: number,
 	reps?: number,
-  } | number,
-  completed: boolean,
+	} | number,
+	completed: boolean,
 }
 
 const TimeLineSlot: React.FC<Props> = ({ type, data, completed }) => {

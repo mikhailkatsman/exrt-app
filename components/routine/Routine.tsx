@@ -128,7 +128,7 @@ const Routine: React.FC<Props> = ({ isFirstTime, dataArray, selectedDay, screenW
   const CopilotStartSessionButton = ({ copilot }: any) => (
     <View
       {...copilot}
-      className="h-16 absolute bottom-2 left-6 z-50 border border-custom-red" 
+      className="h-16 absolute bottom-2 left-6 z-50" 
       style={{ width: elementWidth - 24 }} 
     />
   )
