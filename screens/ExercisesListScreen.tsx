@@ -106,7 +106,7 @@ const ExerciseListScreen: React.FC<Props> = () => {
     parameters.push(difficultySort)
   }
 
-  sqlQuery += ' ORDER BY name;'
+  sqlQuery += ' AND custom != 2 ORDER BY name;'
 
   parameters = parameters.filter(param => param !== undefined || param !== null)
    

@@ -42,14 +42,14 @@ const PhaseCard: React.FC<Props> = ({ id, programId, name, custom, order, status
     activeOpacity={0.6}
   >
     <Text 
-    className={`w-[60%] pr-3 text-lg font-BaiJamjuree-Bold 
+    className={`w-[60%] pr-3 text-lg font-BaiJamjuree-Bold capitalize 
       ${status === 'completed' ? 'text-custom-grey' : 'text-custom-white'}
     `} 
     style={{ lineHeight: 22 }}
     >
     {name}
     </Text>
-    <View className="w-[40%] flex-row justify-end items-center">
+    <View className="w-[40%] flex-row justify-end items-center capitalize">
     {renderStatus()}
     <Icon name="chevron-right" color={status === 'completed' ? "#505050" : "#F5F6F3"} size={32} /> 
     </View>
