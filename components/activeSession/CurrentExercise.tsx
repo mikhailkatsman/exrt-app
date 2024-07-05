@@ -102,7 +102,7 @@ const CurrentExercise: React.FC<Props> = ({
 						>
 							<View className="flex-1">
 								<View className="px-4 pt-4 flex-row justify-between">
-									<View className="flex-1">
+									<View className="flex-1 mr-5">
 										<Text className="text-custom-white font-BaiJamjuree-Bold text-3xl capitalize">
 											{name}
 										</Text>
@@ -115,7 +115,7 @@ const CurrentExercise: React.FC<Props> = ({
 											className="mb-3"
 											onPress={() => navigation.navigate('FullScreenVideo', { videoSource: video })}
 										>
-											<Icon name="video-outline" size={40} color="#F5F6F3" />
+											<Icon name="video-outline" size={36} color="#F5F6F3" />
 										</TouchableOpacity>
 										<TouchableOpacity
 											onPress={() => navigation.navigate('ExerciseDetails', {
@@ -123,7 +123,7 @@ const CurrentExercise: React.FC<Props> = ({
 													fromActiveSession: true
 											})}
 										>
-											<Icon name="information-outline" size={40} color="#F5F6F3" />
+											<Icon name="information-outline" size={34} color="#F5F6F3" />
 										</TouchableOpacity>
 									</View>
 								</View>

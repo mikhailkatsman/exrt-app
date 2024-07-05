@@ -227,7 +227,7 @@ const EditPhaseScreen: React.FC<Props> = ({ navigation, route }) => {
         activeOpacity={0.6}
         disabled={isActive}
       >
-        <Text className="text-lg text-custom-white font-BaiJamjuree-Bold">
+        <Text className="text-lg capitalize text-custom-white font-BaiJamjuree-Bold">
         {item.sessionName}
         </Text>
         <Text className="text-custom-white font-BaiJamjuree-LightItalic">
